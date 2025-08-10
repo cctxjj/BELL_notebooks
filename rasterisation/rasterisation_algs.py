@@ -1,3 +1,5 @@
+# TODO: Add DDA --> compare; add circle (Midpoint, Bresenham) & compare
+
 def bresenham(x_0, y_0, x_1, y_1):
     # calculates straight points from Point A(x_0, y_0) to B(x_1, y_1) according to J. E. Bresenham
     # Time-complexity: O(n)

@@ -1,13 +1,13 @@
-from debugpy.server.cli import switches
 from ipycanvas import Canvas
 from IPython.display import display
 import matplotlib.pyplot as plt
 
+# Credit: ChatGPT 4.0
 def zeichne_pixel(punkte, pixelgröße=10, rand=20):
     """
     Zeichnet ein Koordinatensystem mit eingezeichneten Achsen und stellt gegebene Punkte als 10x10 Pixel große schwarze Quadrate dar.
 
-    :param punkte: Liste von (x, y)-Tupeln, z. B. [(1, 2), (3, 4)]
+    :param punkte: Liste von (x, y)-Tupeln
     :param pixelgröße: Größe jedes Punkts in Pixeln (Standard: 10)
     :param rand: Rand in Pixeln um das Koordinatensystem (Standard: 20)
     """
@@ -37,6 +37,7 @@ def zeichne_pixel(punkte, pixelgröße=10, rand=20):
 
     display(canvas)
 
+# Credit: ChatGPT 4.0
 def plot_points(points):
     """
     Zeichnet eine Liste von (x, y)-Tupeln als schwarze Quadrate in einem dynamisch angepassten Koordinatensystem.
@@ -77,3 +78,4 @@ def plot_points(points):
 
     # Plot anzeigen
     plt.show()
+
