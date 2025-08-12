@@ -2,6 +2,8 @@ from ipycanvas import Canvas
 from IPython.display import display
 import matplotlib.pyplot as plt
 
+#TODO: Visuals etwas improven
+
 # Credit: ChatGPT 4.0
 def zeichne_pixel(punkte, pixelgröße=10, rand=20):
     """
