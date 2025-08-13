@@ -137,8 +137,6 @@ def recursive_stackbased_boundary_fill_8con(
     '''
     height, width = np.shape(img)
     stack = [start]
-    if start_col == new_color:
-        raise ValueError("start_col must be different from new_color")
 
     while stack:
         cur = stack.pop()
@@ -970,6 +968,85 @@ def scanline_stackbased_flood_fill_8con_optimized(
 
     return img
 
+def polygon_fill(
+        img: list,
+        points: list,
+        fill_color: int):
+    '''
+    Algorithm for filling space inside a polygon using ET and AET
+    :param img: 2D-Array with ints representing greyscale values from 0 to 255
+    :param points: Tuple-Array representing the edges of the polygon
+    :param fill_color: color for the pixels inside the polygon to be filled with
+    :return:
+    '''
+    height, width = np.shape(img)
+    # create edge_table
+    # Structure: dict {y: [edgedata]} width edgedata being an array containing (ymax, xmin, 1/m) for each edge respectively
+    edge_table = {}
+    for i, point in enumerate(points):
+        inverse_m = 0
+        if points[i + 1 if i+1 < len(points) else 0][1] != points[i][1]:
+            inverse_m = (points[i + 1 if i+1 < len(points) else 0][0] - points[i][0])/(points[i + 1 if i+1 < len(points) else 0][1] - points[i][1])\
+                if points[i + 1 if i+1 < len(points) else 0][0] != points[i][0] else "in"  # = dx/dy = 1/m
+
+        y_val, y_max = min(points[i][1], points[i + 1 if i + 1 < len(points) else 0][1]), max(points[i][1], points[i + 1 if i + 1 < len(points) else 0][1])
+        x_min = points[i][0] if y_val == points[i][1] else points[i + 1][0] if i + 1 < len(points) else points[0][0]
+        #x_min = min(points[i][0], points[i + 1 if i + 1 < len(points) else 0][0])
+        if y_val in edge_table.keys():
+            edge_table.get(y_val).append((y_max, x_min, inverse_m))
+        else:
+            edge_table[y_val] = [(y_max, x_min, inverse_m)]
+
+    # check for correct ET structure
+    for key in edge_table.keys():
+        print(key)
+        print(edge_table.get(key))
+        print(" ")
+
+    # initialize AET
+    active_edge_table = [] # stores active edges as a nested list according to their x-value: [[x_val, [edgedata]]} with edgedata being [y_max, inverse_m]
+
+    y = min(edge_table.keys())
+
+    def update_aet(scanline_y):
+        for active_edge in active_edge_table:
+            if active_edge[1][0] <= scanline_y:
+                active_edge_table.remove(active_edge)
+            elif active_edge[1][1] != "in":
+                active_edge[0] += active_edge[1][1]
+        if scanline_y in edge_table.keys():
+            for edge in edge_table.get(scanline_y):
+                active_edge_table.append([edge[1], [edge[0], edge[2]]])
+                print(active_edge_table)
+        active_edge_table.sort(key=lambda edge: edge[0])
+
+    # scanline advancement process
+    update_aet(y)
+    while active_edge_table:
+        y+=1
+        update_aet(y)
+        edge_ind = 0
+        odd = False
+        for x in range(0, width):
+            if edge_ind >= len(active_edge_table):
+                continue
+            if edge_ind >= 0:
+                print(active_edge_table[edge_ind])
+                print(active_edge_table)
+                if x > active_edge_table[edge_ind][0]:
+                    odd = not odd
+                    edge_ind += 1
+                if odd:
+                    img[y, x] = fill_color
+            elif odd:
+                img[y, x] = fill_color
+    return img
+
+
+
+img = img_handler.grab_image("imgs//test_img_8.png")
+img_handler.display_img_array(polygon_fill(img, [(20, 30), (70, 10), (130, 49), (130, 117), (70, 67), (20, 90)], 0))
+'''
 #img = img_handler.grab_image("imgs//test_img_7.png")
 #img_handler.display_img_array(scanline_queuebased_flood_fill_4con(img, (1, 0), 255))
 
@@ -987,7 +1064,6 @@ img_handler.display_img_array(scanline_stackbased_flood_fill_8con_optimized(img,
 
 faster_norm = 0
 faster_opt = 0
-'''
 for i in range(1000):
     print(i)
 
@@ -1005,8 +1081,6 @@ for i in range(1000):
         faster_opt +=1
     else:
         faster_norm +=1
-'''
-
-
 print(faster_opt)
 print(faster_norm)
+'''
