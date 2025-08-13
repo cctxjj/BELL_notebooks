@@ -103,13 +103,13 @@ def mid_point_circle(x_center, y_center, r):
         first_oct_y.append(y)
 
     result = [*zip([x + x_center for x in first_oct_x], [y + y_center for y in first_oct_y]),
-              *zip([y + y_center for y in first_oct_y], [x + x_center for x in first_oct_x]),
-              *zip([y + y_center for y in first_oct_y], [x * -1 + x_center for x in first_oct_x]),
-              *zip([x + x_center for x in first_oct_x], [y * -1 + y_center for y in first_oct_y]),
-              *zip([x * -1 + x_center for x in first_oct_x], [y * -1 + y_center for y in first_oct_y]),
-              *zip([y * -1 + y_center for y in first_oct_y], [x * -1 + x_center for x in first_oct_x]),
-              *zip([y * -1 + y_center for y in first_oct_y], [x + x_center for x in first_oct_x]),
-              *zip([x * -1 + x_center for x in first_oct_x], [y + y_center for y in first_oct_y])
+              *zip([y + x_center for y in first_oct_y], [x + y_center for x in first_oct_x]),
+              *zip([y + x_center for y in first_oct_y], [(x * -1) + y_center for x in first_oct_x]),
+              *zip([x + x_center for x in first_oct_x], [(y * -1) + y_center for y in first_oct_y]),
+              *zip([(x * -1) + x_center for x in first_oct_x], [(y * -1) + y_center for y in first_oct_y]),
+              *zip([(y * -1) + x_center for y in first_oct_y], [(x * -1) + y_center for x in first_oct_x]),
+              *zip([(y * -1) + x_center for y in first_oct_y], [x + y_center for x in first_oct_x]),
+              *zip([(x * -1) + x_center for x in first_oct_x], [y + y_center for y in first_oct_y])
               ]
     return result
 
@@ -130,17 +130,17 @@ def bresenham_circle(x_center, y_center, r):
         first_oct_y.append(y)
 
     result = [*zip([x + x_center for x in first_oct_x], [y + y_center for y in first_oct_y]),
-              *zip([y + y_center for y in first_oct_y], [x + x_center for x in first_oct_x]),
-              *zip([y + y_center for y in first_oct_y], [x * -1 + x_center for x in first_oct_x]),
-              *zip([x + x_center for x in first_oct_x], [y * -1 + y_center for y in first_oct_y]),
-              *zip([x * -1 + x_center for x in first_oct_x], [y * -1 + y_center for y in first_oct_y]),
-              *zip([y * -1 + y_center for y in first_oct_y], [x * -1 + x_center for x in first_oct_x]),
-              *zip([y * -1 + y_center for y in first_oct_y], [x + x_center for x in first_oct_x]),
-              *zip([x * -1 + x_center for x in first_oct_x], [y + y_center for y in first_oct_y])
+              *zip([y + x_center for y in first_oct_y], [x + y_center for x in first_oct_x]),
+              *zip([y + x_center for y in first_oct_y], [(x * -1) + y_center for x in first_oct_x]),
+              *zip([x + x_center for x in first_oct_x], [(y * -1) + y_center for y in first_oct_y]),
+              *zip([(x * -1) + x_center for x in first_oct_x], [(y * -1) + y_center for y in first_oct_y]),
+              *zip([(y * -1) + x_center for y in first_oct_y], [(x * -1) + y_center for x in first_oct_x]),
+              *zip([(y * -1) + x_center for y in first_oct_y], [x + y_center for x in first_oct_x]),
+              *zip([(x * -1) + x_center for x in first_oct_x], [y + y_center for y in first_oct_y])
               ]
     return result
 
 
 import util.visualisations as vis
 
-vis.plot_points(bresenham_circle(10, 10, 30))
+vis.plot_points(bresenham_circle(-30, 90, 300))
