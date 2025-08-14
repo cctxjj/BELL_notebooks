@@ -1,4 +1,7 @@
+import math
+
 import numpy as np
+from pygments.unistring import xid_start
 
 import util.visualisations as vis
 import util.image_handler as img_handler
@@ -984,18 +987,22 @@ def polygon_fill(
     # Structure: dict {y: [edgedata]} width edgedata being an array containing (ymax, xmin, 1/m) for each edge respectively
     edge_table = {}
     for i, point in enumerate(points):
-        inverse_m = 0
-        if points[i + 1 if i+1 < len(points) else 0][1] != points[i][1]:
-            inverse_m = (points[i + 1 if i+1 < len(points) else 0][0] - points[i][0])/(points[i + 1 if i+1 < len(points) else 0][1] - points[i][1])\
-                if points[i + 1 if i+1 < len(points) else 0][0] != points[i][0] else "in"  # = dx/dy = 1/m
+        x_1, x_2 = point[0], points[(i+1) % len(points)][0]
+        y_1, y_2 = point[1], points[(i + 1) % len(points)][1]
 
-        y_val, y_max = min(points[i][1], points[i + 1 if i + 1 < len(points) else 0][1]), max(points[i][1], points[i + 1 if i + 1 < len(points) else 0][1])
-        x_min = points[i][0] if y_val == points[i][1] else points[i + 1][0] if i + 1 < len(points) else points[0][0]
-        #x_min = min(points[i][0], points[i + 1 if i + 1 < len(points) else 0][0])
-        if y_val in edge_table.keys():
-            edge_table.get(y_val).append((y_max, x_min, inverse_m))
+        if y_1 == y_2:
+            continue
+
+        if y_1 > y_2:
+            y_min, y_max = y_2, y_1 - 1
+            x_min, x_max = x_2, x_1
         else:
-            edge_table[y_val] = [(y_max, x_min, inverse_m)]
+            y_min, y_max = y_1, y_2 - 1
+            x_min, x_max = x_1, x_2
+
+        inv_m = (x_max - x_min) / (y_max - y_min)
+
+        edge_table.setdefault(y_min, []).append((y_max, x_min, inv_m))
 
     # check for correct ET structure
     for key in edge_table.keys():
@@ -1007,45 +1014,32 @@ def polygon_fill(
     active_edge_table = [] # stores active edges as a nested list according to their x-value: [[x_val, [edgedata]]} with edgedata being [y_max, inverse_m]
 
     y = min(edge_table.keys())
-
-    def update_aet(scanline_y):
-        for active_edge in active_edge_table:
-            if active_edge[1][0] <= scanline_y:
-                active_edge_table.remove(active_edge)
-            elif active_edge[1][1] != "in":
-                active_edge[0] += active_edge[1][1]
-        if scanline_y in edge_table.keys():
-            for edge in edge_table.get(scanline_y):
-                active_edge_table.append([edge[1], [edge[0], edge[2]]])
-                print(active_edge_table)
-        active_edge_table.sort(key=lambda edge: edge[0])
-
     # scanline advancement process
-    update_aet(y)
     while active_edge_table:
         y+=1
-        update_aet(y)
-        edge_ind = 0
-        odd = False
-        for x in range(0, width):
-            if edge_ind >= len(active_edge_table):
-                continue
-            if edge_ind >= 0:
-                print(active_edge_table[edge_ind])
-                print(active_edge_table)
-                if x > active_edge_table[edge_ind][0]:
-                    odd = not odd
-                    edge_ind += 1
-                if odd:
-                    img[y, x] = fill_color
-            elif odd:
+        if y in edge_table:
+            for edge in edge_table.get(y):
+                active_edge_table.append([edge[1][1], [edge[1][0], edge[1][2]]])
+        for edge in active_edge_table:
+            if edge[1][0] < y:
+                active_edge_table.remove(edge)
+            else:
+                edge[0] += edge[1][1]
+        active_edge_table = active_edge_table.sort(key=lambda x: x[0])
+        print(active_edge_table)
+
+        for i in range(0, len(active_edge_table), 2):
+            x_start, x_end = math.ceil(active_edge_table[i][0]), math.floor(active_edge_table[i + 1][0])
+            for x in range(x_start, x_end+1):
                 img[y, x] = fill_color
+
     return img
 
 
 
 img = img_handler.grab_image("imgs//test_img_8.png")
 img_handler.display_img_array(polygon_fill(img, [(20, 30), (70, 10), (130, 49), (130, 117), (70, 67), (20, 90)], 0))
+
 '''
 #img = img_handler.grab_image("imgs//test_img_7.png")
 #img_handler.display_img_array(scanline_queuebased_flood_fill_4con(img, (1, 0), 255))
