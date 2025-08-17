@@ -971,79 +971,22 @@ def scanline_stackbased_flood_fill_8con_optimized(
 
     return img
 
-'''
 def polygon_fill(
         img: list,
         points: list,
         fill_color: int):
-    
-    Algorithm for filling space inside a polygon using ET and AET
-    :param img: 2D-Array with ints representing greyscale values from 0 to 255
-    :param points: Tuple-Array representing the edges of the polygon
-    :param fill_color: color for the pixels inside the polygon to be filled with
-    :return:
-    
-    height, width = np.shape(img)
-    # create edge_table
-    # Structure: dict {y: [edgedata]} width edgedata being an array containing (ymax, xmin, 1/m) for each edge respectively
-    edge_table = {}
-    for i, point in enumerate(points):
-        x_1, x_2 = point[0], points[(i+1) % len(points)][0]
-        y_1, y_2 = point[1], points[(i + 1) % len(points)][1]
+    '''
+    Simplified polygon filling algorithm: using dict as edge table, drawing horizontal edges and corners
+    :param img: 2D-Array with ints representing greyscale values from 0 to 255, input image
+    :param points: Array containing the tuples of the polygon corners
+    :param fill_color: int representing the gray scale value the polygon should be filled with
+    :return: 2D-Array with ints representing greyscale values from 0 to 255, modified image
+    '''
 
-        if y_1 == y_2:
-            continue
-
-        if y_1 > y_2:
-            y_min, y_max = y_2, y_1 - 1
-            x_min, x_max = x_2, x_1
-        else:
-            y_min, y_max = y_1, y_2 - 1
-            x_min, x_max = x_1, x_2
-
-        inv_m = (x_max - x_min) / (y_max - y_min)
-
-        edge_table.setdefault(y_min, []).append((y_max, x_min, inv_m))
-
-    # check for correct ET structure
-    for key in edge_table.keys():
-        print(key)
-        print(edge_table.get(key))
-        print(" ")
-
-    # initialize AET
-    active_edge_table = [] # stores active edges as a nested list according to their x-value: [[x_val, [edgedata]]} with edgedata being [y_max, inverse_m]
-
-    y = min(edge_table.keys())
-    # scanline advancement process
-    while active_edge_table:
-        y+=1
-        if y in edge_table:
-            for edge in edge_table.get(y):
-                active_edge_table.append([edge[1][1], [edge[1][0], edge[1][2]]])
-        for edge in active_edge_table:
-            if edge[1][0] < y:
-                active_edge_table.remove(edge)
-            else:
-                edge[0] += edge[1][1]
-        active_edge_table = active_edge_table.sort(key=lambda x: x[0])
-        print(active_edge_table)
-
-        for i in range(0, len(active_edge_table), 2):
-            x_start, x_end = math.ceil(active_edge_table[i][0]), math.floor(active_edge_table[i + 1][0])
-            for x in range(x_start, x_end+1):
-                img[y, x] = fill_color
-
-    return img
-'''
-def polygon_fill(
-        img: list,
-        points: list,
-        fill_color: int):
     height, width = np.shape(img)
     hor_edges = []
     et = {}
-    # setting up edge table,
+    # setting up edge table
     for i, point in enumerate(points):
 
         x_1, x_2 = point[0], points[(i + 1) % len(points)][0]
@@ -1058,109 +1001,49 @@ def polygon_fill(
 
         if y_1 > y_2:
             y_min, y_max = y_2, y_1
-            x_min = x_2
+            x_min, x_max = x_2, x_1
         else:
             y_min, y_max = y_1, y_2
-            x_min = x_1
+            x_min, x_max = x_1, x_2
 
         m = (x_2 - x_1) / (y_2 - y_1)
-        et.setdefault(y_min, []).append([y_max-1, x_min, m])
+        et.setdefault(y_min, []).append([y_max - 1, x_min, m, x_max])
 
     # initialising aet, preparing for loop
     aet = []
     y = min(et.keys())
-    aet.extend(et.get(y))
 
     while aet or y in et.keys():
         # advancing scanline and updating aet accordingly
         aet = [edge for edge in aet if edge[0] >= y]
         for edge in aet:
             edge[1] += edge[2]
-        if y in et and y != min(et.keys()):
+        if y in et:
             aet.extend(et.get(y))
 
         # sorting aet according to x-value
-        aet.sort(key=lambda edge: edge[1])
-
-        # filling in odd pixels
-        for i in range(0, len(aet), 2):
-            x_start, x_end = math.ceil(aet[i][1]), math.floor(aet[i + 1][1])
-            for x in range(x_start, x_end+1):
-                if 0 <= x < width and 0 <= y < height:
-                    img[y, x] = fill_color
-
-        y += 1
-    return img
-
-
-'''
-    for edge in hor_edges:
-        x_start, x_end = edge[0], edge[1]
-        for x in range(x_start, x_end+1):
-            img[y, x] = fill_color
-    '''
-
-
-def polygon_fill_chat(img, points, fill_color):
-    height, width = img.shape
-
-    # Edge Table (keine horizontalen Kanten, y_max exklusiv)
-    edge_table = {}
-    for i, p1 in enumerate(points):
-        p2 = points[(i + 1) % len(points)]
-        x1, y1 = p1
-        x2, y2 = p2
-
-        if y1 == y2:  # horizontale Kante überspringen
-            continue
-
-        if y1 < y2:
-            y_min, y_max = y1, y2 - 1
-            x_at_y_min = x1
-        else:
-            y_min, y_max = y2, y1 - 1
-            x_at_y_min = x2
-
-        inv_m = (x2 - x1) / (y2 - y1)
-        edge_table.setdefault(y_min, []).append([y_max, x_at_y_min, inv_m])
-
-    # Active Edge Table
-    aet = []
-    scan_y = min(edge_table.keys())
-
-    while aet or scan_y in edge_table:
-        # Neue Kanten hinzufügen
-        if scan_y in edge_table:
-            aet.extend(edge_table[scan_y])
-
-        # Entfernen von Kanten, die enden
-        aet = [edge for edge in aet if edge[0] >= scan_y]
-
-        # X-Werte updaten
-        for edge in aet:
-            if scan_y != min(edge_table.keys()):
-                edge[1] += edge[2]
-
-        # Schnittpunkte sammeln
         intersections = sorted(edge[1] for edge in aet)
 
-        # In Paaren füllen
+        # filling in odd pixels
         for i in range(0, len(intersections), 2):
             x_start = math.ceil(intersections[i])
             x_end = math.floor(intersections[i + 1])
             for x in range(x_start, x_end + 1):
-                if 0 <= x < width and 0 <= scan_y < height:
-                    img[scan_y, x] = fill_color
+                if 0 <= x < width and 0 <= y < height:
+                    img[y, x] = fill_color
+        y += 1
 
-        scan_y += 1
+    # adding horizontal edges
+    for edge in hor_edges:
+        x_start, x_end = edge[0], edge[1]
+        for x in range(x_start, x_end + 1):
+            img[y, x] = fill_color
 
+    # adding missing y_max
+    for y_min in et.values():
+        for edge in y_min:
+            img[int(edge[0])+1, int(edge[3])] = fill_color
     return img
-
-
-img = img_handler.grab_image("imgs//test_img_8.png")
-img_handler.display_img_array(polygon_fill(img, [(20, 30), (70, 10), (130, 49), (130, 117), (70, 67), (20, 90)], 0))
-img = img_handler.grab_image("imgs//test_img_8.png")
-img_handler.display_img_array(polygon_fill_chat(img, [(20, 30), (70, 10), (130, 49), (130, 117), (70, 67), (20, 90)], 0))
 
 '''
 #img = img_handler.grab_image("imgs//test_img_7.png")
