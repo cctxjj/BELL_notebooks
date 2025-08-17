@@ -1070,9 +1070,18 @@ def polygon_fill(
     aet = []
     y = min(et.keys())
     aet.extend(et.get(y))
-    aet.sort(key=lambda x: x[1])
 
     while aet or y in et.keys():
+        # advancing scanline and updating aet accordingly
+        aet = [edge for edge in aet if edge[0] >= y]
+        for edge in aet:
+            edge[1] += edge[2]
+        if y in et and y != min(et.keys()):
+            aet.extend(et.get(y))
+
+        # sorting aet according to x-value
+        aet.sort(key=lambda edge: edge[1])
+
         # filling in odd pixels
         for i in range(0, len(aet), 2):
             x_start, x_end = math.ceil(aet[i][1]), math.floor(aet[i + 1][1])
@@ -1080,21 +1089,10 @@ def polygon_fill(
                 if 0 <= x < width and 0 <= y < height:
                     img[y, x] = fill_color
 
-        # advancing scanline and updating aet accordingly
         y += 1
-        aet = [edge for edge in aet if edge[0] >= y]
-        for edge in aet:
-            edge[1] += edge[2]
-        if y in et:
-            aet.extend(et.get(y))
-
-        # sorting aet according to x-value
-        aet.sort(key=lambda edge: edge[1])
-
-    for hor_edge in hor_edges:
-        for x in range(hor_edge[1], hor_edge[2]+1):
-            img[hor_edge[0], x] = fill_color
     return img
+
+
 '''
     for edge in hor_edges:
         x_start, x_end = edge[0], edge[1]
