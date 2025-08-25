@@ -3,7 +3,7 @@ import util.visualisations as vis
 
 def bernstein_polynomial(i: int,
                          n: int,
-                         t: int):
+                         t: float):
     """
     :param i: number of the bernstein polynomial
     :param n: degree of the bernstein polynomial
@@ -33,6 +33,63 @@ def bezier_curve(control_points: list,
     return curve_points
 
 
-points = bezier_curve([(0, 0), (10, 50), (20, 50), (60, 4), (90, -10), (100, -50), (300, 200)], 20)
+def basis_function(i: int,
+                   k: int,
+                   t: float,
+                   knot_vector: list):
+    # Todo: comment
+    if k <= 1:
+        if knot_vector[i] <= t < knot_vector[i + 1]:
+            return 1
+        else:
+            return 0
+    else:
+        try:
+            return (basis_function(i, k - 1, t, knot_vector) * (t - knot_vector[i]) / (knot_vector[i + k - 1] - knot_vector[i])) + \
+                   (basis_function(i + 1, k - 1, t, knot_vector) * (knot_vector[i + k] - t) / (knot_vector[i + k] - knot_vector[i + 1]))
+        except ZeroDivisionError:
+            return 0
 
+def b_spline(k: int,
+             control_points: list,
+             knot_vector: list,
+             periodic: bool,
+             points_num: int = 1000):
+    # Todo: comment
+    n = len(control_points)
+    if len(knot_vector) != n + k + 1:
+        raise ValueError("knot vector must be of length n + k + 1")
+
+    if periodic:
+        border_bottom = knot_vector[k-1]
+        border_top = knot_vector[n]
+    else:
+        border_bottom = knot_vector[0]
+        border_top = knot_vector[n-k+1]
+    interval_size = border_top - border_bottom
+    curve_points = []
+
+    for point_number in range(points_num):
+        t = border_bottom + point_number * interval_size / points_num
+        cur_x = 0
+        cur_y = 0
+        for i in range(0, n):
+            b_spline_value = basis_function(i, k, t, knot_vector)
+            cur_x += b_spline_value * control_points[i][0]
+            cur_y += b_spline_value * control_points[i][1]
+        curve_points.append((cur_x, cur_y))
+    return curve_points
+
+#points = bezier_curve([(0, 0), (10, 50), (20, 50), (60, 4), (90, -10), (100, -50), (300, 200)], 20)
+
+control_points = [(1, 2), (2, 4), (3, 2), (4, 1), (5, 3)]
+#points = b_spline(3, control_points, [0, 1, 2, 3, 4, 5, 6, 7], True, 1000)
+points = b_spline(3, control_points, [0, 0, 0, 1, 2, 3, 4, 4, 4], False, 1000)
+"""
+for k in range(1, 4):
+    for i in range(4-k):
+        points = []
+        for x in range(300):
+            points.append((x/100, basis_function(i, k, x/100, [0, 0, 0, 1, 2, 3, 3, 3])))
+"""
 vis.plot_circular_points(points)
