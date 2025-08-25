@@ -81,3 +81,43 @@ def plot_points(points):
     # Plot anzeigen
     plt.show()
 
+def plot_circular_points(points):
+    """
+    Zeichnet eine Liste von (x, y)-Tupeln als schwarze Quadrate in einem dynamisch angepassten Koordinatensystem.
+
+    Parameters:
+    points (list of tuples): Liste der zu zeichnenden Punkte, z. B. [(x1, y1), (x2, y2), ...]
+    """
+    if not points:
+        print("Die Punkteliste ist leer.")
+        return
+
+    # Extrahiere x- und y-Koordinaten
+    x_coords, y_coords = zip(*points)
+
+    # Erstelle die Grafik
+    fig, ax = plt.subplots()
+
+    # Zeichne die Punkte als schwarze Quadrate
+    ax.scatter(x_coords, y_coords, c='black')  # s=100 entspricht etwa 10x10 Pixeln
+
+    # Achsenbeschriftungen
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+
+    # Gitterlinien hinzufügen
+    ax.grid(True)
+
+    # Achsenlimits dynamisch anpassen mit etwas Puffer
+    x_min, x_max = min(x_coords), max(x_coords)
+    y_min, y_max = min(y_coords), max(y_coords)
+    x_range = x_max - x_min
+    y_range = y_max - y_min
+    ax.set_xlim(x_min - 0.1 * x_range, x_max + 0.1 * x_range)
+    ax.set_ylim(y_min - 0.1 * y_range, y_max + 0.1 * y_range)
+
+    # Achsen gleich skalieren
+    ax.set_aspect('equal', adjustable='box')
+
+    # Plot anzeigen
+    plt.show()
