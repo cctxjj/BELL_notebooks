@@ -1,6 +1,9 @@
+import numpy as np
 from ipycanvas import Canvas
 from IPython.display import display
 import matplotlib.pyplot as plt
+from matplotlib.patches import Polygon
+from scipy.spatial import ConvexHull
 
 #TODO: Visuals etwas improven
 
@@ -120,4 +123,51 @@ def plot_circular_points(points):
     ax.set_aspect('equal', adjustable='box')
 
     # Plot anzeigen
+    plt.show()
+
+
+
+def visualize_curve(points, control_points=None,
+              show_hull=True, design=None):
+    """
+    Visualisiert:
+    - Punkte
+    - optional: konvexe Hülle
+    - optional: Kontrollpunkte + B-Spline-Kurve
+
+    Args:
+        points: Liste von (x,y)
+        control_points: optionale Kontrollpunkte (Liste von (x,y))
+        curve: optionale Kurvenpunkte (Liste von (x,y))
+        show_hull: True -> konvexe Hülle der Punkte zeichnen
+        design: dict mit optionalen Farben/Styles
+    """
+    if design is None: design = {}
+    colors = {
+        "points": design.get("points", "black"),
+        "hull": design.get("hull", "tab:gray"),
+        "control": design.get("control", "red"),
+        "curve": design.get("curve", "tab:blue"),
+    }
+    fig, ax = plt.subplots()
+    #fig.figure(figsize=design.get("figsize", (6, 6)))
+
+    # Konvexe Hülle
+    if show_hull and len(control_points) >= 3:
+        conv_hull = ConvexHull(control_points)
+        hull_points = np.array(control_points)[conv_hull.vertices]
+        polygon = Polygon(hull_points, closed=True, fill=True, color=colors["hull"], alpha=0.3, label="convex hull")
+        ax.add_patch(polygon)
+
+    # Kontrollpunkte
+    if control_points:
+        cx, cy = zip(*control_points)
+        ax.plot(cx, cy, "o--", c=colors["control"], label="control points")
+
+    # Punkte
+    px, py = zip(*points)
+    ax.scatter(px, py, c=colors["points"], label="points")
+
+    plt.axis("equal")
+    plt.legend()
     plt.show()

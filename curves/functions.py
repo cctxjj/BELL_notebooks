@@ -39,11 +39,21 @@ def basis_function(i: int,
                    knot_vector: list):
     # Todo: comment
     if k <= 1:
-        if knot_vector[i] <= t < knot_vector[i + 1]:
+        if knot_vector[i] <= t < knot_vector[i + 1] or (t == knot_vector[-1] and t == knot_vector[i + 1]):
             return 1
         else:
             return 0
     else:
+        # B-Spline recursion nochmal durchgehen
+        den_1 = knot_vector[i + k - 1] - knot_vector[i]
+        den_2 = knot_vector[i + k] - knot_vector[i + 1]
+        term_1 = 0
+        term_2 = 0
+        if den_1 != 0:
+            term_1 = ((t - knot_vector[i]) / den_1) * basis_function(i, k - 1, t, knot_vector)
+        if den_2 != 0:
+            term_2 = ((knot_vector[i + k] - t) / den_2) * basis_function(i + 1, k - 1, t, knot_vector)
+        return term_1 + term_2
         try:
             return (basis_function(i, k - 1, t, knot_vector) * (t - knot_vector[i]) / (knot_vector[i + k - 1] - knot_vector[i])) + \
                    (basis_function(i + 1, k - 1, t, knot_vector) * (knot_vector[i + k] - t) / (knot_vector[i + k] - knot_vector[i + 1]))
@@ -53,26 +63,26 @@ def basis_function(i: int,
 def b_spline(k: int,
              control_points: list,
              knot_vector: list,
-             periodic: bool,
              points_num: int = 1000):
     # Todo: comment
     n = len(control_points)
-    if len(knot_vector) != n + k + 1:
-        raise ValueError("knot vector must be of length n + k + 1")
 
-    if periodic:
-        border_bottom = knot_vector[k-1]
-        border_top = knot_vector[n]
-    else:
-        border_bottom = knot_vector[0]
-        border_top = knot_vector[n-k+1]
+    if len(knot_vector) != n + k:
+        raise ValueError("Invalid knot vector: knot vector must be of length n + k")
+
+    if knot_vector[-1] <= knot_vector[0]:
+        raise ValueError("Invalid knot vector: upper bound must be > lower bound")
+
+    border_bottom = knot_vector[k - 1]
+    border_top = knot_vector[n]
+
     interval_size = border_top - border_bottom
     curve_points = []
 
     for point_number in range(points_num):
-        t = border_bottom + point_number * interval_size / points_num
-        cur_x = 0
-        cur_y = 0
+        t = border_bottom + point_number * interval_size / (points_num-1)
+        cur_x = 0.0
+        cur_y = 0.0
         for i in range(0, n):
             b_spline_value = basis_function(i, k, t, knot_vector)
             cur_x += b_spline_value * control_points[i][0]
@@ -82,9 +92,9 @@ def b_spline(k: int,
 
 #points = bezier_curve([(0, 0), (10, 50), (20, 50), (60, 4), (90, -10), (100, -50), (300, 200)], 20)
 
-control_points = [(1, 2), (2, 4), (3, 2), (4, 1), (5, 3)]
-#points = b_spline(3, control_points, [0, 1, 2, 3, 4, 5, 6, 7], True, 1000)
-points = b_spline(3, control_points, [0, 0, 0, 1, 2, 3, 4, 4, 4], False, 1000)
+control_points = [(1, 2), (2, 4), (3, 2), (5, 1), (6, -2)]
+points = b_spline(3, control_points, [0, 0, 0, 1, 2, 3, 3, 3], 1000)
+#points = b_spline(3, control_points, [0, 0, 0, 1, 2, 3, 3, 3], False, 1000)
 """
 for k in range(1, 4):
     for i in range(4-k):
@@ -92,4 +102,4 @@ for k in range(1, 4):
         for x in range(300):
             points.append((x/100, basis_function(i, k, x/100, [0, 0, 0, 1, 2, 3, 3, 3])))
 """
-vis.plot_circular_points(points)
+vis.visualize_curve(points, control_points, True)
