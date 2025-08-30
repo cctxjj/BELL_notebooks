@@ -1,38 +1,3 @@
-import math
-import util.visualisations as vis
-
-def bernstein_polynomial(i: int,
-                         n: int,
-                         t: float):
-    """
-    :param i: number of the bernstein polynomial
-    :param n: degree of the bernstein polynomial
-    :param t: given parameter, curvepoint (on interval [0, 1]) to be calculated at
-    :return: Value of the Bernstein Polynomial at point t
-    """
-    binomial_coefficient = math.factorial(n) / (math.factorial(i) * math.factorial(n - i))
-    return binomial_coefficient * (t ** i) * ((1 - t) ** (n - i))
-
-def bezier_curve(control_points: list,
-                 points_num: int = 1000):
-    """
-    :param control_points: array of control points in the form of (x, y) tuples
-    :param points_num: number of points the intervall [0, 1] should be divided into
-    :return: curve points
-    """
-    degree = len(control_points) - 1
-    curve_points = []
-    for t in range(points_num):
-        cur_x = 0
-        cur_y = 0
-        for i in range(degree + 1):
-            bernstein_polynomial_value = bernstein_polynomial(i, degree, t / points_num)
-            cur_x += bernstein_polynomial_value * control_points[i][0]
-            cur_y += bernstein_polynomial_value * control_points[i][1]
-        curve_points.append((cur_x, cur_y))
-    return curve_points
-
-
 def basis_function(i: int,
                    k: int,
                    t: float,
@@ -90,16 +55,45 @@ def b_spline(k: int,
         curve_points.append((cur_x, cur_y))
     return curve_points
 
-#points = bezier_curve([(0, 0), (10, 50), (20, 50), (60, 4), (90, -10), (100, -50), (300, 200)], 20)
+def nurb(
+        k: int,
+        control_points: list,
+        knot_vector: list,
+        weights: list,
+        points_num: int = 1000):
+    # Todo: comment
+    n = len(control_points)
 
-control_points = [(1, 2), (2, 4), (3, 2), (5, 1), (6, -2)]
-points = b_spline(3, control_points, [0, 0, 0, 1, 2, 3, 3, 3], 1000)
-#points = b_spline(3, control_points, [0, 0, 0, 1, 2, 3, 3, 3], False, 1000)
-"""
-for k in range(1, 4):
-    for i in range(4-k):
-        points = []
-        for x in range(300):
-            points.append((x/100, basis_function(i, k, x/100, [0, 0, 0, 1, 2, 3, 3, 3])))
-"""
-vis.visualize_curve(points, control_points, True)
+    if len(knot_vector) != n + k:
+        raise ValueError("Invalid knot vector: knot vector must be of length n + k")
+
+    if knot_vector[-1] <= knot_vector[0]:
+        raise ValueError("Invalid knot vector: upper bound must be > lower bound")
+
+    if len(weights) != n:
+        raise ValueError("Invalid weights: list must be of length n")
+
+    for weight in weights:
+        if weight <= 0:
+            raise ValueError("Invalid weights: all weights must be > 0")
+
+    border_bottom = knot_vector[k - 1]
+    border_top = knot_vector[n]
+
+    interval_size = border_top - border_bottom
+    curve_points = []
+
+    for point_number in range(points_num):
+        t = border_bottom + point_number * interval_size / (points_num-1)
+        cur_x = 0.0
+        cur_y = 0.0
+        den = 0.0
+        for i in range(0, n):
+            b_spline_value = basis_function(i, k, t, knot_vector)
+            cur_x += b_spline_value * control_points[i][0] * weights[i]
+            cur_y += b_spline_value * control_points[i][1] * weights[i]
+            den += b_spline_value * weights[i]
+        if den == 0:
+            den = 1
+        curve_points.append((cur_x/den, cur_y/den))
+    return curve_points
