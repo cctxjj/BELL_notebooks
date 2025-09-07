@@ -977,7 +977,7 @@ def polygon_fill(
         fill_color: int):
     '''
     Simplified polygon filling algorithm: using dict as edge table, drawing horizontal edges and corners
-    :param img: 2D-Array with ints representing greyscale values from 0 to 255, input image
+    :param img: 2D-Array with ints representing greyscale values from 0 to 255, inp image
     :param points: Array containing the tuples of the polygon corners
     :param fill_color: int representing the gray scale value the polygon should be filled with
     :return: 2D-Array with ints representing greyscale values from 0 to 255, modified image

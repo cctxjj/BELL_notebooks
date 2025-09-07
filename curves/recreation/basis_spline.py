@@ -9,7 +9,6 @@ def basis_function(i: int,
         else:
             return 0
     else:
-        # B-Spline recursion nochmal durchgehen
         den_1 = knot_vector[i + k - 1] - knot_vector[i]
         den_2 = knot_vector[i + k] - knot_vector[i + 1]
         term_1 = 0
@@ -19,11 +18,6 @@ def basis_function(i: int,
         if den_2 != 0:
             term_2 = ((knot_vector[i + k] - t) / den_2) * basis_function(i + 1, k - 1, t, knot_vector)
         return term_1 + term_2
-        try:
-            return (basis_function(i, k - 1, t, knot_vector) * (t - knot_vector[i]) / (knot_vector[i + k - 1] - knot_vector[i])) + \
-                   (basis_function(i + 1, k - 1, t, knot_vector) * (knot_vector[i + k] - t) / (knot_vector[i + k] - knot_vector[i + 1]))
-        except ZeroDivisionError:
-            return 0
 
 def b_spline(k: int,
              control_points: list,
