@@ -56,26 +56,40 @@ model = tf.keras.Sequential(
 )
 
 optimizer = tf.keras.optimizers.SGD(learning_rate = 0.1)
-model.compile(optimizer = optimizer, loss = "mse", metrics = ["accuracy"])
+model.compile(optimizer = optimizer, loss = "mse")
 
 
 # https://www.tensorflow.org/guide/keras/writing_a_training_loop_from_scratch
 train_dataset = tf.data.Dataset.from_tensor_slices(make_bernstein_dataset(num_samples=10000, degree=degree))
 
-model.fit(train_dataset, epochs=50)
+model.fit(train_dataset, epochs=5)
 
 control_points = [(1, 2), (2, 4), (3, 2), (5, 1), (6, -2)]
 
 curve_points = []
-for t in range(50):
+
+'''
+
+--> Output to ensure numerical correctness 
+
+pol_vals = model(inputs=tf.constant([[0.5]], dtype=tf.float32)).numpy()
+correct_vals = []
+for i in range(degree + 1):
+    correct_vals.append(bernstein_polynomial(i, degree, 0.5))
+
+for index in range(len(pol_vals[0])):
+    print(f"correct: {correct_vals[index]}; calculated: {pol_vals[0][index]}")
+'''
+
+for t in range(1000):
     cur_x = 0
     cur_y = 0
-    pol_vals = model(inputs=tf.constant([[t / 50]], dtype=tf.float32)).numpy()
+    pol_vals = model(inputs=tf.constant([[t / 1000]], dtype=tf.float32)).numpy()
     for i in range(degree + 1):
         bernstein_polynomial_value = pol_vals[0][i]
         cur_x += bernstein_polynomial_value * control_points[i][0]
         cur_y += bernstein_polynomial_value * control_points[i][1]
-        curve_points.append((cur_x, cur_y))
+    curve_points.append((cur_x, cur_y))
 
 vis.visualize_curve(curve_points, control_points, True)
 
