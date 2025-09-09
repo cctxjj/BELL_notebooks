@@ -2,6 +2,7 @@ import math
 
 import tensorflow as tf
 import numpy as np
+from tensorflow.python.framework.ops import SymbolicTensor
 from tensorflow.python.keras.losses import MeanSquaredError
 
 import util.visualisations as vis
@@ -41,6 +42,7 @@ def make_bernstein_dataset(num_samples=1000, degree=4):
     x = np.array(x, dtype=np.float32)  # Shape (samples, 3)
     y = np.array(y, dtype=np.float32)  # Shape (samples, 1)
     return x, y
+    # (return x, y)
 
 # 2 inputs: parameter, control_point i
 degree = 4
@@ -48,7 +50,7 @@ degree = 4
 model = tf.keras.Sequential(
     layers = [
 
-        tf.keras.layers.InputLayer(input_shape = (1,)),
+        tf.keras.layers.InputLayer(shape = (1,)),
         tf.keras.layers.Dense(32, activation = "relu"),
         tf.keras.layers.Dense(32, activation = "relu"),
         tf.keras.layers.Dense(degree + 1, activation = "softmax")
@@ -60,9 +62,35 @@ model.compile(optimizer = optimizer, loss = "mse")
 
 
 # https://www.tensorflow.org/guide/keras/writing_a_training_loop_from_scratch
-train_dataset = tf.data.Dataset.from_tensor_slices(make_bernstein_dataset(num_samples=10000, degree=degree))
 
-model.fit(train_dataset, epochs=5)
+#model.fit(train_dataset, epochs=5)
+
+def train_step(data: tf.Tensor):
+    with tf.GradientTape() as tape:
+        y_pred = model(data, training=True)
+        n = degree  # nur Beispiel: n auslesen
+        t = float(x.numpy()[0])
+        target = np.array([bernstein_polynomial(i, n, t) for i in range(n + 1)],
+                          dtype=np.float32).reshape(1, -1)
+        target = tf.constant(target, dtype=tf.float32)
+
+        loss = tf.reduce_mean(tf.square(tf.subtract(y_pred, target)))
+
+    # Backprop
+    grads = tape.gradient(loss, model.trainable_variables)
+    optimizer.apply_gradients(zip(grads, model.trainable_variables))
+    return loss
+
+train_dataset = tf.data.Dataset.from_tensor_slices(make_bernstein_dataset(num_samples=1000, degree=degree))
+
+for epoch in range(10):
+    loss = -1
+    ind = 1
+    for x, y in train_dataset:
+        print(f"Datasample {ind}")
+        loss = train_step(x)
+        ind += 1
+    print(f"Epoch {epoch + 1}: Loss = {loss.numpy()}")
 
 control_points = [(1, 2), (2, 4), (3, 2), (5, 1), (6, -2)]
 
