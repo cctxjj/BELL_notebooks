@@ -1,6 +1,8 @@
 import math
 import util.visualisations as vis
 
+# TODO: extract useful parts, delete rest in final cleanup
+
 def bernstein_polynomial(i: int,
                          n: int,
                          t: float):

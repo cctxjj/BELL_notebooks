@@ -1,20 +1,11 @@
-import math
+from curves.funtions import bernstein_polynomial
 
-def bernstein_polynomial(i: int,
-                         n: int,
-                         t: float):
-    """
-    :param i: number of the bernstein polynomial
-    :param n: degree of the bernstein polynomial
-    :param t: given parameter, curvepoint (on interval [0, 1]) to be calculated at
-    :return: Value of the Bernstein Polynomial at point t
-    """
-    binomial_coefficient = math.factorial(n) / (math.factorial(i) * math.factorial(n - i))
-    return binomial_coefficient * (t ** i) * ((1 - t) ** (n - i))
 
 def bezier_curve(control_points: list,
                  points_num: int = 1000):
     """
+    Note: this is not the optimal construction of a Béziercurve in the sense of efficiency using the de Casteljau
+    algorithm but rather a close func_based of the mathematical definition of the curve.
     :param control_points: array of control points in the form of (x, y) tuples
     :param points_num: number of points the intervall [0, 1] should be divided into
     :return: curve points
