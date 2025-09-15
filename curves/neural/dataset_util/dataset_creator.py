@@ -26,8 +26,12 @@ def make_bernstein_dataset(
     return tf.data.Dataset.from_tensor_slices(np.array(x, dtype=np.float32), np.array(y, dtype=np.float32))
 
 def create_n_parameter_values(
-        n: int=1000):
+        n: int=1000,
+        border_bottom: float=0.0,
+        border_top: float=1.0):
     """
-    Creates a dataset of n parameters e [0, 1] for unsupervised training.
+    Creates a dataset of n parameters e [border_bottom, border_top] for unsupervised training.
     """
-    return tf.data.Dataset.from_tensor_slices(np.random.rand(n, 1).astype(np.float32))
+    return tf.data.Dataset.from_tensor_slices(np.random.uniform(low=border_bottom, high=border_top, size=(n, 1)).astype(np.float32))
+
+
