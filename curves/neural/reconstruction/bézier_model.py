@@ -1,4 +1,3 @@
-import math
 import sys
 
 import tensorflow as tf
@@ -6,7 +5,7 @@ import numpy as np
 
 import util.visualisations as vis
 from curves.funtions import bernstein_polynomial
-from curves.neural.dataset_util.dataset_creator import create_n_parameter_values
+from data.dataset_util.dataset_creator import create_n_parameter_values
 
 
 """

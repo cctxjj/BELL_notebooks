@@ -1,4 +1,3 @@
-import math
 import sys
 
 import tensorflow as tf
@@ -6,7 +5,7 @@ import numpy as np
 
 import util.visualisations as vis
 from curves.funtions import basis_function
-from curves.neural.dataset_util.dataset_creator import create_n_parameter_values
+from data.dataset_util.dataset_creator import create_n_parameter_values
 
 
 """
@@ -29,6 +28,11 @@ samples = 1000
 # b-spline-specific vars
 border_bottom = knot_vector[k - 1]
 border_top = knot_vector[n_control_points]
+
+# Idee: dynamic b-spline --> n Epochen auf b-spline, anschließend auf diverse Parameter parallel in eigenen Epochen
+# --> Netz lernt erst Grundform und anschließend Verfeinerung entsprechend definierten Anforderungen
+# abwechselnde Belohnung entsprechend Metriken, damit sich verschiedene Parameter nicht in Quere kommen?
+# Bézierkurve als einfachere Option für unsupervised learning?
 
 # model setup
 model = tf.keras.Sequential(
