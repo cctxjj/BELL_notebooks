@@ -1,4 +1,7 @@
-def converge_shape(
+import numpy as np
+
+
+def converge_shape_to_airfoil(
         points: list,
         points_num: int = 1000,
         round_digits: int = 5):
@@ -26,4 +29,12 @@ def converge_shape(
         cur_x += step
         result.append((round(cur_x, round_digits), round(cur_y, round_digits)))
 
-    return [*points[::-1], *result]
+    return [*points[::-1], * result]
+
+def normalize_points(points):
+    x_min, x_max = min(points, key=lambda x: x[0])[0], max(points, key=lambda x: x[0])[0]
+    d = x_max - x_min
+    mod_list = []
+    for i, point in enumerate(points):
+        mod_list.append([(point[0]-x_min)/d, point[1]])
+    return mod_list

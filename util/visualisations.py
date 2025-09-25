@@ -153,11 +153,12 @@ def visualize_curve(points, control_points=None,
     #fig.figure(figsize=design.get("figsize", (6, 6)))
 
     # Konvexe Hülle
-    if show_hull and len(control_points) >= 3:
-        conv_hull = ConvexHull(control_points)
-        hull_points = np.array(control_points)[conv_hull.vertices]
-        polygon = Polygon(hull_points, closed=True, fill=True, color=colors["hull"], alpha=0.3, label="convex hull")
-        ax.add_patch(polygon)
+    if control_points is not None:
+        if show_hull and len(control_points) >= 3:
+            conv_hull = ConvexHull(control_points)
+            hull_points = np.array(control_points)[conv_hull.vertices]
+            polygon = Polygon(hull_points, closed=True, fill=True, color=colors["hull"], alpha=0.3, label="convex hull")
+            ax.add_patch(polygon)
 
     # Kontrollpunkte
     if control_points:
@@ -171,3 +172,5 @@ def visualize_curve(points, control_points=None,
     plt.axis("equal")
     plt.legend()
     plt.show()
+
+
