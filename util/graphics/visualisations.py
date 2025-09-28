@@ -43,6 +43,7 @@ def zeichne_pixel(punkte, pixelgröße=10, rand=20):
     display(canvas)
 
 # Credit: ChatGPT 4.0
+# TODO: Replace with new method
 def plot_points(points):
     """
     Zeichnet eine Liste von (x, y)-Tupeln als schwarze Quadrate in einem dynamisch angepassten Koordinatensystem.
@@ -126,14 +127,20 @@ def plot_circular_points(points):
     plt.show()
 
 
-
-def visualize_curve(points, control_points=None,
-              show_hull=True, design=None):
+# TODO: reformat comments
+def visualize_curve(
+        points: list,
+        control_points: list = None,
+        show_hull: bool = True,
+        save_path: str = None,
+        file_name: str = None,
+        design = None):
     """
     Visualisiert:
     - Punkte
     - optional: konvexe Hülle
     - optional: Kontrollpunkte + B-Spline-Kurve
+    speichert bei Bedarf den Plot
 
     Args:
         points: Liste von (x,y)
@@ -141,6 +148,13 @@ def visualize_curve(points, control_points=None,
         curve: optionale Kurvenpunkte (Liste von (x,y))
         show_hull: True -> konvexe Hülle der Punkte zeichnen
         design: dict mit optionalen Farben/Styles
+        :param design:
+        :param instant_close:
+        :param save_path:
+        :param points:
+        :param control_points:
+        :param show_hull:
+        :param save_fig:
     """
     if design is None: design = {}
     colors = {
@@ -171,6 +185,39 @@ def visualize_curve(points, control_points=None,
 
     plt.axis("equal")
     plt.legend()
-    plt.show()
+
+    if save_path is not None:
+        assert file_name is not None
+        os.makedirs(save_path, exist_ok=True)
+        plt.savefig(save_path + "/" + file_name, dpi=300)
+    else:
+        plt.show()
+
+import os
+
+
+def plot_alpha_cd_correlation(alphas:list,
+                              cds: list,
+                              save_path: str = None,
+                              file_name: str = None):
+    """
+# TODO: comment (credit: ChatGPT)
+    """
+
+    plt.figure(figsize=(6, 4))
+    plt.scatter(alphas, cds, marker="o", linestyle="-", color="tab:purple", label="$c_w$")
+    plt.xlabel("α [°]")
+    plt.ylabel("$c_d$")
+    plt.title("alpha - c_d relation")
+    plt.grid(True, linestyle="--", alpha=0.7)
+    plt.legend()
+
+    if save_path is not None:
+        assert file_name is not None
+        os.makedirs(save_path, exist_ok=True)
+        plt.savefig(save_path + "/" + file_name, dpi=300, bbox_inches="tight")
+        plt.close()
+    else:
+        plt.show()
 
 

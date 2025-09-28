@@ -1,5 +1,5 @@
 from area_fill.fill_algs import scanline_stackbased_flood_fill_4con, recursive_stackbased_flood_fill_4con
-import util.image_handler as imgutil
+import util.graphics.image_handler as imgutil
 import time
 
 sum_1 = 0

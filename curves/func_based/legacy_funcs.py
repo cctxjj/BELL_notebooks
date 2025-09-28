@@ -1,5 +1,5 @@
 import math
-import util.visualisations as vis
+import util.graphics.visualisations as vis
 
 # TODO: extract useful parts, delete rest in final cleanup
 

@@ -1,6 +1,6 @@
 import curves.func_based.bézier_curve as bez_c
 import curves.func_based.basis_spline as b_spl
-import util.visualisations as vis
+import util.graphics.visualisations as vis
 
 control_points = [(1, 2), (2, 4), (3, 2), (5, 1), (6, -2)]
 

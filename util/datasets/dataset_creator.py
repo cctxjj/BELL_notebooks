@@ -1,3 +1,6 @@
+import math
+import random
+
 import numpy as np
 import tensorflow as tf
 
@@ -34,4 +37,11 @@ def create_n_parameter_values(
     """
     return tf.data.Dataset.from_tensor_slices(np.random.uniform(low=border_bottom, high=border_top, size=(n, 1)).astype(np.float32))
 
+def create_random_bez_points(num_cont_points: int, x_min, x_max, y_min, y_max):
+    last_x = x_min
+    interval_size = math.floor((x_max - x_min)/num_cont_points)
+    control_points = []
+    for i in range(num_cont_points-2):
+        control_points.append((last_x + random.randint(last_x, last_x+interval_size), random.randint(y_min, y_max)))
+    return [(0, 0), *control_points, (x_max, 0)]
 

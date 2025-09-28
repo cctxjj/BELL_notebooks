@@ -1,12 +1,7 @@
 import math
 
 import numpy as np
-from pygments.unistring import xid_start
 
-import util.visualisations as vis
-import util.image_handler as img_handler
-import util.image_handler as imgutil
-import time
 
 def recursive_stackbased_flood_fill_4con(
         img: np.ndarray,

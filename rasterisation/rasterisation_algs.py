@@ -141,6 +141,6 @@ def bresenham_circle(x_center, y_center, r):
     return result
 
 
-import util.visualisations as vis
+import util.graphics.visualisations as vis
 
 vis.plot_points(bresenham_circle(-30, 90, 300))

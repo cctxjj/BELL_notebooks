@@ -1,4 +1,4 @@
-import util.visualisations as vis
+import util.graphics.visualisations as vis
 from curves.func_based import basis_spline
 
 # TODO: fill in examples
