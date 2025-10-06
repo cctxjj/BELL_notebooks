@@ -5,7 +5,6 @@ import sys
 
 import numpy as np
 
-from util.datasets.dataset_creator import create_random_bez_points
 import util.graphics.visualisations as vis
 from aerosandbox import Airfoil, XFoil
 
@@ -13,7 +12,7 @@ from curves.func_based.bézier_curve import bezier_curve
 from util.shape_modifier import normalize_points, converge_shape_to_mirrored_airfoil
 
 eval_count = 0
-default_path = "C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/neural_curves/airfoil_data"
+default_path = "C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/neural_curves/airfoil_data" 
 
 class DragEvaluator:
     def __init__(self,
@@ -37,8 +36,8 @@ class DragEvaluator:
         af_points = np.array(af_points)
 
         # setup airfoil obj
-        self.airfoil = Airfoil(coordinates=af_points, name=self.name).repanel(n_points_per_side=200)
-        #self.airfoil = Airfoil(name="naca0012")
+        #self.airfoil = Airfoil(coordinates=af_points, name=self.name).repanel(n_points_per_side=200)
+        self.airfoil = Airfoil(name="naca0012")
 
         if save_airfoil:
             # Sicherstellen, dass der Zielordner existiert
@@ -60,24 +59,30 @@ class DragEvaluator:
             Re=re
         )
         alphas = [*range(self.start_angle, self.start_angle+self.range)]
-        cds = []
+        cds = {}
         for alpha in alphas:
             # output progress
             print(f"\revaluating alpha {(alpha+1)}/{(self.start_angle+self.range)} for {self.name}")
             sys.stdout.flush()
             res = xf.alpha(alpha).get("CD")
-            if len(res) == 0:
-                cds.append(0)
-            else:
-                cds.append(res[0])
-        print(cds)
-        print(alphas)
-        vis.plot_alpha_cd_correlation(alphas=alphas, cds=cds, save_path=os.path.join(default_path, self.name), file_name="alpha_cd.png")
-        return cds
+            if len(res) != 0:
+                if res[0] != 0:
+                    cds[alpha if alpha!=0 else 1] = res[0]
+        #print(cds)
+        #print(alphas)
+        #vis.plot_alpha_cd_correlation(alphas=alphas, cds=cds, save_path=os.path.join(default_path, self.name), file_name="alpha_cd.png")
+
+        # calculating custom drag value
+        n = len(cds)
+        d_v = 0
+        stability = len(cds)/len(alphas)
+        for alpha in cds.keys():
+            d_v += cds[alpha] / alpha
+        d_v = d_v / n
+        return d_v, stability
 #TODO: Idee: naca airfoils in Verhalten bei Winkeln analysieren --> sind optimiert --> eigene Kurvenpunkte festlegen, zeigen wie KNN langsam lernt, Verhalten zu kopieren und anzupassen
 
-for i in range(10):
-    cont_points = create_random_bez_points(int(random.randint(2, 10)), 0, random.randint(15, 45), 0, random.randint(5, 15))
-    curve_points = bezier_curve(cont_points, 50)
-    ev = DragEvaluator(curve_points, save_airfoil=True, range=45, start_angle=0, name_appendix="find_border")
-    ev.execute()
+cont_points = [(0, 0), (0.5, 1.5), (3, 2), (10, 0.5), (11, 0)]
+curve_points = bezier_curve(cont_points, 50)
+ev = DragEvaluator(curve_points, save_airfoil=False, range=30, start_angle=0, name_appendix="custom_drag_test_naca0012")
+print(ev.execute())

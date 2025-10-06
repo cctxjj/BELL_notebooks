@@ -5,7 +5,7 @@ import numpy as np
 
 import util.graphics.visualisations as vis
 from curves.funtions import basis_function
-from util.data.dataset_creator import create_n_parameter_values
+from util.datasets.dataset_creator import create_n_parameter_values
 
 
 """

@@ -1,10 +1,16 @@
+import json
 import math
 import random
 
+import vis
+
+import curves
 import numpy as np
 import tensorflow as tf
 
+from curves.func_based.bézier_curve import bezier_curve
 from curves.funtions import bernstein_polynomial
+import util.graphics.visualisations as vis
 
 
 def make_bernstein_dataset(
@@ -39,9 +45,22 @@ def create_n_parameter_values(
 
 def create_random_bez_points(num_cont_points: int, x_min, x_max, y_min, y_max):
     last_x = x_min
-    interval_size = math.floor((x_max - x_min)/num_cont_points)
+    interval_size = (x_max - x_min)/num_cont_points
     control_points = []
+    last_y = y_min
     for i in range(num_cont_points-2):
-        control_points.append((last_x + random.randint(last_x, last_x+interval_size), random.randint(y_min, y_max)))
-    return [(0, 0), *control_points, (x_max, 0)]
+        if i > (num_cont_points-2/2) or last_y >= y_max:
+            new_y = np.random.uniform(y_min, last_y)
+        else:
+            new_y = np.random.uniform(last_y, last_y+y_max/interval_size)
+        last_x += np.random.uniform(0, interval_size)
+        control_points.append((last_x, new_y))
+        last_y = new_y
+    return [(x_min, 0), *control_points, (x_max, 0)]
+
+for i in range(10):
+    cont_points = create_random_bez_points(random.randint(3, 8), random.randint(0, 3), random.randint(6, 13), 0, random.randint(1, 20))
+    points = bezier_curve(cont_points, 10)
+    vis.visualize_curve(points, cont_points, True, file_name=f"bez_curve_{i+1}", save_path="C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/neural_curves/random_bez_curves")
+
 
