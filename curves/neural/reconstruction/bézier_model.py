@@ -45,12 +45,13 @@ def train_step(data: tf.Tensor):
 
         # Loss calculation
         n = degree
-        t = float(x.numpy())
+        t = float(data.numpy())
         target = np.array([bernstein_polynomial(i, n, t) for i in range(n + 1)],
                           dtype=np.float32).reshape(1, -1)
         target = tf.constant(target, dtype=tf.float32)
 
         loss = tf.reduce_mean(tf.square(tf.subtract(y_pred, target)))
+        print(loss)
 
     # Backprop
     grads = tape.gradient(loss, model.trainable_variables)

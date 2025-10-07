@@ -1,5 +1,3 @@
-import json
-import math
 import random
 
 import vis
@@ -11,6 +9,7 @@ import tensorflow as tf
 from curves.func_based.bézier_curve import bezier_curve
 from curves.funtions import bernstein_polynomial
 import util.graphics.visualisations as vis
+from curves.neural.custom_metrics.drag_evaluation import DragEvaluator
 
 
 def make_bernstein_dataset(
@@ -39,11 +38,16 @@ def create_n_parameter_values(
         border_bottom: float=0.0,
         border_top: float=1.0):
     """
-    Creates a dataset of n parameters e [border_bottom, border_top] for unsupervised training.
+    Creates a dataset of n parameters element of [border_bottom, border_top] for unsupervised training.
     """
     return tf.data.Dataset.from_tensor_slices(np.random.uniform(low=border_bottom, high=border_top, size=(n, 1)).astype(np.float32))
 
-def create_random_bez_points(num_cont_points: int, x_min, x_max, y_min, y_max):
+def create_random_bez_points(
+        num_cont_points: int,
+        x_min: float,
+        x_max: float,
+        y_min: float,
+        y_max: float):
     last_x = x_min
     interval_size = (x_max - x_min)/num_cont_points
     control_points = []
@@ -58,9 +62,14 @@ def create_random_bez_points(num_cont_points: int, x_min, x_max, y_min, y_max):
         last_y = new_y
     return [(x_min, 0), *control_points, (x_max, 0)]
 
-for i in range(10):
-    cont_points = create_random_bez_points(random.randint(3, 8), random.randint(0, 3), random.randint(6, 13), 0, random.randint(1, 20))
-    points = bezier_curve(cont_points, 10)
-    vis.visualize_curve(points, cont_points, True, file_name=f"bez_curve_{i+1}", save_path="C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/neural_curves/random_bez_curves")
+def __create_example_random_bez_curves__(
+        amount: int,
+        points_num: int=300):
+    # TODO: comment
+    for i in range(amount):
+        cont_points = create_random_bez_points(random.randint(4, 8), random.randint(0, 3), random.randint(6, 13), 0, random.randint(1, 15))
+        points = bezier_curve(cont_points, points_num)
+        vis.visualize_curve(points, cont_points, True, file_name=f"bez_curve_{i+1}", save_path="C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/neural_curves/random_bez_curves")
+        DragEvaluator(points, save_airfoil=True, range=30, start_angle=0, name_appendix=f"random_bez_curve")
 
 

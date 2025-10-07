@@ -183,13 +183,14 @@ def visualize_curve(
     px, py = zip(*points)
     ax.scatter(px, py, c=colors["points"], label="points")
 
-    plt.axis("equal")
+    plt.axis("auto")
     plt.legend()
 
     if save_path is not None:
         assert file_name is not None
         os.makedirs(save_path, exist_ok=True)
         plt.savefig(save_path + "/" + file_name, dpi=300)
+        plt.close()
     else:
         plt.show()
 

@@ -36,18 +36,18 @@ class DragEvaluator:
         af_points = np.array(af_points)
 
         # setup airfoil obj
-        #self.airfoil = Airfoil(coordinates=af_points, name=self.name).repanel(n_points_per_side=200)
-        self.airfoil = Airfoil(name="naca0012")
+        self.airfoil = Airfoil(coordinates=af_points, name=self.name).repanel(n_points_per_side=200)
+        #self.airfoil = Airfoil(name="naca0012")
 
         if save_airfoil:
-            # Sicherstellen, dass der Zielordner existiert
             save_dir = os.path.join(default_path, self.name)
 
             vis.visualize_curve(points=points, save_path=save_dir, file_name="curve.png")
             vis.visualize_curve(points=self.airfoil.coordinates, save_path=save_dir, file_name="airfoil.png")
 
-    def execute(self,
-                re: float = 1e6):
+    def execute(
+            self,
+            re: float = 1e6):
         """
         executes the evaluation
         :param re: reynolds number, default 1e6; expresses flow around airfoil as laminar or turbulent --> assumed to be turbulent, further info under https://www.numberanalytics.com/blog/reynolds-number-aerospace-guide (28.09.25)
@@ -82,7 +82,7 @@ class DragEvaluator:
         return d_v, stability
 #TODO: Idee: naca airfoils in Verhalten bei Winkeln analysieren --> sind optimiert --> eigene Kurvenpunkte festlegen, zeigen wie KNN langsam lernt, Verhalten zu kopieren und anzupassen
 
-cont_points = [(0, 0), (0.5, 1.5), (3, 2), (10, 0.5), (11, 0)]
-curve_points = bezier_curve(cont_points, 50)
-ev = DragEvaluator(curve_points, save_airfoil=False, range=30, start_angle=0, name_appendix="custom_drag_test_naca0012")
-print(ev.execute())
+#cont_points = [(0, 0), (0.5, 1.5), (3, 2), (10, 0.5), (11, 0)]
+#curve_points = bezier_curve(cont_points, 50)
+#ev = DragEvaluator(curve_points, save_airfoil=False, range=30, start_angle=0, name_appendix="custom_drag_test_naca0012")
+#print(ev.execute())
