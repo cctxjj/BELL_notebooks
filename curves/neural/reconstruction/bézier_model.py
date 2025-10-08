@@ -51,7 +51,6 @@ def train_step(data: tf.Tensor):
         target = tf.constant(target, dtype=tf.float32)
 
         loss = tf.reduce_mean(tf.square(tf.subtract(y_pred, target)))
-        print(loss)
 
     # Backprop
     grads = tape.gradient(loss, model.trainable_variables)

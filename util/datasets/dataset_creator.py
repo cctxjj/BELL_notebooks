@@ -42,7 +42,7 @@ def create_n_parameter_values(
     """
     return tf.data.Dataset.from_tensor_slices(np.random.uniform(low=border_bottom, high=border_top, size=(n, 1)).astype(np.float32))
 
-def create_random_bez_points(
+def create_random_curve_points(
         num_cont_points: int,
         x_min: float,
         x_max: float,
@@ -62,14 +62,15 @@ def create_random_bez_points(
         last_y = new_y
     return [(x_min, 0), *control_points, (x_max, 0)]
 
-def __create_example_random_bez_curves__(
+def __create_n_example_random_bez_curves__(
         amount: int,
         points_num: int=300):
     # TODO: comment
     for i in range(amount):
-        cont_points = create_random_bez_points(random.randint(4, 8), random.randint(0, 3), random.randint(6, 13), 0, random.randint(1, 15))
+        cont_points = create_random_curve_points(random.randint(4, 8), random.randint(0, 3), random.randint(6, 13), 0,
+                                                 random.randint(1, 15))
         points = bezier_curve(cont_points, points_num)
         vis.visualize_curve(points, cont_points, True, file_name=f"bez_curve_{i+1}", save_path="C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/neural_curves/random_bez_curves")
-        DragEvaluator(points, save_airfoil=True, range=30, start_angle=0, name_appendix=f"random_bez_curve")
+        DragEvaluator(points, save_airfoil=True, range=30, start_angle=0, specification=f"random_bez_curve")
 
 

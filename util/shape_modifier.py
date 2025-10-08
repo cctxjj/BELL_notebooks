@@ -1,3 +1,6 @@
+import numpy as np
+
+
 def converge_shape_to_airfoil(
         points: list,
         points_num: int = 1000,
@@ -40,7 +43,12 @@ def converge_shape_to_mirrored_airfoil(
     bottom = []
     for point in points[1:]:
         bottom.append((round(point[0], round_digits), round(-1 * point[1], round_digits)))
-    return [*points[::-1], *bottom]
+    raw_result = [(1, 0), *points[::-1], *bottom, (1, 0)]
+    checked_result = []
+    for element in raw_result:
+        if element not in checked_result:
+            checked_result.append(element)
+    return checked_result
 
 def normalize_points(points):
     x_min, x_max = min(points, key=lambda x: x[0])[0], max(points, key=lambda x: x[0])[0]

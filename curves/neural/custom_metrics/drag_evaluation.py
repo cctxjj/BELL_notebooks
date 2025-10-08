@@ -12,7 +12,7 @@ from curves.func_based.bézier_curve import bezier_curve
 from util.shape_modifier import normalize_points, converge_shape_to_mirrored_airfoil
 
 eval_count = 0
-default_path = "C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/neural_curves/airfoil_data" 
+default_path = "C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/neural_curves/airfoil_data_nomenclat2"
 
 class DragEvaluator:
     def __init__(self,
@@ -20,12 +20,12 @@ class DragEvaluator:
                  range: int = 15,
                  start_angle: int = 0,
                  save_airfoil: bool = True,
-                 name_appendix: str = None):
+                 specification: str = None):
         global eval_count
         eval_count+=1
 
         # obj attributes
-        self.name = f"af_evaluation_{eval_count}_" + name_appendix if name_appendix is not None else f"af_evaluation_{eval_count}"
+        self.name = f"{specification}_af_evaluation_{eval_count}" if specification is not None else f"af_evaluation_{eval_count}"
         self.range = range
         self.start_angle = start_angle
         self.save_airfoil = save_airfoil
@@ -58,6 +58,7 @@ class DragEvaluator:
             airfoil=self.airfoil,
             Re=re
         )
+        xf.timeout = 3
         alphas = [*range(self.start_angle, self.start_angle+self.range)]
         cds = {}
         for alpha in alphas:
@@ -76,6 +77,8 @@ class DragEvaluator:
         n = len(cds)
         d_v = 0
         stability = len(cds)/len(alphas)
+        if stability == 0:
+            return 0, stability
         for alpha in cds.keys():
             d_v += cds[alpha] / alpha
         d_v = d_v / n
