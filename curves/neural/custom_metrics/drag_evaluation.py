@@ -1,4 +1,5 @@
 # Todo: Idee: Nurb-Surface --> Kurvenpunkte werden jeweils interpoliert, custom metrik --> Nurb macht maybe für Kurve keinen sinn, aber für Fläche
+import math
 import os
 import random
 import sys
@@ -31,8 +32,9 @@ class DragEvaluator:
         self.save_airfoil = save_airfoil
 
         # format points
-        af_points = normalize_points(points)
-        af_points = converge_shape_to_mirrored_airfoil(af_points)
+        translation = converge_shape_to_mirrored_airfoil(points) # returns list of points and angle of rotation
+        self.rotation = translation[1] # TODO: use rotation data to adjust angle of incoming airstream
+        af_points = translation[0]
         af_points = np.array(af_points)
 
         # setup airfoil obj
@@ -59,16 +61,18 @@ class DragEvaluator:
             Re=re
         )
         xf.timeout = 3
-        alphas = [*range(self.start_angle, self.start_angle+self.range)]
+        alphas = [*range(self.start_angle+self.rotation, self.start_angle+self.range+self.rotation)]
         cds = {}
-        for alpha in alphas:
+        print("\n")
+        for ind, alpha in enumerate(alphas):
             # output progress
-            print(f"\revaluating alpha {(alpha+1)}/{(self.start_angle+self.range)} for {self.name}")
+            print(f"\revaluating alpha {(ind+1)}/{self.range} (={alpha}°/{self.start_angle + self.rotation + self.range}°) for {self.name}", end="")
             sys.stdout.flush()
             res = xf.alpha(alpha).get("CD")
             if len(res) != 0:
                 if res[0] != 0:
                     cds[alpha if alpha!=0 else 1] = res[0]
+        print(f"\revaluation for {self.name} done\n", end="")
         #print(cds)
         #print(alphas)
         #vis.plot_alpha_cd_correlation(alphas=alphas, cds=cds, save_path=os.path.join(default_path, self.name), file_name="alpha_cd.png")
@@ -83,7 +87,25 @@ class DragEvaluator:
             d_v += cds[alpha] / alpha
         d_v = d_v / n
         return d_v, stability
-#TODO: Idee: naca airfoils in Verhalten bei Winkeln analysieren --> sind optimiert --> eigene Kurvenpunkte festlegen, zeigen wie KNN langsam lernt, Verhalten zu kopieren und anzupassen
+
+    def find_valid_alpha_cd(
+            self,
+            re: float = 1e8):
+
+        xf = XFoil(
+            airfoil=self.airfoil,
+            Re=re
+        )
+        xf.timeout = 3
+        alphas = [*range(self.start_angle + math.floor(self.rotation), self.start_angle + self.range + math.floor(self.rotation))]
+        for alpha in alphas:
+            res = xf.alpha(alpha).get("CD")
+            if len(res) != 0:
+                if res[0] != 0:
+                    return alpha, res[0]
+        return None, None
+
+
 
 #cont_points = [(0, 0), (0.5, 1.5), (3, 2), (10, 0.5), (11, 0)]
 #curve_points = bezier_curve(cont_points, 50)

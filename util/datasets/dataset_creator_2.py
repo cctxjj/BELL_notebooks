@@ -106,7 +106,7 @@ def create_bez_curves_drag_coef_dataset(
 
 # TODO: test correct alg for turning & adjusting curves
 
-n1, n2 = create_bez_curves_drag_coef_dataset(file_name="bez_curves_cd_test")
+n1, n2 = create_bez_curves_drag_coef_dataset(file_name="bez_curves_cd_test_small", samples=15)
 print(n1, n2)
 
 def __plot_n_example_random_bez_curves__(

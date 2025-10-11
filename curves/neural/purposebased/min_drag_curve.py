@@ -8,7 +8,6 @@ import util.graphics.visualisations as vis
 from curves.funtions import bernstein_polynomial
 from curves.neural.custom_metrics.drag_evaluation import DragEvaluator
 from util.datasets.dataset_creator import create_n_parameter_values, create_random_curve_points
-from curves.neural.custom_metrics.loss_funcs import drag_curve_squared_loss
 
 
 """
@@ -23,8 +22,8 @@ using custom training loop to establish basis for unsupervised learning later on
 
 # setting up variables
 degree = 5
-epochs = 21
-samples = 1000
+epochs = 20
+epochs_bez_curve = 8
 
 # model setup
 model = tf.keras.Sequential(
@@ -41,6 +40,7 @@ model = tf.keras.Sequential(
 optimizer = tf.keras.optimizers.SGD(learning_rate = 0.1)
 model.compile(optimizer = optimizer, loss = "mse")
 
+overall_losses = []
 
 # https://www.tensorflow.org/guide/keras/writing_a_training_loop_from_scratch
 # custom training loop --> unsupervised
@@ -54,7 +54,7 @@ def train_step(epoche_num: int):
         cont_points = create_random_curve_points(6, random.randint(0, 3), random.randint(6, 13), 0,
                                                  random.randint(1,
                                                                 15))  # TODO: check for effect of switching num_cont_points to random
-        if epoche_num >= 19:
+        if epoche_num >= epochs_bez_curve:
             func_vals = y_pred.numpy()
             curve_points = []
             for t in range(200):
@@ -66,11 +66,12 @@ def train_step(epoche_num: int):
                     cur_y += func_val * cont_points[i][1]
                 curve_points.append((cur_x, cur_y))
             vis.visualize_curve(curve_points, cont_points, True)
-            drag_evaluation = DragEvaluator(curve_points, specification="test_5_training_v2").execute()
+            drag_evaluation = DragEvaluator(curve_points, specification="test_8_training_v3").execute()
             if drag_evaluation[1] == 0:
                 return -1
             loss = tf.pow(loss, tf.constant(drag_evaluation[0], dtype=tf.float32))
-
+            overall_losses.append(loss)
+            print(f"Overall loss list  : {overall_losses}")
 
         # Loss calculation
         #loss = drag_curve_squared_loss(model, degree)
@@ -81,23 +82,33 @@ def train_step(epoche_num: int):
     return loss
 
 # dataset creation and training
-train_dataset = create_n_parameter_values(n=samples)
+#train_dataset = create_n_parameter_values(n=samples)
 
 for epoch in range(epochs):
     loss = -1
     ind = 0
 
     # iteration over dataset, training (not using batches)
-    for x in train_dataset:
+    if epoch < epochs_bez_curve:
+        for x in range(1000):
+            loss = train_step(epoch)
+            ind += 1
 
-        loss = train_step(epoch)
-        ind += 1
+            # output progress
+            print(f"\rEpoche: {(epoch+1)}/{epochs} | Run-through: {ind}/{1000} | Loss: {loss}", end="")
+            if ind == 1000:
+                print(f"\rEpoch: {(epoch+1)}/{epochs} | Run-through: {ind}/{1000} | Loss: {loss} | epoche completed")
+            sys.stdout.flush()
+    else:
+        for x in range(100):
+            loss = train_step(epoch)
+            ind += 1
 
-        # output progress
-        print(f"\rEpoche: {(epoch+1)}/{epochs} | Sample: {ind}/{samples} | Loss: {loss}", end="")
-        if ind == samples:
-            print(f"\rEpoch: {(epoch+1)}/{epochs} | Sample: {ind}/{samples} | Loss: {loss} | epoche completed")
-        sys.stdout.flush()
+            # output progress
+            print(f"\rEpoche: {(epoch + 1)}/{epochs} | Run-through: {ind}/{100} | Loss: {loss}", end="")
+            if ind == 100:
+                print(f"\rEpoch: {(epoch + 1)}/{epochs} | Run-through: {ind}/{100} | Loss: {loss} | epoche completed")
+            sys.stdout.flush()
 
 
 # Test: creating an example curve

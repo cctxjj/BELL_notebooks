@@ -1,0 +1,648 @@
+C:\Users\Sebastian\AppData\Local\Programs\Python\Python39\python.exe C:\Users\Sebastian\PycharmProjects\BELL_notebooks\curves\neural\purposebased\min_drag_curve.py
+2025-10-10 15:16:14.500321: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-10-10 15:16:16.616439: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-10-10 15:16:17.902898: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: SSE3 SSE4.1 SSE4.2 AVX AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+Epoch: 1/20 | Run-through: 1000/1000 | Loss: 0.023993678390979767 | epoche completed
+Epoch: 2/20 | Run-through: 1000/1000 | Loss: 0.0059809391386806965 | epoche completed
+Epoch: 3/20 | Run-through: 1000/1000 | Loss: 0.0014928546734154224 | epoche completed
+Epoch: 4/20 | Run-through: 1000/1000 | Loss: 0.0007309709908440709 | epoche completed
+Epoch: 5/20 | Run-through: 1000/1000 | Loss: 0.0005154750542715192 | epoche completed
+Epoch: 6/20 | Run-through: 1000/1000 | Loss: 0.00041939548100344837 | epoche completed
+Epoch: 7/20 | Run-through: 1000/1000 | Loss: 0.00036267860559746623 | epoche completed
+Epoch: 8/20 | Run-through: 1000/1000 | Loss: 0.0003233856987208128 | epoche completed
+
+
+evaluating alpha 12/15 for test_8_training_v3_af_evaluation_1C:\Users\Sebastian\AppData\Local\Programs\Python\Python39\lib\site-packages\aerosandbox\aerodynamics\aero_2D\xfoil.py:669: UserWarning: XFoil run timed out!
+If this was not expected, try increasing the `timeout` parameter
+when you create this AeroSandbox XFoil instance.
+  output = self._run_xfoil(
+evaluation for test_8_training_v3_af_evaluation_1 done
+Epoche: 9/20 | Run-through: 1/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_2 done
+Overall loss list: [<tf.Tensor: shape=(), dtype=float32, numpy=0.9454224109649658>]
+Epoche: 9/20 | Run-through: 2/100 | Loss: 0.9454224109649658
+
+evaluation for test_8_training_v3_af_evaluation_3 done
+Epoche: 9/20 | Run-through: 3/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_4 done
+Epoche: 9/20 | Run-through: 4/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_5 done
+Epoche: 9/20 | Run-through: 5/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_6 done
+Epoche: 9/20 | Run-through: 6/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_7 done
+Epoche: 9/20 | Run-through: 7/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_8 done
+Epoche: 9/20 | Run-through: 8/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_9 done
+Epoche: 9/20 | Run-through: 9/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_10 done
+Epoche: 9/20 | Run-through: 10/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_11 done
+Overall loss list: [<tf.Tensor: shape=(), dtype=float32, numpy=0.9454224109649658>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9070972800254822>]
+Epoche: 9/20 | Run-through: 11/100 | Loss: 0.9070972800254822
+
+evaluation for test_8_training_v3_af_evaluation_12 done
+Epoche: 9/20 | Run-through: 12/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_13 done
+Epoche: 9/20 | Run-through: 13/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_14 done
+Epoche: 9/20 | Run-through: 14/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_15 done
+Overall loss list: [<tf.Tensor: shape=(), dtype=float32, numpy=0.9454224109649658>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9070972800254822>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9285560846328735>]
+Epoche: 9/20 | Run-through: 15/100 | Loss: 0.9285560846328735
+
+evaluation for test_8_training_v3_af_evaluation_16 done
+Epoche: 9/20 | Run-through: 16/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_17 done
+Epoche: 9/20 | Run-through: 17/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_18 done
+Overall loss list: [<tf.Tensor: shape=(), dtype=float32, numpy=0.9454224109649658>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9070972800254822>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9285560846328735>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9462575912475586>]
+Epoche: 9/20 | Run-through: 18/100 | Loss: 0.9462575912475586
+
+evaluation for test_8_training_v3_af_evaluation_19 done
+Epoche: 9/20 | Run-through: 19/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_20 done
+Epoche: 9/20 | Run-through: 20/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_21 done
+Epoche: 9/20 | Run-through: 21/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_22 done
+Epoche: 9/20 | Run-through: 22/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_23 done
+Overall loss list: [<tf.Tensor: shape=(), dtype=float32, numpy=0.9454224109649658>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9070972800254822>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9285560846328735>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9462575912475586>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9389611482620239>]
+Epoche: 9/20 | Run-through: 23/100 | Loss: 0.9389611482620239
+
+evaluation for test_8_training_v3_af_evaluation_24 done
+Epoche: 9/20 | Run-through: 24/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_25 done
+Epoche: 9/20 | Run-through: 25/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_26 done
+Epoche: 9/20 | Run-through: 26/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_27 done
+Epoche: 9/20 | Run-through: 27/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_28 done
+Epoche: 9/20 | Run-through: 28/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_29 done
+Epoche: 9/20 | Run-through: 29/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_30 done
+Epoche: 9/20 | Run-through: 30/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_31 done
+Epoche: 9/20 | Run-through: 31/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_32 done
+Epoche: 9/20 | Run-through: 32/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_33 done
+Overall loss list: [<tf.Tensor: shape=(), dtype=float32, numpy=0.9454224109649658>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9070972800254822>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9285560846328735>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9462575912475586>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9389611482620239>, <tf.Tensor: shape=(), dtype=float32, numpy=0.897692859172821>]
+Epoche: 9/20 | Run-through: 33/100 | Loss: 0.897692859172821
+
+evaluation for test_8_training_v3_af_evaluation_34 done
+Epoche: 9/20 | Run-through: 34/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_35 done
+Epoche: 9/20 | Run-through: 35/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_36 done
+Epoche: 9/20 | Run-through: 36/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_37 done
+Epoche: 9/20 | Run-through: 37/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_38 done
+Overall loss list: [<tf.Tensor: shape=(), dtype=float32, numpy=0.9454224109649658>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9070972800254822>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9285560846328735>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9462575912475586>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9389611482620239>, <tf.Tensor: shape=(), dtype=float32, numpy=0.897692859172821>, <tf.Tensor: shape=(), dtype=float32, numpy=0.945965051651001>]
+Epoche: 9/20 | Run-through: 38/100 | Loss: 0.945965051651001
+
+evaluation for test_8_training_v3_af_evaluation_39 done
+Overall loss list: [<tf.Tensor: shape=(), dtype=float32, numpy=0.9454224109649658>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9070972800254822>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9285560846328735>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9462575912475586>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9389611482620239>, <tf.Tensor: shape=(), dtype=float32, numpy=0.897692859172821>, <tf.Tensor: shape=(), dtype=float32, numpy=0.945965051651001>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9234839677810669>]
+Epoche: 9/20 | Run-through: 39/100 | Loss: 0.9234839677810669
+
+evaluation for test_8_training_v3_af_evaluation_40 done
+Epoche: 9/20 | Run-through: 40/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_41 done
+Epoche: 9/20 | Run-through: 41/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_42 done
+Epoche: 9/20 | Run-through: 42/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_43 done
+Epoche: 9/20 | Run-through: 43/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_44 done
+Epoche: 9/20 | Run-through: 44/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_45 done
+Epoche: 9/20 | Run-through: 45/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_46 done
+Overall loss list: [<tf.Tensor: shape=(), dtype=float32, numpy=0.9454224109649658>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9070972800254822>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9285560846328735>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9462575912475586>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9389611482620239>, <tf.Tensor: shape=(), dtype=float32, numpy=0.897692859172821>, <tf.Tensor: shape=(), dtype=float32, numpy=0.945965051651001>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9234839677810669>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9521881341934204>]
+Epoche: 9/20 | Run-through: 46/100 | Loss: 0.9521881341934204
+
+evaluation for test_8_training_v3_af_evaluation_47 done
+Epoche: 9/20 | Run-through: 47/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_48 done
+Overall loss list: [<tf.Tensor: shape=(), dtype=float32, numpy=0.9454224109649658>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9070972800254822>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9285560846328735>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9462575912475586>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9389611482620239>, <tf.Tensor: shape=(), dtype=float32, numpy=0.897692859172821>, <tf.Tensor: shape=(), dtype=float32, numpy=0.945965051651001>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9234839677810669>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9521881341934204>, <tf.Tensor: shape=(), dtype=float32, numpy=0.8911983370780945>]
+Epoche: 9/20 | Run-through: 48/100 | Loss: 0.8911983370780945
+
+evaluation for test_8_training_v3_af_evaluation_49 done
+Epoche: 9/20 | Run-through: 49/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_50 done
+Epoche: 9/20 | Run-through: 50/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_51 done
+Epoche: 9/20 | Run-through: 51/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_52 done
+Epoche: 9/20 | Run-through: 52/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_53 done
+Epoche: 9/20 | Run-through: 53/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_54 done
+Epoche: 9/20 | Run-through: 54/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_55 done
+Epoche: 9/20 | Run-through: 55/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_56 done
+Epoche: 9/20 | Run-through: 56/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_57 done
+Epoche: 9/20 | Run-through: 57/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_58 done
+Overall loss list: [<tf.Tensor: shape=(), dtype=float32, numpy=0.9454224109649658>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9070972800254822>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9285560846328735>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9462575912475586>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9389611482620239>, <tf.Tensor: shape=(), dtype=float32, numpy=0.897692859172821>, <tf.Tensor: shape=(), dtype=float32, numpy=0.945965051651001>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9234839677810669>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9521881341934204>, <tf.Tensor: shape=(), dtype=float32, numpy=0.8911983370780945>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9506088495254517>]
+Epoche: 9/20 | Run-through: 58/100 | Loss: 0.9506088495254517
+
+evaluation for test_8_training_v3_af_evaluation_59 done
+Epoche: 9/20 | Run-through: 59/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_60 done
+Epoche: 9/20 | Run-through: 60/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_61 done
+Epoche: 9/20 | Run-through: 61/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_62 done
+Overall loss list: [<tf.Tensor: shape=(), dtype=float32, numpy=0.9454224109649658>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9070972800254822>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9285560846328735>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9462575912475586>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9389611482620239>, <tf.Tensor: shape=(), dtype=float32, numpy=0.897692859172821>, <tf.Tensor: shape=(), dtype=float32, numpy=0.945965051651001>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9234839677810669>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9521881341934204>, <tf.Tensor: shape=(), dtype=float32, numpy=0.8911983370780945>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9506088495254517>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9704648852348328>]
+Epoche: 9/20 | Run-through: 62/100 | Loss: 0.9704648852348328
+
+evaluation for test_8_training_v3_af_evaluation_63 done
+Epoche: 9/20 | Run-through: 63/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_64 done
+Epoche: 9/20 | Run-through: 64/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_65 done
+Epoche: 9/20 | Run-through: 65/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_66 done
+Overall loss list: [<tf.Tensor: shape=(), dtype=float32, numpy=0.9454224109649658>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9070972800254822>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9285560846328735>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9462575912475586>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9389611482620239>, <tf.Tensor: shape=(), dtype=float32, numpy=0.897692859172821>, <tf.Tensor: shape=(), dtype=float32, numpy=0.945965051651001>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9234839677810669>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9521881341934204>, <tf.Tensor: shape=(), dtype=float32, numpy=0.8911983370780945>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9506088495254517>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9704648852348328>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9658871293067932>]
+Epoche: 9/20 | Run-through: 66/100 | Loss: 0.9658871293067932
+
+evaluation for test_8_training_v3_af_evaluation_67 done
+Epoche: 9/20 | Run-through: 67/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_68 done
+Epoche: 9/20 | Run-through: 68/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_69 done
+Epoche: 9/20 | Run-through: 69/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_70 done
+Epoche: 9/20 | Run-through: 70/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_71 done
+Overall loss list: [<tf.Tensor: shape=(), dtype=float32, numpy=0.9454224109649658>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9070972800254822>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9285560846328735>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9462575912475586>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9389611482620239>, <tf.Tensor: shape=(), dtype=float32, numpy=0.897692859172821>, <tf.Tensor: shape=(), dtype=float32, numpy=0.945965051651001>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9234839677810669>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9521881341934204>, <tf.Tensor: shape=(), dtype=float32, numpy=0.8911983370780945>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9506088495254517>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9704648852348328>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9658871293067932>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9324842691421509>]
+Epoche: 9/20 | Run-through: 71/100 | Loss: 0.9324842691421509
+
+evaluation for test_8_training_v3_af_evaluation_72 done
+Epoche: 9/20 | Run-through: 72/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_73 done
+Epoche: 9/20 | Run-through: 73/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_74 done
+Epoche: 9/20 | Run-through: 74/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_75 done
+Epoche: 9/20 | Run-through: 75/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_76 done
+Epoche: 9/20 | Run-through: 76/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_77 done
+Epoche: 9/20 | Run-through: 77/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_78 done
+Epoche: 9/20 | Run-through: 78/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_79 done
+Epoche: 9/20 | Run-through: 79/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_80 done
+Epoche: 9/20 | Run-through: 80/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_81 done
+Epoche: 9/20 | Run-through: 81/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_82 done
+Epoche: 9/20 | Run-through: 82/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_83 done
+Overall loss list: [<tf.Tensor: shape=(), dtype=float32, numpy=0.9454224109649658>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9070972800254822>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9285560846328735>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9462575912475586>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9389611482620239>, <tf.Tensor: shape=(), dtype=float32, numpy=0.897692859172821>, <tf.Tensor: shape=(), dtype=float32, numpy=0.945965051651001>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9234839677810669>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9521881341934204>, <tf.Tensor: shape=(), dtype=float32, numpy=0.8911983370780945>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9506088495254517>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9704648852348328>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9658871293067932>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9324842691421509>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9314911365509033>]
+Epoche: 9/20 | Run-through: 83/100 | Loss: 0.9314911365509033
+
+evaluation for test_8_training_v3_af_evaluation_84 done
+Epoche: 9/20 | Run-through: 84/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_85 done
+Epoche: 9/20 | Run-through: 85/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_86 done
+Overall loss list: [<tf.Tensor: shape=(), dtype=float32, numpy=0.9454224109649658>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9070972800254822>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9285560846328735>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9462575912475586>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9389611482620239>, <tf.Tensor: shape=(), dtype=float32, numpy=0.897692859172821>, <tf.Tensor: shape=(), dtype=float32, numpy=0.945965051651001>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9234839677810669>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9521881341934204>, <tf.Tensor: shape=(), dtype=float32, numpy=0.8911983370780945>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9506088495254517>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9704648852348328>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9658871293067932>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9324842691421509>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9314911365509033>, <tf.Tensor: shape=(), dtype=float32, numpy=0.956680953502655>]
+Epoche: 9/20 | Run-through: 86/100 | Loss: 0.956680953502655
+
+evaluation for test_8_training_v3_af_evaluation_87 done
+Epoche: 9/20 | Run-through: 87/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_88 done
+Overall loss list: [<tf.Tensor: shape=(), dtype=float32, numpy=0.9454224109649658>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9070972800254822>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9285560846328735>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9462575912475586>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9389611482620239>, <tf.Tensor: shape=(), dtype=float32, numpy=0.897692859172821>, <tf.Tensor: shape=(), dtype=float32, numpy=0.945965051651001>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9234839677810669>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9521881341934204>, <tf.Tensor: shape=(), dtype=float32, numpy=0.8911983370780945>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9506088495254517>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9704648852348328>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9658871293067932>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9324842691421509>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9314911365509033>, <tf.Tensor: shape=(), dtype=float32, numpy=0.956680953502655>, <tf.Tensor: shape=(), dtype=float32, numpy=0.7135565280914307>]
+Epoche: 9/20 | Run-through: 88/100 | Loss: 0.7135565280914307
+
+evaluation for test_8_training_v3_af_evaluation_89 done
+Epoche: 9/20 | Run-through: 89/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_90 done
+Overall loss list: [<tf.Tensor: shape=(), dtype=float32, numpy=0.9454224109649658>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9070972800254822>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9285560846328735>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9462575912475586>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9389611482620239>, <tf.Tensor: shape=(), dtype=float32, numpy=0.897692859172821>, <tf.Tensor: shape=(), dtype=float32, numpy=0.945965051651001>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9234839677810669>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9521881341934204>, <tf.Tensor: shape=(), dtype=float32, numpy=0.8911983370780945>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9506088495254517>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9704648852348328>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9658871293067932>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9324842691421509>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9314911365509033>, <tf.Tensor: shape=(), dtype=float32, numpy=0.956680953502655>, <tf.Tensor: shape=(), dtype=float32, numpy=0.7135565280914307>, <tf.Tensor: shape=(), dtype=float32, numpy=0.975647509098053>]
+Epoche: 9/20 | Run-through: 90/100 | Loss: 0.975647509098053
+
+evaluation for test_8_training_v3_af_evaluation_91 done
+Epoche: 9/20 | Run-through: 91/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_92 done
+Epoche: 9/20 | Run-through: 92/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_93 done
+Epoche: 9/20 | Run-through: 93/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_94 done
+Epoche: 9/20 | Run-through: 94/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_95 done
+Overall loss list: [<tf.Tensor: shape=(), dtype=float32, numpy=0.9454224109649658>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9070972800254822>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9285560846328735>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9462575912475586>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9389611482620239>, <tf.Tensor: shape=(), dtype=float32, numpy=0.897692859172821>, <tf.Tensor: shape=(), dtype=float32, numpy=0.945965051651001>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9234839677810669>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9521881341934204>, <tf.Tensor: shape=(), dtype=float32, numpy=0.8911983370780945>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9506088495254517>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9704648852348328>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9658871293067932>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9324842691421509>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9314911365509033>, <tf.Tensor: shape=(), dtype=float32, numpy=0.956680953502655>, <tf.Tensor: shape=(), dtype=float32, numpy=0.7135565280914307>, <tf.Tensor: shape=(), dtype=float32, numpy=0.975647509098053>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9771910905838013>]
+Epoche: 9/20 | Run-through: 95/100 | Loss: 0.9771910905838013
+
+evaluation for test_8_training_v3_af_evaluation_96 done
+Epoche: 9/20 | Run-through: 96/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_97 done
+Epoche: 9/20 | Run-through: 97/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_98 done
+Epoche: 9/20 | Run-through: 98/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_99 done
+Epoche: 9/20 | Run-through: 99/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_100 done
+Overall loss list: [<tf.Tensor: shape=(), dtype=float32, numpy=0.9454224109649658>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9070972800254822>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9285560846328735>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9462575912475586>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9389611482620239>, <tf.Tensor: shape=(), dtype=float32, numpy=0.897692859172821>, <tf.Tensor: shape=(), dtype=float32, numpy=0.945965051651001>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9234839677810669>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9521881341934204>, <tf.Tensor: shape=(), dtype=float32, numpy=0.8911983370780945>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9506088495254517>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9704648852348328>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9658871293067932>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9324842691421509>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9314911365509033>, <tf.Tensor: shape=(), dtype=float32, numpy=0.956680953502655>, <tf.Tensor: shape=(), dtype=float32, numpy=0.7135565280914307>, <tf.Tensor: shape=(), dtype=float32, numpy=0.975647509098053>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9771910905838013>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9811249375343323>]
+Epoch: 9/20 | Run-through: 100/100 | Loss: 0.9811249375343323 | epoche completed
+
+
+evaluation for test_8_training_v3_af_evaluation_101 done
+Epoche: 10/20 | Run-through: 1/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_102 done
+Epoche: 10/20 | Run-through: 2/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_103 done
+Epoche: 10/20 | Run-through: 3/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_104 done
+Epoche: 10/20 | Run-through: 4/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_105 done
+Epoche: 10/20 | Run-through: 5/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_106 done
+Epoche: 10/20 | Run-through: 6/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_107 done
+Epoche: 10/20 | Run-through: 7/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_108 done
+Epoche: 10/20 | Run-through: 8/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_109 done
+Epoche: 10/20 | Run-through: 9/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_110 done
+Epoche: 10/20 | Run-through: 10/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_111 done
+Epoche: 10/20 | Run-through: 11/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_112 done
+Epoche: 10/20 | Run-through: 12/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_113 done
+Epoche: 10/20 | Run-through: 13/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_114 done
+Epoche: 10/20 | Run-through: 14/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_115 done
+Epoche: 10/20 | Run-through: 15/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_116 done
+Epoche: 10/20 | Run-through: 16/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_117 done
+Epoche: 10/20 | Run-through: 17/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_118 done
+Epoche: 10/20 | Run-through: 18/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_119 done
+Epoche: 10/20 | Run-through: 19/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_120 done
+Epoche: 10/20 | Run-through: 20/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_121 done
+Epoche: 10/20 | Run-through: 21/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_122 done
+Epoche: 10/20 | Run-through: 22/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_123 done
+Epoche: 10/20 | Run-through: 23/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_124 done
+Epoche: 10/20 | Run-through: 24/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_125 done
+Overall loss list: [<tf.Tensor: shape=(), dtype=float32, numpy=0.9454224109649658>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9070972800254822>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9285560846328735>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9462575912475586>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9389611482620239>, <tf.Tensor: shape=(), dtype=float32, numpy=0.897692859172821>, <tf.Tensor: shape=(), dtype=float32, numpy=0.945965051651001>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9234839677810669>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9521881341934204>, <tf.Tensor: shape=(), dtype=float32, numpy=0.8911983370780945>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9506088495254517>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9704648852348328>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9658871293067932>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9324842691421509>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9314911365509033>, <tf.Tensor: shape=(), dtype=float32, numpy=0.956680953502655>, <tf.Tensor: shape=(), dtype=float32, numpy=0.7135565280914307>, <tf.Tensor: shape=(), dtype=float32, numpy=0.975647509098053>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9771910905838013>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9811249375343323>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9812430739402771>]
+Epoche: 10/20 | Run-through: 25/100 | Loss: 0.9812430739402771
+
+evaluation for test_8_training_v3_af_evaluation_126 done
+Epoche: 10/20 | Run-through: 26/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_127 done
+Epoche: 10/20 | Run-through: 27/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_128 done
+Epoche: 10/20 | Run-through: 28/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_129 done
+Epoche: 10/20 | Run-through: 29/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_130 done
+Epoche: 10/20 | Run-through: 30/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_131 done
+Epoche: 10/20 | Run-through: 31/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_132 done
+Epoche: 10/20 | Run-through: 32/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_133 done
+Epoche: 10/20 | Run-through: 33/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_134 done
+Epoche: 10/20 | Run-through: 34/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_135 done
+Epoche: 10/20 | Run-through: 35/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_136 done
+Epoche: 10/20 | Run-through: 36/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_137 done
+Epoche: 10/20 | Run-through: 37/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_138 done
+Overall loss list: [<tf.Tensor: shape=(), dtype=float32, numpy=0.9454224109649658>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9070972800254822>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9285560846328735>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9462575912475586>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9389611482620239>, <tf.Tensor: shape=(), dtype=float32, numpy=0.897692859172821>, <tf.Tensor: shape=(), dtype=float32, numpy=0.945965051651001>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9234839677810669>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9521881341934204>, <tf.Tensor: shape=(), dtype=float32, numpy=0.8911983370780945>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9506088495254517>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9704648852348328>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9658871293067932>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9324842691421509>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9314911365509033>, <tf.Tensor: shape=(), dtype=float32, numpy=0.956680953502655>, <tf.Tensor: shape=(), dtype=float32, numpy=0.7135565280914307>, <tf.Tensor: shape=(), dtype=float32, numpy=0.975647509098053>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9771910905838013>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9811249375343323>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9812430739402771>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9843801856040955>]
+Epoche: 10/20 | Run-through: 38/100 | Loss: 0.9843801856040955
+
+evaluation for test_8_training_v3_af_evaluation_139 done
+Epoche: 10/20 | Run-through: 39/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_140 done
+Epoche: 10/20 | Run-through: 40/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_141 done
+Epoche: 10/20 | Run-through: 41/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_142 done
+Epoche: 10/20 | Run-through: 42/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_143 done
+Epoche: 10/20 | Run-through: 43/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_144 done
+Epoche: 10/20 | Run-through: 44/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_145 done
+Epoche: 10/20 | Run-through: 45/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_146 done
+Epoche: 10/20 | Run-through: 46/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_147 done
+Epoche: 10/20 | Run-through: 47/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_148 done
+Epoche: 10/20 | Run-through: 48/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_149 done
+Epoche: 10/20 | Run-through: 49/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_150 done
+Epoche: 10/20 | Run-through: 50/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_151 done
+Epoche: 10/20 | Run-through: 51/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_152 done
+Epoche: 10/20 | Run-through: 52/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_153 done
+Epoche: 10/20 | Run-through: 53/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_154 done
+Epoche: 10/20 | Run-through: 54/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_155 done
+Epoche: 10/20 | Run-through: 55/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_156 done
+Epoche: 10/20 | Run-through: 56/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_157 done
+Epoche: 10/20 | Run-through: 57/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_158 done
+Epoche: 10/20 | Run-through: 58/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_159 done
+Epoche: 10/20 | Run-through: 59/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_160 done
+Epoche: 10/20 | Run-through: 60/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_161 done
+Epoche: 10/20 | Run-through: 61/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_162 done
+Epoche: 10/20 | Run-through: 62/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_163 done
+Epoche: 10/20 | Run-through: 63/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_164 done
+Epoche: 10/20 | Run-through: 64/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_165 done
+Epoche: 10/20 | Run-through: 65/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_166 done
+Epoche: 10/20 | Run-through: 66/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_167 done
+Epoche: 10/20 | Run-through: 67/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_168 done
+Overall loss list: [<tf.Tensor: shape=(), dtype=float32, numpy=0.9454224109649658>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9070972800254822>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9285560846328735>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9462575912475586>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9389611482620239>, <tf.Tensor: shape=(), dtype=float32, numpy=0.897692859172821>, <tf.Tensor: shape=(), dtype=float32, numpy=0.945965051651001>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9234839677810669>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9521881341934204>, <tf.Tensor: shape=(), dtype=float32, numpy=0.8911983370780945>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9506088495254517>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9704648852348328>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9658871293067932>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9324842691421509>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9314911365509033>, <tf.Tensor: shape=(), dtype=float32, numpy=0.956680953502655>, <tf.Tensor: shape=(), dtype=float32, numpy=0.7135565280914307>, <tf.Tensor: shape=(), dtype=float32, numpy=0.975647509098053>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9771910905838013>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9811249375343323>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9812430739402771>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9843801856040955>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9784802794456482>]
+Epoche: 10/20 | Run-through: 68/100 | Loss: 0.9784802794456482
+
+evaluation for test_8_training_v3_af_evaluation_169 done
+Epoche: 10/20 | Run-through: 69/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_170 done
+Epoche: 10/20 | Run-through: 70/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_171 done
+Epoche: 10/20 | Run-through: 71/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_172 done
+Epoche: 10/20 | Run-through: 72/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_173 done
+Epoche: 10/20 | Run-through: 73/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_174 done
+Epoche: 10/20 | Run-through: 74/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_175 done
+Epoche: 10/20 | Run-through: 75/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_176 done
+Epoche: 10/20 | Run-through: 76/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_177 done
+Epoche: 10/20 | Run-through: 77/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_178 done
+Epoche: 10/20 | Run-through: 78/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_179 done
+Epoche: 10/20 | Run-through: 79/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_180 done
+Epoche: 10/20 | Run-through: 80/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_181 done
+Epoche: 10/20 | Run-through: 81/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_182 done
+Epoche: 10/20 | Run-through: 82/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_183 done
+Epoche: 10/20 | Run-through: 83/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_184 done
+Epoche: 10/20 | Run-through: 84/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_185 done
+Epoche: 10/20 | Run-through: 85/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_186 done
+Epoche: 10/20 | Run-through: 86/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_187 done
+Epoche: 10/20 | Run-through: 87/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_188 done
+Epoche: 10/20 | Run-through: 88/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_189 done
+Epoche: 10/20 | Run-through: 89/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_190 done
+Epoche: 10/20 | Run-through: 90/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_191 done
+Epoche: 10/20 | Run-through: 91/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_192 done
+Epoche: 10/20 | Run-through: 92/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_193 done
+Epoche: 10/20 | Run-through: 93/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_194 done
+Overall loss list: [<tf.Tensor: shape=(), dtype=float32, numpy=0.9454224109649658>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9070972800254822>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9285560846328735>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9462575912475586>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9389611482620239>, <tf.Tensor: shape=(), dtype=float32, numpy=0.897692859172821>, <tf.Tensor: shape=(), dtype=float32, numpy=0.945965051651001>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9234839677810669>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9521881341934204>, <tf.Tensor: shape=(), dtype=float32, numpy=0.8911983370780945>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9506088495254517>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9704648852348328>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9658871293067932>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9324842691421509>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9314911365509033>, <tf.Tensor: shape=(), dtype=float32, numpy=0.956680953502655>, <tf.Tensor: shape=(), dtype=float32, numpy=0.7135565280914307>, <tf.Tensor: shape=(), dtype=float32, numpy=0.975647509098053>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9771910905838013>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9811249375343323>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9812430739402771>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9843801856040955>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9784802794456482>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9835463166236877>]
+Epoche: 10/20 | Run-through: 94/100 | Loss: 0.9835463166236877
+
+evaluation for test_8_training_v3_af_evaluation_195 done
+Overall loss list: [<tf.Tensor: shape=(), dtype=float32, numpy=0.9454224109649658>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9070972800254822>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9285560846328735>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9462575912475586>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9389611482620239>, <tf.Tensor: shape=(), dtype=float32, numpy=0.897692859172821>, <tf.Tensor: shape=(), dtype=float32, numpy=0.945965051651001>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9234839677810669>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9521881341934204>, <tf.Tensor: shape=(), dtype=float32, numpy=0.8911983370780945>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9506088495254517>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9704648852348328>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9658871293067932>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9324842691421509>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9314911365509033>, <tf.Tensor: shape=(), dtype=float32, numpy=0.956680953502655>, <tf.Tensor: shape=(), dtype=float32, numpy=0.7135565280914307>, <tf.Tensor: shape=(), dtype=float32, numpy=0.975647509098053>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9771910905838013>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9811249375343323>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9812430739402771>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9843801856040955>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9784802794456482>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9835463166236877>, <tf.Tensor: shape=(), dtype=float32, numpy=0.9647056460380554>]
+Epoche: 10/20 | Run-through: 95/100 | Loss: 0.9647056460380554
+
+evaluation for test_8_training_v3_af_evaluation_196 done
+Epoche: 10/20 | Run-through: 96/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_197 done
+Epoche: 10/20 | Run-through: 97/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_198 done
+Epoche: 10/20 | Run-through: 98/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_199 done
+Epoche: 10/20 | Run-through: 99/100 | Loss: -1
+
+evaluation for test_8_training_v3_af_evaluation_200 done
+Epoch: 10/20 | Run-through: 100/100 | Loss: -1 | epoche completed
+
+
+evaluation for test_8_training_v3_af_evaluation_201 done
+Epoche: 11/20 | Run-through: 1/100 | Loss: -1
