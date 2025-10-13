@@ -70,7 +70,7 @@ def create_random_curve_points(
 def create_bez_curves_drag_coef_dataset(
         degree: int = 5,
         points_num: int = 100,
-        samples: int = 5000 ,
+        samples: int = 1000,
         file_name: str = "bez_curves_cd"
 ):
     # Structure: (curve (represented as n points): list, alpha , c_d value)
@@ -98,15 +98,60 @@ def create_bez_curves_drag_coef_dataset(
     os.makedirs(os.path.dirname(f"C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/datasets/{file_name}.npz"),
                 exist_ok=True)
     np.savez(f"C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/datasets/{file_name}.npz",
-                     points=curves, values=values)
+                     points=np.array(curves_validated), values=values)
     if len(curves_validated) != len(values):
         raise Exception("Mismatch between curves and values in dataset creation.")
     print("\nDataset created and saved under given file name.")
     return len(curves_validated), len(values)
 
-# TODO: test correct alg for turning & adjusting curves
 
-n1, n2 = create_bez_curves_drag_coef_dataset(file_name="bez_curves_cd_test_small", samples=15)
+def create_fixed_len_bez_curves_drag_coef_dataset(
+        degree: int = 5,
+        points_num: int = 100,
+        length: int = 1000,
+        file_name: str = "bez_curves_cd",
+        max_iterations: int = None
+):
+    # Structure: (curve (represented as n points): list, alpha , c_d value)
+    valid_curves = []
+    values = []
+    total_curves = 0
+    while len(valid_curves) < length:
+        if max_iterations is not None and total_curves >= max_iterations:
+            print("\nMaximum iterations reached.")
+            break
+        total_curves += 1
+        # curve creation
+        print(f"\rCreating curve {total_curves}", end="")
+        sys.stdout.flush()
+        cont_points = create_random_curve_points(degree, random.randint(0, 3), random.randint(6, 13), 0,
+                                                 random.randint(1, 15))
+        points = bezier_curve(cont_points, points_num)
+
+        # drag evaluation
+        print(f"\rEvaluating curve {total_curves} | valid datapoints collected: {len(valid_curves)}", end="")
+        sys.stdout.flush()
+        alpha, cd = DragEvaluator(points, save_airfoil=False, range=16, start_angle=0,
+                                  specification="dataset_creation_test_3").find_valid_alpha_cd()
+        if alpha is not None:
+            values.append((alpha, cd))
+            valid_curves.append(points)
+# TODO: check specifications, clear up dataset_creator and _2
+    # saving dataset
+    print("\nCalculations done, saving dataset.")
+    os.makedirs(os.path.dirname(f"C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/datasets/{file_name}.npz"),
+                exist_ok=True)
+    np.savez(f"C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/datasets/{file_name}.npz",
+                     points=np.array(valid_curves), values=values)
+    if len(valid_curves) != len(values):
+        raise Exception("Mismatch between curves and values in dataset creation.")
+    print("\nDataset created and saved under given file name.")
+    return len(valid_curves), len(values)
+
+# TODO: test correct alg for turning & adjusting curves, add some starting and ending messages
+# TODO: add overall path to ensure adaptability on other machines
+
+n1, n2 = create_fixed_len_bez_curves_drag_coef_dataset(file_name="bez_curves_cd_test_small", length=2, max_iterations=1000)
 print(n1, n2)
 
 def __plot_n_example_random_bez_curves__(

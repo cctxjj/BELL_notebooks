@@ -98,7 +98,7 @@ def create_bez_curves_drag_coef_dataset(
     os.makedirs(os.path.dirname(f"C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/datasets/{file_name}.npz"),
                 exist_ok=True)
     np.savez(f"C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/datasets/{file_name}.npz",
-                     points=curves, values=values)
+                     points=curves_validated, values=values)
     if len(curves_validated) != len(values):
         raise Exception("Mismatch between curves and values in dataset creation.")
     print("\nDataset created and saved under given file name.")
