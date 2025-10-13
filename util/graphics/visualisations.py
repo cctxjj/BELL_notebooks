@@ -221,4 +221,91 @@ def plot_alpha_cd_correlation(alphas:list,
     else:
         plt.show()
 
+def plot_runtime(data, alg_title, color="purple", save_path=None, file_name=None):
+    """
+    # TODO: comment (credit: ChatGPT)
+    """
+    data = np.array(data)
+    x = data[:, 0]
+    y = data[:, 1]
+
+    plt.figure(figsize=(6, 4))
+    plt.scatter(x, y, marker="o", linestyle="-", color=color, label="f(n)")
+    plt.xlabel("Eingabegröße n")
+    plt.ylabel("Zeit in Sekunden")
+    plt.title("Zeitkomplexität " + alg_title)
+    plt.grid(True)
+    plt.legend()
+    plt.tight_layout()
+    if save_path is not None:
+        assert file_name is not None
+        os.makedirs(save_path, exist_ok=True)
+        plt.savefig(save_path + "/" + file_name, dpi=300, bbox_inches="tight")
+        plt.close()
+    else:
+        plt.show()
+
+def plot_runtime_comparison(alg_titles, data, colors=None, title_seperator=" & ", title_appendix="", save_path=None, file_name=None):
+    """
+    # TODO: comment (credit: ChatGPT)
+    """
+    if colors is None:
+        colors = ["black", "red"]
+    plt.figure(figsize=(6, 4))
+    for i in range(len(alg_titles)):
+        values = np.array(data[i])
+        x = values[:, 0]
+        y = values[:, 1]
+        plt.scatter(x, y, marker="o", color=colors[i], label=f"f(n) {alg_titles[i]}")
+
+    plt.xlabel("Eingabegröße n")
+    plt.ylabel("Zeit in Sekunden")
+    plt.title("Vergleich Zeitkomplexität " + title_seperator.join(alg_titles) + title_appendix)
+    plt.grid(True)
+    plt.legend()
+    plt.tight_layout()
+    if save_path is not None:
+        assert file_name is not None
+        os.makedirs(save_path, exist_ok=True)
+        plt.savefig(save_path + "/" + file_name, dpi=300, bbox_inches="tight")
+        plt.close()
+    else:
+        plt.show()
+
+def plot_runtime_difference(data1, data2, label1, label2, color1, color2, save_path=None, file_name=None):
+    data1_diff = []
+    data2_diff = []
+    for i in range(len(data1)):
+        if data1[i][1] > data2[i][1]:
+            data1_diff.append((data1[i][0], (data1[i][1] - data2[i][1])*100/data2[i][1]))
+        elif data2[i][1] < data1[i][1]:
+            data2_diff.append((data2[i][0], (data2[i][1] - data1[i][1])*100/data1[i][1]))
+
+    data1_diff = np.array(data1_diff)
+    data2_diff = np.array(data2_diff)
+
+    plt.figure(figsize=(7, 5))
+    if len(data1_diff) > 0:
+        plt.scatter(data1_diff[:, 0], data1_diff[:, 1], marker='o', color=color1, label=f"{label1} langsamer")
+        plt.plot(data1_diff[:, 0], data1_diff[:, 1], '-', color=color1, alpha=0.5)
+    if len(data2_diff) > 0:
+        plt.scatter(data2_diff[:, 0], data2_diff[:, 1], marker='s', color=color2, label=f"{label2} langsamer")
+        plt.plot(data2_diff[:, 0], data2_diff[:, 1], '-', color=color2, alpha=0.5)
+
+    plt.axhline(0, color="black", linewidth=0.8, linestyle="--")
+    plt.title("Prozentuale Laufzeitunterschiede")
+    plt.xlabel("n (Eingabegröße)")
+    plt.ylabel("Unterschied in %")
+    plt.grid(True, alpha=0.3)
+    plt.legend()
+    plt.tight_layout()
+    if save_path is not None:
+        assert file_name is not None
+        os.makedirs(save_path, exist_ok=True)
+        plt.savefig(save_path + "/" + file_name, dpi=300, bbox_inches="tight")
+        plt.close()
+    else:
+        plt.show()
+
+
 

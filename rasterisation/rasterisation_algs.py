@@ -6,7 +6,6 @@ def dda_line(x_0, y_0, x_1, y_1):
         y_0, y_1 = y_1, y_0
 
     m = (y_1 - y_0) / (x_1 - x_0)
-    print(m)
 
     result = []
     cur_x = x_0
@@ -139,8 +138,3 @@ def bresenham_circle(x_center, y_center, r):
               *zip([(x * -1) + x_center for x in first_oct_x], [y + y_center for y in first_oct_y])
               ]
     return result
-
-
-import util.graphics.visualisations as vis
-
-vis.plot_points(bresenham_circle(-30, 90, 300))
