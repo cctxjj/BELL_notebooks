@@ -59,8 +59,9 @@ class DragEvaluator:
         xf = XFoil(
             airfoil=self.airfoil,
             Re=re
+            # todo: path anpassen
         )
-        xf.timeout = 3
+        xf.timeout = 1000
         alphas = [*range(self.start_angle+self.rotation, self.start_angle+self.range+self.rotation)]
         cds = {}
         print("\n")
