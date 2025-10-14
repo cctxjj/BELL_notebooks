@@ -3,6 +3,7 @@ from util.datasets.dataset_creator import create_fixed_len_bez_curves_drag_coef_
 from aerosandbox import XFoil, Airfoil
 af = Airfoil("naca2412")
 xf = XFoil(airfoil=af, verbose=False)
+print("test1")
 res = xf.alpha(2)
 print(res)
 
