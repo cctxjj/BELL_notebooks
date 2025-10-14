@@ -56,15 +56,14 @@ class DragEvaluator:
         :return:
         # TODO: Idee: auf logischer Basis mathematische Formel für Evaluation formulieren --> desto steiler Winkel desto weniger relevant --> *1/a oder so?
         """
-        print("test0")
         xf = XFoil(
             airfoil=self.airfoil,
             Re=re,
             verbose=True,
-            working_directory="/root/bell/xfoil_output/"
+            working_directory="/root/bell/xfoil_output"
             # todo: path anpassen
         )
-        print("test1")
+
         xf.timeout = 3
         alphas = [*range(self.start_angle+self.rotation, self.start_angle+self.range+self.rotation)]
         cds = {}
