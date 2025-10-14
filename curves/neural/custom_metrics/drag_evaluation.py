@@ -65,7 +65,7 @@ class DragEvaluator:
             # todo: path anpassen
         )
         print("test1")
-        xf.timeout = 1000
+        xf.timeout = 3
         alphas = [*range(self.start_angle+self.rotation, self.start_angle+self.range+self.rotation)]
         cds = {}
         print("\n")
