@@ -1,24 +1,24 @@
 import math
 
 import numpy as np
+from matplotlib import pyplot as plt
 
 
 def recursive_stackbased_flood_fill_4con(
         img: np.ndarray,
         start: tuple,
         new_color: int):
-    '''
+    """
     recursive, blind implementation of the flood fill algorithm using 4-connectedness
     :param img: 2D-Array with ints representing greyscale values from 0 to 255
     :param start: tuple representing starting point P(x|y)
     :param new_color: desired new color to replace old one at P(x|y)
     :return 2D-Array representing the modified picture
-    '''
+    """
     height, width = np.shape(img)
     start_col = img[start[1], start[0]]
     if start_col == new_color:
         raise ValueError("start_col must be different from new_color")
-
     stack = [start]
     while stack:
         cur = stack.pop()
@@ -52,7 +52,6 @@ def recursive_stackbased_flood_fill_8con(
     start_col = img[start[1], start[0]]
     if start_col == new_color:
         raise ValueError("start_col must be different from new_color")
-
     stack = [start]
     while stack:
         cur = stack.pop()
