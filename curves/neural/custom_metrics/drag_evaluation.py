@@ -60,11 +60,12 @@ class DragEvaluator:
             airfoil=self.airfoil,
             Re=re,
             verbose=True,
-            working_directory="/root/bell/xfoil_output"
+            working_directory="/root/bell/xfoil_output",
+            xfoil_repanel=True
             # todo: path anpassen
         )
 
-        xf.timeout = 3
+        xf.timeout = 1000000
         alphas = [*range(self.start_angle+self.rotation, self.start_angle+self.range+self.rotation)]
         cds = {}
         print("\n")
