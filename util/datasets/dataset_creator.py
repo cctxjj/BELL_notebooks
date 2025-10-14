@@ -2,8 +2,6 @@ import os
 import random
 import sys
 
-import vis
-
 import numpy as np
 import tensorflow as tf
 
