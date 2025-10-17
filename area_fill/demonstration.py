@@ -1,9 +1,7 @@
-import math
 import os
 
 from PIL import Image
-from matplotlib import pyplot as plt
-import numpy as np
+from tensorboard.compat.tensorflow_stub.io.gfile import exists
 
 from fill_algs import *
 import util.graphics.image_handler as imgutil
@@ -31,11 +29,10 @@ def compare(imgs, titles, cols=2):
 
     plt.tight_layout()
     plt.show()
+    plt.savefig("demonstration/effect_comparison.png")
 
-    plt.show()
 
-
-def save_gif_pillow(frames, path="output.gif", duration=100):
+def save_gif(frames, path="output.gif", duration=100):
     """
     Speichert eine Sequenz von Graustufenbildern als GIF mit Pillow.
 
@@ -156,7 +153,6 @@ def gif_recursive_queuebased_flood_fill_8con(
         i+=1
         if i % img_density == 0:
             result.append(np.array(img, copy=True))
-            show(img)
         cur = queue.pop(0)
         img[cur[1], cur[0]] = new_color
 
@@ -195,14 +191,133 @@ def gif_recursive_queuebased_flood_fill_8con(
 def stack_vs_queuebased_fill_gif(path: str = "demonstration/"):
     os.makedirs(path, exist_ok=True)
     img_1 = imgutil.grab_image("imgs//img_1.png")
-    save_gif_pillow(gif_recursive_stackbased_flood_fill_8con(img_1.copy(), (30, 30), 150, 5),
-                    path + "stackbased_floodfill_8con.gif", 1)
-    save_gif_pillow(gif_recursive_queuebased_flood_fill_8con(img_1.copy(), (30, 30), 150, 50000),
-                    path + "queuebased_floodfill_8con.gif", 1)
+    save_gif(gif_recursive_stackbased_flood_fill_8con(img_1.copy(), (30, 30), 150, 5),
+             path + "stackbased_floodfill_8con.gif", 1)
+    save_gif(gif_recursive_queuebased_flood_fill_8con(img_1.copy(), (30, 30), 150, 50000),
+             path + "queuebased_floodfill_8con.gif", 1)
 
 
+def gif_scanline_stackbased_flood_fill_8con(
+        img: np.ndarray,
+        start: tuple,
+        new_color: int):
+    '''
+    Implementation of the flood fill algorithm using 8-connectedness and the concept of scanlines/runs
+    :param img: 2D-Array with ints representing greyscale values from 0 to 255
+    :param start: tuple representing starting point P(x|y)
+    :param new_color: desired new color to replace old one at P(x|y)
+    :return 2D-Array representing the modified picture
+    '''
+    height, width = np.shape(img)
+    start_col = img[start[1], start[0]]
+    if start_col == new_color:
+        raise ValueError("start_col must be different from new_color")
 
-stack_vs_queuebased_fill_gif()
+    stack = [start]
+
+    result = [np.array(img, copy=True)]
+
+    def identify_and_fill_run(seed):
+        result.append(np.array(img, copy=True))
+        img[seed[1], seed[0]] = new_color
+        left_b, y = seed[0] - 1, seed[1]
+        right_b = left_b + 2
+
+        run_above_detected_on_start = False
+        run_below_detected_on_start = False
+        if y + 1 < height:
+            if img[seed[1] + 1, seed[0]] == start_col:
+                stack.append((seed[0], seed[1] + 1))
+                run_above_detected_on_start = True
+        if y - 1 >= 0:
+            if img[seed[1] - 1, seed[0]] == start_col:
+                stack.append((seed[0], seed[1] - 1))
+                run_below_detected_on_start = True
+
+        # looking for the left boundary, scanning for new runs above/below
+        run_above = run_above_detected_on_start
+        run_below = run_below_detected_on_start
+        while left_b >= 0 and img[y, left_b] == start_col:
+            img[y, left_b] = new_color
+
+            if y + 1 < height:
+                if run_above:
+                    if img[y + 1, left_b] != start_col:
+                        run_above = False
+                elif img[y + 1, left_b] == start_col:
+                    run_above = True
+                    stack.append((left_b, y + 1))
+
+            if y - 1 >= 0:
+                if run_below:
+                    if img[y - 1, left_b] != start_col:
+                        run_below = False
+                elif img[y - 1, left_b] == start_col:
+                    run_below = True
+                    stack.append((left_b, y - 1))
+            left_b -= 1
+
+        # checking for 8-connected run on left side
+        if left_b >= 0:
+            if y - 1 >= 0:
+                if img[y - 1, left_b] == start_col:
+                    stack.append((left_b, y - 1))
+            if y + 1 < height:
+                if img[y + 1, left_b] == start_col:
+                    stack.append((left_b, y + 1))
+
+        # looking for the right boundary, scanning for new runs above/below
+        run_above = run_above_detected_on_start
+        run_below = run_below_detected_on_start
+        while right_b < width and img[y, right_b] == start_col:
+            img[y, right_b] = new_color
+
+            if y + 1 < height:
+                if run_above:
+                    if img[y + 1, right_b] != start_col:
+                        run_above = False
+                elif img[y + 1, right_b] == start_col:
+                    run_above = True
+                    stack.append((right_b, y + 1))
+
+            if y - 1 >= 0:
+                if run_below:
+                    if img[y - 1, right_b] != start_col:
+                        run_below = False
+                elif img[y - 1, right_b] == start_col:
+                    run_below = True
+                    stack.append((right_b ,y - 1))
+
+            right_b += 1
+
+        # checking for 8-connected run on right side
+        if right_b < width:
+            if y - 1 >= 0:
+                if img[y - 1, right_b] == start_col:
+                    stack.append((right_b, y - 1))
+            if y + 1 < height:
+                if img[y + 1, right_b] == start_col:
+                    stack.append((right_b, y + 1))
+
+    while stack:
+        cur = stack.pop()
+        identify_and_fill_run(cur)
+    result.append(np.array(img, copy=True))
+    return result
+
+def stackbased_scanline_fill(path: str = "demonstration/"):
+    img_1 = imgutil.grab_image("imgs//img_1.png")
+    os.makedirs(path, exist_ok = True)
+    save_gif(gif_scanline_stackbased_flood_fill_8con(img_1.copy(), (30, 30), 150),
+             path + "stackbased_scanline_fill_1.gif", 1)
+    img_2 = imgutil.grab_image("imgs//img_2.png")
+    os.makedirs(path, exist_ok=True)
+    save_gif(gif_scanline_stackbased_flood_fill_8con(img_2.copy(), (30, 30), 150),
+             path + "stackbased_scanline_fill_2.gif", 1)
+
+#plot_1()
+#stack_vs_queuebased_fill_gif()
+stackbased_scanline_fill()
 # vis 1: 4 and 8 con, seed & boundary fill
 # vis 2: stack based and queue based fill
 # vis 3: recursive & scanline procedure
