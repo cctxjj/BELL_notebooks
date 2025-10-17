@@ -13,7 +13,8 @@ from curves.func_based.bézier_curve import bezier_curve
 from util.shape_modifier import normalize_points, converge_shape_to_mirrored_airfoil
 
 eval_count = 0
-default_path = "C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/neural_curves/airfoil_data_nomenclat2"
+#default_path = "C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/neural_curves/airfoil_data_nomenclat2"
+default_path = "/root/bell/data/neural_curves/airfoil_on_server"
 
 class DragEvaluator:
     def __init__(self,
@@ -59,8 +60,7 @@ class DragEvaluator:
         xf = XFoil(
             airfoil=self.airfoil,
             Re=re,
-            verbose=True,
-            working_directory="/root/bell/xfoil_output",
+            verbose=False,
             xfoil_repanel=True
             # todo: path anpassen
         )
