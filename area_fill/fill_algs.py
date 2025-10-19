@@ -185,7 +185,7 @@ def recursive_stackbased_boundary_fill_8con(
             if 0 <= cur[0] - 1:
                 if img[cur[1] - 1, cur[0] - 1] != boundary_color and img[cur[1] - 1, cur[0] - 1] != new_color:
                     stack.append((cur[0] - 1, cur[1] - 1))
-                    img[cur[1] - 1, cur[0] + 1] = new_color
+                    img[cur[1] - 1, cur[0] - 1] = new_color
 
         if cur[0] + 1 < width:
             if img[cur[1], cur[0] + 1] != boundary_color and img[cur[1], cur[0] + 1] != new_color:
@@ -428,9 +428,9 @@ def scanline_stackbased_flood_fill_4con(
         raise ValueError("start_col must be different from new_color")
 
     stack = [start]
+    img[start[1], start[0]] = new_color
 
     def identify_and_fill_run(seed):
-        img[seed[1], seed[0]] = new_color
         left_b, y = seed[0] - 1, seed[1]
         right_b = left_b + 2
 
@@ -439,10 +439,12 @@ def scanline_stackbased_flood_fill_4con(
         if y + 1 < height:
             if img[seed[1] + 1, seed[0]] == start_col:
                 stack.append((seed[0], seed[1] + 1))
+                img[seed[1] + 1, seed[0]] = new_color
                 run_above_detected_on_start = True
         if y - 1 >= 0:
             if img[seed[1] - 1, seed[0]] == start_col:
                 stack.append((seed[0], seed[1] - 1))
+                img[seed[1] - 1, seed[0]] = new_color
                 run_below_detected_on_start = True
 
         # looking for the left boundary, scanning for new runs above/below
@@ -458,6 +460,7 @@ def scanline_stackbased_flood_fill_4con(
                 elif img[y + 1, left_b] == start_col:
                     run_above = True
                     stack.append((left_b, y + 1))
+                    img[y + 1, left_b] = new_color
 
             if y - 1 >= 0:
                 if run_below:
@@ -466,6 +469,7 @@ def scanline_stackbased_flood_fill_4con(
                 elif img[y - 1, left_b] == start_col:
                     run_below = True
                     stack.append((left_b, y - 1))
+                    img[y - 1, left_b] = new_color
             left_b -= 1
 
         # looking for the right boundary, scanning for new runs above/below
@@ -481,6 +485,7 @@ def scanline_stackbased_flood_fill_4con(
                 elif img[y + 1, right_b] == start_col:
                     run_above = True
                     stack.append((right_b, y + 1))
+                    img[y + 1, right_b] = new_color
 
             if y - 1 >= 0:
                 if run_below:
@@ -489,6 +494,7 @@ def scanline_stackbased_flood_fill_4con(
                 elif img[y - 1, right_b] == start_col:
                     run_below = True
                     stack.append((right_b ,y - 1))
+                    img[y - 1, left_b] = new_color
 
             right_b += 1
 
@@ -515,9 +521,9 @@ def scanline_stackbased_flood_fill_8con(
         raise ValueError("start_col must be different from new_color")
 
     stack = [start]
+    img[start[1], start[0]] = new_color
 
     def identify_and_fill_run(seed):
-        img[seed[1], seed[0]] = new_color
         left_b, y = seed[0] - 1, seed[1]
         right_b = left_b + 2
 
@@ -526,10 +532,12 @@ def scanline_stackbased_flood_fill_8con(
         if y + 1 < height:
             if img[seed[1] + 1, seed[0]] == start_col:
                 stack.append((seed[0], seed[1] + 1))
+                img[seed[1] + 1, seed[0]] = new_color
                 run_above_detected_on_start = True
         if y - 1 >= 0:
             if img[seed[1] - 1, seed[0]] == start_col:
                 stack.append((seed[0], seed[1] - 1))
+                img[seed[1] - 1, seed[0]] = new_color
                 run_below_detected_on_start = True
 
         # looking for the left boundary, scanning for new runs above/below
@@ -545,6 +553,7 @@ def scanline_stackbased_flood_fill_8con(
                 elif img[y + 1, left_b] == start_col:
                     run_above = True
                     stack.append((left_b, y + 1))
+                    img[y + 1, left_b] = new_color
 
             if y - 1 >= 0:
                 if run_below:
@@ -553,6 +562,7 @@ def scanline_stackbased_flood_fill_8con(
                 elif img[y - 1, left_b] == start_col:
                     run_below = True
                     stack.append((left_b, y - 1))
+                    img[y - 1, left_b] = new_color
             left_b -= 1
 
         # checking for 8-connected run on left side
@@ -560,9 +570,11 @@ def scanline_stackbased_flood_fill_8con(
             if y - 1 >= 0:
                 if img[y - 1, left_b] == start_col:
                     stack.append((left_b, y - 1))
+                    img[y - 1, left_b] = new_color
             if y + 1 < height:
                 if img[y + 1, left_b] == start_col:
                     stack.append((left_b, y + 1))
+                    img[y + 1, left_b] = new_color
 
         # looking for the right boundary, scanning for new runs above/below
         run_above = run_above_detected_on_start
@@ -577,6 +589,7 @@ def scanline_stackbased_flood_fill_8con(
                 elif img[y + 1, right_b] == start_col:
                     run_above = True
                     stack.append((right_b, y + 1))
+                    img[y + 1, right_b] = new_color
 
             if y - 1 >= 0:
                 if run_below:
@@ -585,6 +598,7 @@ def scanline_stackbased_flood_fill_8con(
                 elif img[y - 1, right_b] == start_col:
                     run_below = True
                     stack.append((right_b ,y - 1))
+                    img[y - 1, right_b] = new_color
 
             right_b += 1
 
@@ -593,9 +607,11 @@ def scanline_stackbased_flood_fill_8con(
             if y - 1 >= 0:
                 if img[y - 1, right_b] == start_col:
                     stack.append((right_b, y - 1))
+                    img[y - 1, right_b] = new_color
             if y + 1 < height:
                 if img[y + 1, right_b] == start_col:
                     stack.append((right_b, y + 1))
+                    img[y + 1, right_b] = new_color
 
     while stack:
         cur = stack.pop()
@@ -620,9 +636,9 @@ def scanline_queuebased_flood_fill_4con(
         raise ValueError("start_col must be different from new_color")
 
     queue = [start]
+    img[start[1], start[0]] = new_color
 
     def identify_and_fill_run(seed):
-        img[seed[1], seed[0]] = new_color
         left_b, y = seed[0] - 1, seed[1]
         right_b = left_b + 2
 
@@ -631,10 +647,12 @@ def scanline_queuebased_flood_fill_4con(
         if y + 1 < height:
             if img[seed[1] + 1, seed[0]] == start_col:
                 queue.append((seed[0], seed[1] + 1))
+                img[seed[1] + 1, seed[0]] = new_color
                 run_above_detected_on_start = True
         if y - 1 >= 0:
             if img[seed[1] - 1, seed[0]] == start_col:
                 queue.append((seed[0], seed[1] - 1))
+                img[seed[1] - 1, seed[0]] = new_color
                 run_below_detected_on_start = True
         # TODO: Bei 8-connected sicher gehen, dass bei boundary als seed trotzdem ordentlich geprüft wird
         # looking for the left boundary, scanning for new runs above/below
@@ -650,6 +668,7 @@ def scanline_queuebased_flood_fill_4con(
                 elif img[y + 1, left_b] == start_col:
                     run_above = True
                     queue.append((left_b, y + 1))
+                    img[y + 1, left_b] = new_color
 
             if y - 1 >= 0:
                 if run_below:
@@ -658,6 +677,7 @@ def scanline_queuebased_flood_fill_4con(
                 elif img[y - 1, left_b] == start_col:
                     run_below = True
                     queue.append((left_b, y - 1))
+                    img[y - 1, left_b] = new_color
             left_b -= 1
 
         # looking for the right boundary, scanning for new runs above/below
@@ -673,6 +693,7 @@ def scanline_queuebased_flood_fill_4con(
                 elif img[y + 1, right_b] == start_col:
                     run_above = True
                     queue.append((right_b, y + 1))
+                    img[y + 1, right_b] = new_color
 
             if y - 1 >= 0:
                 if run_below:
@@ -681,6 +702,7 @@ def scanline_queuebased_flood_fill_4con(
                 elif img[y - 1, right_b] == start_col:
                     run_below = True
                     queue.append((right_b ,y - 1))
+                    img[y - 1, right_b] = new_color
 
             right_b += 1
 
@@ -707,9 +729,9 @@ def scanline_queuebased_flood_fill_8con(
         raise ValueError("start_col must be different from new_color")
 
     queue = [start]
+    img[start[1], start[0]] = new_color
 
     def identify_and_fill_run(seed):
-        img[seed[1], seed[0]] = new_color
         left_b, y = seed[0] - 1, seed[1]
         right_b = left_b + 2
 
@@ -718,10 +740,12 @@ def scanline_queuebased_flood_fill_8con(
         if y + 1 < height:
             if img[seed[1] + 1, seed[0]] == start_col:
                 queue.append((seed[0], seed[1] + 1))
+                img[seed[1] + 1, seed[0]] = new_color
                 run_above_detected_on_start = True
         if y - 1 >= 0:
             if img[seed[1] - 1, seed[0]] == start_col:
                 queue.append((seed[0], seed[1] - 1))
+                img[seed[1] - 1, seed[0]] = new_color
                 run_below_detected_on_start = True
 
         # looking for the left boundary, scanning for new runs above/below
@@ -737,6 +761,7 @@ def scanline_queuebased_flood_fill_8con(
                 elif img[y + 1, left_b] == start_col:
                     run_above = True
                     queue.append((left_b, y + 1))
+                    img[y + 1, left_b] = new_color
 
             if y - 1 >= 0:
                 if run_below:
@@ -745,6 +770,7 @@ def scanline_queuebased_flood_fill_8con(
                 elif img[y - 1, left_b] == start_col:
                     run_below = True
                     queue.append((left_b, y - 1))
+                    img[y - 1, left_b] = new_color
             left_b -= 1
 
         # checking for 8-connected run on left side
@@ -752,9 +778,11 @@ def scanline_queuebased_flood_fill_8con(
             if y - 1 >= 0:
                 if img[y - 1, left_b] == start_col:
                     queue.append((left_b, y - 1))
+                    img[y - 1, left_b] = new_color
             if y + 1 < height:
                 if img[y + 1, left_b] == start_col:
                     queue.append((left_b, y + 1))
+                    img[y - 1, left_b] = new_color
 
         # looking for the right boundary, scanning for new runs above/below
         run_above = run_above_detected_on_start
@@ -769,6 +797,7 @@ def scanline_queuebased_flood_fill_8con(
                 elif img[y + 1, right_b] == start_col:
                     run_above = True
                     queue.append((right_b, y + 1))
+                    img[y + 1, right_b] = new_color
 
             if y - 1 >= 0:
                 if run_below:
@@ -777,6 +806,7 @@ def scanline_queuebased_flood_fill_8con(
                 elif img[y - 1, right_b] == start_col:
                     run_below = True
                     queue.append((right_b ,y - 1))
+                    img[y - 1, right_b] = new_color
 
             right_b += 1
 
@@ -785,9 +815,11 @@ def scanline_queuebased_flood_fill_8con(
             if y - 1 >= 0:
                 if img[y - 1, right_b] == start_col:
                     queue.append((right_b, y - 1))
+                    img[y - 1, right_b] = new_color
             if y + 1 < height:
                 if img[y + 1, right_b] == start_col:
                     queue.append((right_b, y + 1))
+                    img[y + 1, right_b] = new_color
 
     while queue:
         cur = queue.pop(0)
@@ -812,9 +844,10 @@ def scanline_stackbased_flood_fill_4con_optimized(
         raise ValueError("start_col must be different from new_color")
 
     stack = [start]
+    img[start[1], start[0]] = new_color
 
     def identify_and_fill_run(seed):
-        img[seed[1], seed[0]] = new_color
+
         left_b, y = seed[0] - 1, seed[1]
         right_b = left_b + 2
 
@@ -839,11 +872,13 @@ def scanline_stackbased_flood_fill_4con_optimized(
             if y + 1 < height:
                 if img[seed[1] + 1, seed[0]] == start_col:
                     temp_stack.append((seed[0], seed[1] + 1))
+                    img[seed[1] + 1, seed[0]] = new_color
                     run_above_detected_on_start = True
         if not parent_below or not parent_boundary_left <= seed[0] <= parent_boundary_right:
             if y - 1 >= 0:
                 if img[seed[1] - 1, seed[0]] == start_col:
                     temp_stack.append((seed[0], seed[1] - 1))
+                    img[seed[1] - 1, seed[0]] = new_color
                     run_below_detected_on_start = True
 
         # looking for the left boundary, scanning for new runs above/below
@@ -860,6 +895,7 @@ def scanline_stackbased_flood_fill_4con_optimized(
                     elif img[y + 1, left_b] == start_col:
                         run_above = True
                         temp_stack.append((left_b, y + 1))
+                        img[y + 1, left_b] = new_color
 
             if not parent_below or not parent_boundary_left <= left_b <= parent_boundary_right:
                 if y - 1 >= 0:
@@ -869,6 +905,7 @@ def scanline_stackbased_flood_fill_4con_optimized(
                     elif img[y - 1, left_b] == start_col:
                         run_below = True
                         temp_stack.append((left_b, y - 1))
+                        img[y - 1, left_b] = new_color
             left_b -= 1
 
         # looking for the right boundary, scanning for new runs above/below
@@ -885,6 +922,7 @@ def scanline_stackbased_flood_fill_4con_optimized(
                     elif img[y + 1, right_b] == start_col:
                         run_above = True
                         temp_stack.append((right_b, y + 1))
+                        img[y + 1, right_b] = new_color
 
             if not parent_below or not parent_boundary_left <= right_b <= parent_boundary_right:
                 if y - 1 >= 0:
@@ -894,9 +932,10 @@ def scanline_stackbased_flood_fill_4con_optimized(
                     elif img[y - 1, right_b] == start_col:
                         run_below = True
                         temp_stack.append((right_b ,y - 1))
+                        img[y - 1, right_b] = new_color
 
             right_b += 1
-
+# TODO: Fix scanline procedures
 
         run_data = (y, left_b+1, right_b-1)
         for new_seed in temp_stack:
@@ -926,9 +965,10 @@ def scanline_stackbased_flood_fill_8con_optimized(
         raise ValueError("start_col must be different from new_color")
 
     stack = [start]
+    img[start[1], start[0]] = new_color
 
     def identify_and_fill_run(seed):
-        img[seed[1], seed[0]] = new_color
+
         left_b, y = seed[0] - 1, seed[1]
         right_b = left_b + 2
 
@@ -953,11 +993,13 @@ def scanline_stackbased_flood_fill_8con_optimized(
             if y + 1 < height:
                 if img[seed[1] + 1, seed[0]] == start_col:
                     temp_stack.append((seed[0], seed[1] + 1))
+                    img[seed[1] + 1, seed[0]] = new_color
                     run_above_detected_on_start = True
         if not parent_below or not parent_boundary_left <= seed[0] <= parent_boundary_right:
             if y - 1 >= 0:
                 if img[seed[1] - 1, seed[0]] == start_col:
                     temp_stack.append((seed[0], seed[1] - 1))
+                    img[seed[1] - 1, seed[0]] = new_color
                     run_below_detected_on_start = True
 
         # looking for the left boundary, scanning for new runs above/below
@@ -974,6 +1016,7 @@ def scanline_stackbased_flood_fill_8con_optimized(
                     elif img[y + 1, left_b] == start_col:
                         run_above = True
                         temp_stack.append((left_b, y + 1))
+                        img[y + 1, left_b] = new_color
 
             if not parent_below or not parent_boundary_left <= left_b <= parent_boundary_right:
                 if y - 1 >= 0:
@@ -983,6 +1026,7 @@ def scanline_stackbased_flood_fill_8con_optimized(
                     elif img[y - 1, left_b] == start_col:
                         run_below = True
                         temp_stack.append((left_b, y - 1))
+                        img[y - 1, left_b] = new_color
             left_b -= 1
 
         # check for 8-connected run on left side
@@ -990,9 +1034,11 @@ def scanline_stackbased_flood_fill_8con_optimized(
             if y - 1 >= 0:
                 if img[y - 1, left_b] == start_col:
                     temp_stack.append((left_b, y - 1))
+                    img[y - 1, left_b] = new_color
             if y + 1 < height:
                 if img[y + 1, left_b] == start_col:
                     temp_stack.append((left_b, y + 1))
+                    img[y + 1, left_b] = new_color
 
         # looking for the right boundary, scanning for new runs above/below
         run_above = run_above_detected_on_start
@@ -1008,6 +1054,7 @@ def scanline_stackbased_flood_fill_8con_optimized(
                     elif img[y + 1, right_b] == start_col:
                         run_above = True
                         temp_stack.append((right_b, y + 1))
+                        img[y + 1, right_b] = new_color
 
             if not parent_below or not parent_boundary_left <= right_b <= parent_boundary_right:
                 if y - 1 >= 0:
@@ -1017,6 +1064,7 @@ def scanline_stackbased_flood_fill_8con_optimized(
                     elif img[y - 1, right_b] == start_col:
                         run_below = True
                         temp_stack.append((right_b ,y - 1))
+                        img[y - 1, right_b] = new_color
 
             right_b += 1
 
@@ -1025,9 +1073,11 @@ def scanline_stackbased_flood_fill_8con_optimized(
             if y - 1 >= 0:
                 if img[y - 1, right_b] == start_col:
                     temp_stack.append((right_b, y - 1))
+                    img[y - 1, right_b] = new_color
             if y + 1 < height:
                 if img[y + 1, right_b] == start_col:
                     temp_stack.append((right_b, y + 1))
+                    img[y + 1, right_b] = new_color
 
         run_data = (y, left_b+1, right_b-1)
         for new_seed in temp_stack:

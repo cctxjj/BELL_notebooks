@@ -1,3 +1,5 @@
+from matplotlib import pyplot as plt
+
 from gifs import *
 
 from fill_algs import *
@@ -26,7 +28,7 @@ def compare(imgs, titles, cols=2):
 
     plt.tight_layout()
     plt.show()
-    plt.savefig("demonstration/effect_comparison.png")
+    fig.savefig("demonstration/effect_comparison.png")
 
 def plot_alg_results():
     # todo: add comments
@@ -48,7 +50,7 @@ def stack_vs_queuebased_fill_gif(path: str = "demonstration/"):
     img_1 = imgutil.grab_image("imgs//img_1.png")
     save_gif(gif_recursive_stackbased_flood_fill_8con(img_1.copy(), (30, 30), 150, 5),
              path + "stackbased_floodfill_8con.gif", 1)
-    save_gif(gif_recursive_queuebased_flood_fill_8con(img_1.copy(), (30, 30), 150, 50000),
+    save_gif(gif_recursive_queuebased_flood_fill_8con(img_1.copy(), (30, 30), 150, 5),
              path + "queuebased_floodfill_8con.gif", 1)
 
 
