@@ -1,7 +1,6 @@
 import math
 
 import numpy as np
-from matplotlib import pyplot as plt
 
 
 def recursive_stackbased_flood_fill_4con(
@@ -20,22 +19,30 @@ def recursive_stackbased_flood_fill_4con(
     if start_col == new_color:
         raise ValueError("start_col must be different from new_color")
     stack = [start]
+    img[start[1], start[0]] = new_color
     while stack:
         cur = stack.pop()
-        img[cur[1], cur[0]] = new_color
+
         if cur[1]+1 < height:
             if img[cur[1] + 1, cur[0]] == start_col:
                 stack.append((cur[0], cur[1]+1))
+                img[cur[1] + 1, cur[0]] = new_color
         if 0 <= cur[1]-1:
             if img[cur[1] - 1, cur[0]] == start_col:
                 stack.append((cur[0], cur[1] - 1))
+                img[cur[1] - 1, cur[0]] = new_color
         if cur[0]+1 < width:
             if img[cur[1], cur[0] + 1] == start_col:
                 stack.append((cur[0] + 1, cur[1]))
+                img[cur[1], cur[0] + 1] = new_color
         if 0 <= cur[0]-1:
             if img[cur[1], cur[0] - 1] == start_col:
                 stack.append((cur[0] - 1, cur[1]))
+                img[cur[1], cur[0] - 1] = new_color
     return img
+
+# TODO: irgendwo erwähnen: Designfehler im Algorithmus --> doppelte Prüfung da nicht direkt neue Farbe
+# TODO: Farben anpassen
 
 def recursive_stackbased_flood_fill_8con(
         img: np.ndarray,
@@ -53,37 +60,45 @@ def recursive_stackbased_flood_fill_8con(
     if start_col == new_color:
         raise ValueError("start_col must be different from new_color")
     stack = [start]
+    img[start[1], start[0]] = new_color
     while stack:
         cur = stack.pop()
-        img[cur[1], cur[0]] = new_color
 
         if cur[1] + 1 < height:
             if img[cur[1] + 1, cur[0]] == start_col:
                 stack.append((cur[0], cur[1]+1))
+                img[cur[1] + 1, cur[0]] = new_color
             if cur[0] + 1 < width:
                 if img[cur[1] + 1, cur[0] + 1] == start_col:
                     stack.append((cur[0] + 1, cur[1] + 1))
+                    img[cur[1] + 1, cur[0] + 1] = new_color
             if 0 <= cur[0] - 1:
                 if img[cur[1] + 1, cur[0] - 1] == start_col:
                     stack.append((cur[0] - 1, cur[1] + 1))
+                    img[cur[1] + 1, cur[0] - 1] = new_color
 
         if 0 <= cur[1] - 1:
             if img[cur[1] - 1, cur[0]] == start_col:
                 stack.append((cur[0], cur[1] - 1))
+                img[cur[1] - 1, cur[0]] = new_color
             if cur[0] + 1 < width:
                 if img[cur[1] - 1, cur[0] + 1] == start_col:
                     stack.append((cur[0] + 1, cur[1] - 1))
+                    img[cur[1] - 1, cur[0] + 1] = new_color
             if 0 <= cur[0] - 1:
                 if img[cur[1] - 1, cur[0] - 1] == start_col:
                     stack.append((cur[0] - 1, cur[1] - 1))
+                    img[cur[1] - 1, cur[0] - 1] = new_color
 
         if cur[0] + 1 < width:
             if img[cur[1], cur[0] + 1] == start_col:
                 stack.append((cur[0] + 1, cur[1] ))
+                img[cur[1], cur[0] + 1] = new_color
 
         if 0 <= cur[0]-1:
             if img[cur[1], cur[0] - 1] == start_col:
                 stack.append((cur[0] - 1, cur[1]))
+                img[cur[1], cur[0] - 1] = new_color
     return img
 
 def recursive_stackbased_boundary_fill_4con(
@@ -100,23 +115,29 @@ def recursive_stackbased_boundary_fill_4con(
     :return 2D-Array representing the modified picture
     '''
     height, width = np.shape(img)
+
     stack = [start]
+    img[start[1], start[0]] = new_color
+
     while stack:
         cur = stack.pop()
-        img[cur[1], cur[0]] = new_color
 
         if cur[1]+1 < height:
             if img[cur[1] + 1, cur[0]] != boundary_color and img[cur[1] + 1, cur[0]] != new_color:
                 stack.append((cur[0], cur[1]+1))
+                img[cur[1] + 1, cur[0]] = new_color
         if 0 <= cur[1]-1:
             if img[cur[1] - 1, cur[0]] != boundary_color and img[cur[1] - 1, cur[0]] != new_color:
                 stack.append((cur[0], cur[1] - 1))
+                img[cur[1] - 1, cur[0]] = new_color
         if cur[0]+1 < width:
             if img[cur[1], cur[0] + 1] != boundary_color and img[cur[1], cur[0] + 1] != new_color:
                 stack.append((cur[0] + 1, cur[1]))
+                img[cur[1], cur[0] + 1] = new_color
         if 0 <= cur[0]-1:
             if img[cur[1], cur[0] - 1] != boundary_color and img[cur[1], cur[0] - 1] != new_color:
                 stack.append((cur[0] - 1, cur[1]))
+                img[cur[1], cur[0] - 1] = new_color
     return img
 
 def recursive_stackbased_boundary_fill_8con(
@@ -133,39 +154,48 @@ def recursive_stackbased_boundary_fill_8con(
     :return 2D-Array representing the modified picture
     '''
     height, width = np.shape(img)
+
     stack = [start]
+    img[start[1], start[0]] = new_color
 
     while stack:
         cur = stack.pop()
-        img[cur[1], cur[0]] = new_color
 
         if cur[1] + 1 < height:
             if img[cur[1] + 1, cur[0]] != boundary_color and img[cur[1] + 1, cur[0]] != new_color:
-                stack.append((cur[0], cur[1]+1))
+                stack.append((cur[0], cur[1] + 1))
+                img[cur[1] + 1, cur[0]] = new_color
             if cur[0] + 1 < width:
                 if img[cur[1] + 1, cur[0] + 1] != boundary_color and img[cur[1] + 1, cur[0] + 1] != new_color:
                     stack.append((cur[0] + 1, cur[1] + 1))
+                    img[cur[1] + 1, cur[0] + 1] = new_color
             if 0 <= cur[0] - 1:
                 if img[cur[1] + 1, cur[0] - 1] != boundary_color and img[cur[1] + 1, cur[0] - 1] != new_color:
                     stack.append((cur[0] - 1, cur[1] + 1))
+                    img[cur[1] + 1, cur[0] - 1] = new_color
 
         if 0 <= cur[1] - 1:
             if img[cur[1] - 1, cur[0]] != boundary_color and img[cur[1] - 1, cur[0]] != new_color:
                 stack.append((cur[0], cur[1] - 1))
+                img[cur[1] - 1, cur[0]] = new_color
             if cur[0] + 1 < width:
                 if img[cur[1] - 1, cur[0] + 1] != boundary_color and img[cur[1] - 1, cur[0] + 1] != new_color:
                     stack.append((cur[0] + 1, cur[1] - 1))
+                    img[cur[1] - 1, cur[0] + 1] = new_color
             if 0 <= cur[0] - 1:
                 if img[cur[1] - 1, cur[0] - 1] != boundary_color and img[cur[1] - 1, cur[0] - 1] != new_color:
                     stack.append((cur[0] - 1, cur[1] - 1))
+                    img[cur[1] - 1, cur[0] + 1] = new_color
 
         if cur[0] + 1 < width:
             if img[cur[1], cur[0] + 1] != boundary_color and img[cur[1], cur[0] + 1] != new_color:
-                stack.append((cur[0] + 1, cur[1] ))
+                stack.append((cur[0] + 1, cur[1]))
+                img[cur[1], cur[0] + 1] = new_color
 
         if 0 <= cur[0] - 1:
             if img[cur[1], cur[0] - 1] != boundary_color and img[cur[1], cur[0] - 1] != new_color:
                 stack.append((cur[0] - 1, cur[1]))
+                img[cur[1], cur[0] - 1] = new_color
     return img
 
 
@@ -186,22 +216,30 @@ def recursive_queuebased_flood_fill_4con(
         raise ValueError("start_col must be different from new_color")
 
     queue = [start]
+    img[start[1], start[0]] = new_color
+
     while queue:
         cur = queue.pop(0)
-        img[cur[1], cur[0]] = new_color
 
         if cur[1]+1 < height:
             if img[cur[1] + 1, cur[0]] == start_col:
                 queue.append((cur[0], cur[1] + 1))
+                img[cur[1] + 1, cur[0]] = new_color
+
         if 0 <= cur[1]-1:
             if img[cur[1] - 1, cur[0]] == start_col:
                 queue.append((cur[0], cur[1] - 1))
+                img[cur[1] - 1, cur[0]] = new_color
+
         if cur[0]+1 < width:
             if img[cur[1], cur[0] + 1] == start_col:
                 queue.append((cur[0] + 1, cur[1]))
+                img[cur[1], cur[0] + 1] = new_color
+
         if 0 <= cur[0]-1:
             if img[cur[1], cur[0] - 1] == start_col:
                 queue.append((cur[0] - 1, cur[1]))
+                img[cur[1], cur[0] - 1] = new_color
     return img
 
 def recursive_queuebased_flood_fill_8con(
@@ -221,37 +259,49 @@ def recursive_queuebased_flood_fill_8con(
         raise ValueError("start_col must be different from new_color")
 
     queue = [start]
+    img[start[1], start[0]] = new_color
     while queue:
         cur = queue.pop(0)
-        img[cur[1], cur[0]] = new_color
 
         if cur[1] + 1 < height:
             if img[cur[1] + 1, cur[0]] == start_col:
                 queue.append((cur[0], cur[1] + 1))
+                img[cur[1]+1, cur[0]] = new_color
+
             if cur[0] + 1 < width:
                 if img[cur[1] + 1, cur[0] + 1] == start_col:
                     queue.append((cur[0] + 1, cur[1] + 1))
+                    img[cur[1]+1, cur[0]+1] = new_color
+
             if 0 <= cur[0] - 1:
                 if img[cur[1] + 1, cur[0] - 1] == start_col:
                     queue.append((cur[0] - 1, cur[1] + 1))
+                    img[cur[1]+1, cur[0]-1] = new_color
 
         if 0 <= cur[1] - 1:
             if img[cur[1] - 1, cur[0]] == start_col:
                 queue.append((cur[0], cur[1] - 1))
+                img[cur[1]-1, cur[0]] = new_color
+
             if cur[0] + 1 < width:
                 if img[cur[1] - 1, cur[0] + 1] == start_col:
                     queue.append((cur[0] + 1, cur[1] - 1))
+                    img[cur[1]-1, cur[0]+1] = new_color
+
             if 0 <= cur[0] - 1:
                 if img[cur[1] - 1, cur[0] - 1] == start_col:
                     queue.append((cur[0] - 1, cur[1] - 1))
+                    img[cur[1]-1, cur[0]-1] = new_color
 
         if cur[0] + 1 < width:
             if img[cur[1], cur[0] + 1] == start_col:
                 queue.append((cur[0] + 1, cur[1]))
+                img[cur[1], cur[0]+1] = new_color
 
         if 0 <= cur[0]-1:
             if img[cur[1], cur[0] - 1] == start_col:
                 queue.append((cur[0] - 1, cur[1]))
+                img[cur[1], cur[0]-1] = new_color
     return img
 
 def recursive_queuebased_boundary_fill_4con(
@@ -268,23 +318,32 @@ def recursive_queuebased_boundary_fill_4con(
     :return 2D-Array representing the modified picture
     '''
     height, width = np.shape(img)
+
     queue = [start]
+    img[start[1], start[0]] = new_color
+
     while queue:
         cur = queue.pop(0)
-        img[cur[1], cur[0]] = new_color
 
         if cur[1]+1 < height:
             if img[cur[1] + 1, cur[0]] != boundary_color and img[cur[1] + 1, cur[0]] != new_color:
                 queue.append((cur[0], cur[1] + 1))
+                img[cur[1] + 1, cur[0]] = new_color
+
         if 0 <= cur[1]-1:
             if img[cur[1] - 1, cur[0]] != boundary_color and img[cur[1] - 1, cur[0]] != new_color:
                 queue.append((cur[0], cur[1] - 1))
+                img[cur[1] - 1, cur[0]] = new_color
+
         if cur[0]+1 < width:
             if img[cur[1], cur[0] + 1] != boundary_color and img[cur[1], cur[0] + 1] != new_color:
                 queue.append((cur[0] + 1, cur[1]))
+                img[cur[1], cur[0] + 1] = new_color
+
         if 0 <= cur[0]-1:
             if img[cur[1], cur[0] - 1] != boundary_color and img[cur[1], cur[0] - 1] != new_color:
                 queue.append((cur[0] - 1, cur[1]))
+                img[cur[1], cur[0] - 1] = new_color
     return img
 
 def recursive_queuebased_boundary_fill_8con(
@@ -301,39 +360,53 @@ def recursive_queuebased_boundary_fill_8con(
     :return 2D-Array representing the modified picture
     '''
     height, width = np.shape(img)
+
     queue = [start]
+    img[start[1], start[0]] = new_color
+
     while queue:
         cur = queue.pop(0)
-        img[cur[1], cur[0]] = new_color
 
-        # noinspection DuplicatedCode
         if cur[1] + 1 < height:
             if img[cur[1] + 1, cur[0]] != boundary_color and img[cur[1] + 1, cur[0]] != new_color:
                 queue.append((cur[0], cur[1] + 1))
+                img[cur[1] + 1, cur[0]] = new_color
+
             if cur[0] + 1 < width:
                 if img[cur[1] + 1, cur[0] + 1] != boundary_color and img[cur[1] + 1, cur[0] + 1] != new_color:
                     queue.append((cur[0] + 1, cur[1] + 1))
+                    img[cur[1] + 1, cur[0] + 1] = new_color
+
             if 0 <= cur[0] - 1:
                 if img[cur[1] + 1, cur[0] - 1] != boundary_color and img[cur[1] + 1, cur[0] - 1] != new_color:
                     queue.append((cur[0] - 1, cur[1] + 1))
+                    img[cur[1] + 1, cur[0] - 1] = new_color
 
         if 0 <= cur[1] - 1:
             if img[cur[1] - 1, cur[0]] != boundary_color and img[cur[1] - 1, cur[0]] != new_color:
                 queue.append((cur[0], cur[1] - 1))
+                img[cur[1] - 1, cur[0]] = new_color
+
             if cur[0] + 1 < width:
                 if img[cur[1] - 1, cur[0] + 1] != boundary_color and img[cur[1] - 1, cur[0] + 1] != new_color:
                     queue.append((cur[0] + 1, cur[1] - 1))
+                    img[cur[1] - 1, cur[0] + 1] = new_color
+
             if 0 <= cur[0] - 1:
                 if img[cur[1] - 1, cur[0] - 1] != boundary_color and img[cur[1] - 1, cur[0] - 1] != new_color:
                     queue.append((cur[0] - 1, cur[1] - 1))
+                    img[cur[1] - 1, cur[0] - 1] = new_color
 
         if cur[0] + 1 < width:
             if img[cur[1], cur[0] + 1] != boundary_color and img[cur[1], cur[0] + 1] != new_color:
                 queue.append((cur[0] + 1, cur[1]))
+                img[cur[1], cur[0] + 1] = new_color
 
         if 0 <= cur[0] - 1:
             if img[cur[1], cur[0] - 1] != boundary_color and img[cur[1], cur[0] - 1] != new_color:
                 queue.append((cur[0] - 1, cur[1]))
+                img[cur[1], cur[0] - 1] = new_color
+
     return img
 
 def scanline_stackbased_flood_fill_4con(
@@ -348,7 +421,9 @@ def scanline_stackbased_flood_fill_4con(
     :return 2D-Array representing the modified picture
     '''
     height, width = np.shape(img)
+
     start_col = img[start[1], start[0]]
+
     if start_col == new_color:
         raise ValueError("start_col must be different from new_color")
 

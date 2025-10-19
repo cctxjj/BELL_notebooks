@@ -245,7 +245,7 @@ def plot_runtime(data, alg_title, color="purple", save_path=None, file_name=None
     else:
         plt.show()
 
-def plot_runtime_comparison(alg_titles, data, colors=None, title_seperator=" & ", title_appendix="", save_path=None, file_name=None):
+def plot_runtime_comparison(alg_titles, data, colors=None, title_seperator=" & ", title = None, title_appendix="", save_path=None, file_name=None):
     """
     # TODO: comment (credit: ChatGPT)
     """
@@ -260,7 +260,7 @@ def plot_runtime_comparison(alg_titles, data, colors=None, title_seperator=" & "
 
     plt.xlabel("Eingabegröße n")
     plt.ylabel("Zeit in Sekunden")
-    plt.title("Vergleich Zeitkomplexität " + title_seperator.join(alg_titles) + title_appendix)
+    plt.title("Vergleich Zeitkomplexität " + title_seperator.join(alg_titles) + title_appendix if title is None else title)
     plt.grid(True)
     plt.legend()
     plt.tight_layout()
