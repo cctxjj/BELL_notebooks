@@ -23,7 +23,7 @@ using custom training loop to establish basis for unsupervised learning later on
 # setting up variables
 degree = 5
 epochs = 20
-epochs_bez_curve = 8
+epochs_bez_curve = 5
 
 # model setup
 model = tf.keras.Sequential(
@@ -50,7 +50,7 @@ def train_step(epoche_num: int):
         y_pred = model(inputs=tf.constant([[t / 200] for t in range(200)], dtype=tf.float32))
         target_bez_vals = tf.constant(
             np.array([[bernstein_polynomial(i, degree, t / 200) for i in range(degree + 1)] for t in range(200)]), dtype=tf.float32)
-        loss = tf.reduce_mean(tf.square(tf.subtract(y_pred, target_bez_vals)))
+        loss_bez = tf.reduce_mean(tf.square(tf.subtract(y_pred, target_bez_vals)))
         cont_points = create_random_curve_points(6, random.randint(0, 3), random.randint(6, 13), 0,
                                                  random.randint(1,
                                                                 15))  # TODO: check for effect of switching num_cont_points to random
@@ -66,13 +66,14 @@ def train_step(epoche_num: int):
                     cur_y += func_val * cont_points[i][1]
                 curve_points.append((cur_x, cur_y))
             vis.visualize_curve(curve_points, cont_points, True)
-            drag_evaluation = DragEvaluator(curve_points, specification="test_8_training_v3").execute()
-            if drag_evaluation[1] == 0:
-                return -1
-            loss = tf.pow(loss, tf.constant(drag_evaluation[0], dtype=tf.float32))
+            drag_evaluation = DragEvaluator(curve_points, specification="nf_test_1_v1").execute()
+            loss = tf.pow(tf.subtract(tf.constant(drag_evaluation, dtype=tf.float32), loss_bez), tf.constant(2, dtype=tf.float32))
             overall_losses.append(loss)
             print(f"Overall loss list  : {overall_losses}")
-
+            # TODO: zentrales Problem mit Loss: belohnt gegen konvergierende Kurven
+            # --> Stability berücksichtigen, bez_curves irgendwie besser einfließen lassen --> exponentieller Zusammenhang
+        else:
+            loss = loss_bez
         # Loss calculation
         #loss = drag_curve_squared_loss(model, degree)
 

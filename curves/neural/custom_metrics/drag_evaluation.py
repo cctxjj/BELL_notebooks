@@ -32,21 +32,13 @@ class DragEvaluator:
         self.save_airfoil = save_airfoil
 
         # format points
-        translation = converge_shape_to_mirrored_airfoil(points) # returns list of points and angle of rotation
-        self.rotation = translation[1] # TODO: use rotation data to adjust angle of incoming airstream
-        af_points = translation[0]
-        af_points = np.array(af_points)
-        # asb.Airfoil
+        #translation = insert converge_shape_to_mirrored_airfoil in case rotation is needed rotate wieder # returns list of points (and angle of rotation if rotation is applied manually)
+        #self.rotation = translation[1] # TODO: use rotation data to adjust angle of incoming airstream
+        af_points = np.array(converge_shape_to_mirrored_airfoil(points))
+
 
         # setup airfoil obj
         self.airfoil = Airfoil(coordinates=af_points, name=self.name).repanel(n_points_per_side=200)
-        print(
-            nf.get_aero_from_airfoil(
-                airfoil=self.airfoil,
-                Re=10e6,
-                alpha=0,
-            )
-        )
         #self.airfoil = Airfoil(name="naca0012")
 
         if save_airfoil:
@@ -66,25 +58,14 @@ class DragEvaluator:
         :return:
         # TODO: Idee: auf logischer Basis mathematische Formel für Evaluation formulieren --> desto steiler Winkel desto weniger relevant --> *1/a oder so?
         """
-        xf = XFoil(
-            airfoil=self.airfoil,
+        print("starting evaluation for ", self.name, "")
+        alphas = [*range(self.start_angle, self.start_angle + self.range)]
+        cds = nf.get_aero_from_airfoil(
+             airfoil=self.airfoil,
             Re=re,
-            verbose=False,
-            xfoil_repanel=True
-        )
-        print(xf.alpha(0).get("CD"))
-        xf.timeout = 1000000
-        alphas = [*range(self.start_angle+self.rotation, self.start_angle+self.range+self.rotation)]
-        cds = {}
-        print("\n")
-        for ind, alpha in enumerate(alphas):
-            # output progress
-            print(f"\revaluating alpha {(ind+1)}/{self.range} (={alpha}°/{self.start_angle + self.rotation + self.range}°) for {self.name}", end="")
-            sys.stdout.flush()
-            res = xf.alpha(alpha).get("CD")
-            if len(res) != 0:
-                if res[0] != 0:
-                    cds[alpha if alpha!=0 else 1] = res[0]
+            alpha=alphas,
+        ).get("CD")
+        # TODO: Include prediction certainty?
         print(f"\revaluation for {self.name} done\n", end="")
         #print(cds)
         #print(alphas)
@@ -93,14 +74,12 @@ class DragEvaluator:
         # calculating custom drag value
         n = len(cds)
         d_v = 0
-        stability = len(cds)/len(alphas)
-        if stability == 0:
-            return 0, stability
-        for alpha in cds.keys():
-            d_v += cds[alpha] / alpha
+        for index, alpha in enumerate(alphas):
+            d_v += cds[alpha] / (alpha if alpha != 0 else 1)
         d_v = d_v / n
-        return d_v, stability
+        return d_v
 
+    # LEGACY METHOD, to be ignored --> datasetcreator won't be needed
     def find_valid_alpha_cd(
             self,
             re: float = 1e8):
@@ -120,7 +99,7 @@ class DragEvaluator:
 
 
 
-cont_points = [(0, 0), (0.5, 1.5), (3, 2), (10, 0.5), (11, 0)]
-curve_points = bezier_curve(cont_points, 250)
-ev = DragEvaluator(curve_points, save_airfoil=False, range=30, start_angle=0, specification="custom_drag_test_naca0012")
-print(ev.execute())
+#cont_points = [(0, 0), (0.5, 1.5), (3, 2), (10, 0.5), (11, 0)]
+#curve_points = bezier_curve(cont_points, 250)
+#ev = DragEvaluator(curve_points, save_airfoil=False, range=30, start_angle=0, specification="custom_drag_test_naca0012")
+#print(ev.execute())

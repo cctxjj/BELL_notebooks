@@ -44,11 +44,11 @@ def converge_shape_to_mirrored_airfoil(
     :param round_digits: digits to which the calculated points should be rounded
     :return:
     """
-
+    # Todo: Check whether rotation is really necessary
     # rotation checks
-    m = (points[-1][1] - points[0][1]) / (points[-1][0] - points[0][0])
-    if m != 0:
-        points = rotate_curve(points, -1*math.degrees(math.atan(m)))
+    #m = (points[-1][1] - points[0][1]) / (points[-1][0] - points[0][0])
+    #if m != 0:
+    #    points = rotate_curve(points, -1*math.degrees(math.atan(m)))
 
     # normalization
     points = normalize_points(points)
@@ -61,7 +61,8 @@ def converge_shape_to_mirrored_airfoil(
     for element in raw_result:
         if element not in checked_result:
             checked_result.append(element)
-    return checked_result, math.degrees(math.atan(m))
+    return checked_result
+    #return checked_result, math.degrees(math.atan(m))
 
 def rotate_curve(points, angle: float):
     # formatting points to start at (0, 0)
