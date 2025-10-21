@@ -130,7 +130,7 @@ def plot_circular_points(points):
 # TODO: reformat comments
 def visualize_curve(
         points: list,
-        control_points: list = None,
+        control_points: list = [],
         show_hull: bool = True,
         save_path: str = None,
         file_name: str = None,
@@ -175,7 +175,7 @@ def visualize_curve(
             ax.add_patch(polygon)
 
     # Kontrollpunkte
-    if control_points:
+    if len(control_points) != 0:
         cx, cy = zip(*control_points)
         ax.plot(cx, cy, "o--", c=colors["control"], label="control points")
 

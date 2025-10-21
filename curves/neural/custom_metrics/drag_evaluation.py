@@ -13,8 +13,12 @@ from curves.func_based.bézier_curve import bezier_curve
 from util.shape_modifier import normalize_points, converge_shape_to_mirrored_airfoil
 
 eval_count = 0
-default_path = "C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/neural_curves/airfoil_data_nomenclat2"
+default_path = "C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/neural_curves/nf_evaluation"
 #default_path = "/root/bell/data/neural_curves/airfoil_on_server"
+
+def reset_eval_count():
+    global eval_count
+    eval_count = 0
 
 class DragEvaluator:
     def __init__(self,
@@ -58,7 +62,7 @@ class DragEvaluator:
         :return:
         # TODO: Idee: auf logischer Basis mathematische Formel für Evaluation formulieren --> desto steiler Winkel desto weniger relevant --> *1/a oder so?
         """
-        print("starting evaluation for ", self.name, "")
+        #print("starting evaluation for ", self.name, "")
         alphas = [*range(self.start_angle, self.start_angle + self.range)]
         cds = nf.get_aero_from_airfoil(
              airfoil=self.airfoil,
@@ -66,9 +70,9 @@ class DragEvaluator:
             alpha=alphas,
         ).get("CD")
         # TODO: Include prediction certainty?
-        print(f"\revaluation for {self.name} done\n", end="")
-        #print(cds)
-        #print(alphas)
+        #print(f"\revaluation for {self.name} done\n", end="")
+        ##print(cds)
+        ##print(alphas)
         #vis.plot_alpha_cd_correlation(alphas=alphas, cds=cds, save_path=os.path.join(default_path, self.name), file_name="alpha_cd.png")
 
         # calculating custom drag value
@@ -102,4 +106,4 @@ class DragEvaluator:
 #cont_points = [(0, 0), (0.5, 1.5), (3, 2), (10, 0.5), (11, 0)]
 #curve_points = bezier_curve(cont_points, 250)
 #ev = DragEvaluator(curve_points, save_airfoil=False, range=30, start_angle=0, specification="custom_drag_test_naca0012")
-#print(ev.execute())
+##print(ev.execute())

@@ -7,7 +7,8 @@ import numpy as np
 import util.graphics.visualisations as vis
 from curves.funtions import bernstein_polynomial
 from curves.neural.custom_metrics.drag_evaluation import DragEvaluator
-from util.datasets.dataset_creator import create_n_parameter_values, create_random_curve_points
+from util.datasets.dataset_creator import create_random_curve_points
+from curves.neural.custom_metrics.drag_evaluation import reset_eval_count
 
 
 """
@@ -22,8 +23,9 @@ using custom training loop to establish basis for unsupervised learning later on
 
 # setting up variables
 degree = 5
-epochs = 20
-epochs_bez_curve = 5
+epochs = 40
+bez_curve_iterations = 4000
+cont_points_ds_length = 32
 
 # model setup
 model = tf.keras.Sequential(
@@ -44,17 +46,17 @@ overall_losses = []
 
 # https://www.tensorflow.org/guide/keras/writing_a_training_loop_from_scratch
 # custom training loop --> unsupervised
-def train_step(epoche_num: int):
+def train_step(epoche_num: int, data: tf.Tensor=None):
     with tf.GradientTape() as tape:
         # Forward pass
-        y_pred = model(inputs=tf.constant([[t / 200] for t in range(200)], dtype=tf.float32))
+        y_pred = model(inputs=tf.constant([[t / 200] for t in range(200)], dtype=tf.float32), training=True)
         target_bez_vals = tf.constant(
             np.array([[bernstein_polynomial(i, degree, t / 200) for i in range(degree + 1)] for t in range(200)]), dtype=tf.float32)
-        loss_bez = tf.reduce_mean(tf.square(tf.subtract(y_pred, target_bez_vals)))
-        cont_points = create_random_curve_points(6, random.randint(0, 3), random.randint(6, 13), 0,
-                                                 random.randint(1,
-                                                                15))  # TODO: check for effect of switching num_cont_points to random
-        if epoche_num >= epochs_bez_curve:
+        loss_bez = tf.reduce_mean(tf.square(tf.subtract(y_pred, target_bez_vals))) # MSE für Bézierkurve
+        if epoche_num >= 1:
+            cont_points = data.numpy()
+
+            # calculating curve points
             func_vals = y_pred.numpy()
             curve_points = []
             for t in range(200):
@@ -66,11 +68,22 @@ def train_step(epoche_num: int):
                     cur_y += func_val * cont_points[i][1]
                 curve_points.append((cur_x, cur_y))
             vis.visualize_curve(curve_points, cont_points, True)
-            drag_evaluation = DragEvaluator(curve_points, specification="nf_test_1_v1").execute()
-            loss = tf.pow(tf.subtract(tf.constant(drag_evaluation, dtype=tf.float32), loss_bez), tf.constant(2, dtype=tf.float32))
-            overall_losses.append(loss)
-            print(f"Overall loss list  : {overall_losses}")
-            # TODO: zentrales Problem mit Loss: belohnt gegen konvergierende Kurven
+
+            # calculating range
+            range_func_vals = tf.constant(float(curve_points[-1][0] - curve_points[0][0]), dtype=tf.float32)
+            #print(f"range: {range_func_vals}")
+
+            # drag calculation
+            drag_evaluation = DragEvaluator(curve_points, specification=f"v3_test1_ep{epoch}").execute()
+            # loss calculation
+            loss = tf.divide(tf.pow(tf.constant(loss_bez, dtype=tf.float32), tf.cast(drag_evaluation, dtype=tf.float32)), range_func_vals)
+
+            curve_points = tf.constant(curve_points, dtype=tf.float32)
+            curve_diff = curve_points[1:] - curve_points[:-1]
+            curve_length = tf.reduce_sum(tf.sqrt(tf.reduce_sum(curve_diff ** 2, axis=1)))
+            loss += 0.001 * (1.0 / curve_length)
+
+            # TODO: zentrales Problem mit Loss: belohnt gegen Punkt konvergierende Kurven
             # --> Stability berücksichtigen, bez_curves irgendwie besser einfließen lassen --> exponentieller Zusammenhang
         else:
             loss = loss_bez
@@ -83,32 +96,38 @@ def train_step(epoche_num: int):
     return loss
 
 # dataset creation and training
-#train_dataset = create_n_parameter_values(n=samples)
+curve_points = [create_random_curve_points(6, random.randint(0, 3), random.randint(6, 13), 0,
+                                                 random.randint(1,
+                                                                15)) for i in range(cont_points_ds_length)]
+curve_points_ds = tf.data.Dataset.from_tensor_slices(curve_points)
+
+
 
 for epoch in range(epochs):
     loss = -1
     ind = 0
 
     # iteration over dataset, training (not using batches)
-    if epoch < epochs_bez_curve:
-        for x in range(1000):
-            loss = train_step(epoch)
+    if epoch >= 1:
+        for data in curve_points_ds:
+            loss = train_step(epoch, data)
             ind += 1
 
             # output progress
-            print(f"\rEpoche: {(epoch+1)}/{epochs} | Run-through: {ind}/{1000} | Loss: {loss}", end="")
-            if ind == 1000:
-                print(f"\rEpoch: {(epoch+1)}/{epochs} | Run-through: {ind}/{1000} | Loss: {loss} | epoche completed")
+            print(f"\rEpoch: {(epoch+1)}/{epochs} | sample {ind}/{cont_points_ds_length} | Loss: {loss}", end="")
+            if ind == cont_points_ds_length:
+                print(f"\rEpoch: {(epoch+1)}/{epochs} | sample {ind}/{cont_points_ds_length} | Loss: {loss} | epoche completed")
             sys.stdout.flush()
+        reset_eval_count()
     else:
-        for x in range(100):
+        for x in range(bez_curve_iterations):
             loss = train_step(epoch)
             ind += 1
 
             # output progress
-            print(f"\rEpoche: {(epoch + 1)}/{epochs} | Run-through: {ind}/{100} | Loss: {loss}", end="")
-            if ind == 100:
-                print(f"\rEpoch: {(epoch + 1)}/{epochs} | Run-through: {ind}/{100} | Loss: {loss} | epoche completed")
+            print(f"\rEpoche: {(epoch + 1)}/{epochs} | Run-through: {ind}/{bez_curve_iterations} | Loss: {loss}", end="")
+            if ind == bez_curve_iterations:
+                print(f"\rEpoch: {(epoch + 1)}/{epochs} | Run-through: {ind}/{bez_curve_iterations} | Loss: {loss} | epoche completed")
             sys.stdout.flush()
 
 
@@ -120,7 +139,7 @@ curve_points = []
 for t in range(1000):
     cur_x = 0
     cur_y = 0
-    pol_vals = model(inputs=tf.constant([[t / 1000]], dtype=tf.float32)).numpy()
+    pol_vals = model(inputs=tf.constant([[t / 1000]], dtype=tf.float64)).numpy()
     for i in range(degree + 1):
         bernstein_polynomial_value = pol_vals[0][i]
         cur_x += bernstein_polynomial_value * control_points[i][0]
