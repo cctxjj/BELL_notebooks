@@ -62,7 +62,6 @@ def train_step(epoche_num: int, data: tf.Tensor=None):
             cont_points = data.numpy()
 
             # calculating curve points
-            func_vals = y_pred.numpy()
             curve_points = []
             for t in range(200):
                 cur_x = 0
@@ -89,7 +88,7 @@ def train_step(epoche_num: int, data: tf.Tensor=None):
             #print(f"range: {range_func_vals}")
 
             # drag loss calculation
-            drag_evaluation = DragEvaluator(curve_points, specification=f"v6/test1/ep{epoch}").execute()
+            drag_evaluation = DragEvaluator(curve_points, specification=f"v7/test1/ep{epoch}").execute()
 
             # loss calculation
             #loss = tf.multiply(tf.pow(tf.constant(loss_bez, dtype=tf.float32), tf.cast(2*drag_evaluation, dtype=tf.float32)), tf.pow(range_loss, tf.constant(2, dtype=tf.float32)))

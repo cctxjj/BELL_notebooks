@@ -10,7 +10,7 @@ from curves.funtions import bernstein_polynomial
 import util.graphics.visualisations as vis
 from curves.neural.custom_metrics.drag_evaluation import DragEvaluator
 
-general_path = "/root/bell"
+general_path = "C:\\Users\\Sebastian\\PycharmProjects\\BELL_notebooks\\"
 
 def make_bernstein_dataset(
         num_samples: int = 1000,
@@ -66,45 +66,9 @@ def create_random_curve_points(
     return [(x_min, 0), *control_points, (x_max, 0)]
 
 
+
+
 def create_bez_curves_drag_coef_dataset(
-        degree: int = 5,
-        points_num: int = 100,
-        samples: int = 1000,
-        file_name: str = "bez_curves_cd"
-):
-    # Structure: (curve (represented as n points): list, alpha , c_d value)
-    curves = []
-    for i in range(samples):
-        print(f"\rCreating curve {i+1}/{samples}", end="")
-        sys.stdout.flush()
-        cont_points = create_random_curve_points(degree, random.randint(0, 3), random.randint(6, 13), 0,
-                                                 random.randint(1, 15))
-        points = bezier_curve(cont_points, points_num)
-        curves.append(points)
-    # TODO: in wie Fern
-    print("\nCurve creation done. Evaluating drag coefficients.\n")
-    values = []
-    i = 0
-    curves_validated = []
-    for curve in curves:
-        i+=1
-        print(f"\rEvaluating curve {i}/{samples} | valid datapoints collected: {len(values)}", end="")
-        sys.stdout.flush()
-        alpha, cd = DragEvaluator(curve, save_airfoil=False, range=16, start_angle=0, specification="dataset_creation_test_3").find_valid_alpha_cd()
-        if alpha is not None:
-            values.append((alpha, cd))
-            curves_validated.append(curve)
-    os.makedirs(os.path.dirname(f"{general_path}/data/datasets/{file_name}.npz"),
-                exist_ok=True)
-    np.savez(f"{general_path}/data/datasets/{file_name}.npz",
-                     points=np.array(curves_validated), values=values)
-    if len(curves_validated) != len(values):
-        raise Exception("Mismatch between curves and values in dataset creation.")
-    print("\nDataset created and saved under given file name.")
-    return len(curves_validated), len(values)
-
-
-def create_fixed_len_bez_curves_drag_coef_dataset(
         degree: int = 5,
         points_num: int = 100,
         length: int = 1000,
@@ -130,12 +94,13 @@ def create_fixed_len_bez_curves_drag_coef_dataset(
         # drag evaluation
         print(f"\rEvaluating curve {total_curves} | valid datapoints collected: {len(valid_curves)}", end="")
         sys.stdout.flush()
-        alpha, cd = DragEvaluator(points, save_airfoil=False, range=16, start_angle=0,
-                                  specification="dataset_creation_test_3").find_valid_alpha_cd()
-        if alpha is not None:
+        alpha = random.randint(0, 45)
+        cd = DragEvaluator(points, save_airfoil=False, range=30, start_angle=0,
+                                  specification=f"dataset_creation_{file_name}").get_cd(alpha=alpha)[0]
+        if cd is not None:
             values.append((alpha, cd))
             valid_curves.append(points)
-# TODO: check specifications, clear up dataset_creator and _2
+
     # saving dataset
     print("\nCalculations done, saving dataset.")
     os.makedirs(os.path.dirname(f"{general_path}/data/datasets/{file_name}.npz"),

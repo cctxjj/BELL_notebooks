@@ -67,7 +67,7 @@ class DragEvaluator:
         """
         #print("starting evaluation for ", self.name, "")
         if self.airfoil is None:
-            return 10e7
+            return None
         alphas = [*range(self.start_angle, self.start_angle + self.range)]
         cds = nf.get_aero_from_airfoil(
              airfoil=self.airfoil,
@@ -87,6 +87,25 @@ class DragEvaluator:
             d_v += cds[alpha] / (alpha if alpha != 0 else 1)
         d_v = d_v / n
         return d_v
+
+    def get_cd(
+            self,
+            re: float = 1e6,
+            alpha: float = 0):
+        """
+        executes the evaluation
+        :param re: reynolds number, default 1e6; expresses flow around airfoil as laminar or turbulent --> assumed to be turbulent, further info under https://www.numberanalytics.com/blog/reynolds-number-aerospace-guide (28.09.25)
+        :return:
+        # TODO: Idee: auf logischer Basis mathematische Formel für Evaluation formulieren --> desto steiler Winkel desto weniger relevant --> *1/a oder so?
+        """
+        #print("starting evaluation for ", self.name, "")
+        if self.airfoil is None:
+            return None
+        return nf.get_aero_from_airfoil(
+            airfoil=self.airfoil,
+            Re=re,
+            alpha=alpha,
+        ).get("CD")
 
     # LEGACY METHOD, to be ignored --> datasetcreator won't be needed
     def find_valid_alpha_cd(
