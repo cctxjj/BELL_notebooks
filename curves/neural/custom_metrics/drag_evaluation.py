@@ -42,10 +42,13 @@ class DragEvaluator:
 
 
         # setup airfoil obj
-        self.airfoil = Airfoil(coordinates=af_points, name=self.name).repanel(n_points_per_side=200)
+        try:
+            self.airfoil = Airfoil(coordinates=af_points, name=self.name).repanel(n_points_per_side=200)
+        except Exception as e:
+            self.airfoil = None
         #self.airfoil = Airfoil(name="naca0012")
 
-        if save_airfoil:
+        if save_airfoil and self.airfoil is not None:
             save_dir = os.path.join(default_path, self.name)
 
             vis.visualize_curve(points=points, save_path=save_dir, file_name="curve.png")
@@ -63,6 +66,8 @@ class DragEvaluator:
         # TODO: Idee: auf logischer Basis mathematische Formel für Evaluation formulieren --> desto steiler Winkel desto weniger relevant --> *1/a oder so?
         """
         #print("starting evaluation for ", self.name, "")
+        if self.airfoil is None:
+            return 10e7
         alphas = [*range(self.start_angle, self.start_angle + self.range)]
         cds = nf.get_aero_from_airfoil(
              airfoil=self.airfoil,

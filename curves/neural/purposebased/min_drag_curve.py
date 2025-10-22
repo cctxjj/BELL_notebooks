@@ -1,3 +1,4 @@
+import math
 import random
 import sys
 
@@ -31,16 +32,20 @@ cont_points_ds_length = 32
 model = tf.keras.Sequential(
     layers = [
         tf.keras.layers.InputLayer(shape = (1,)),
-        tf.keras.layers.Dense(128, activation = "relu"),
         tf.keras.layers.Dense(512, activation = "relu"),
         tf.keras.layers.Dense(512, activation = "relu"),
         tf.keras.layers.Dense(512, activation = "relu"),
-        tf.keras.layers.Dense(128, activation = "relu"),
+        tf.keras.layers.Dense(512, activation = "relu"),
+        tf.keras.layers.Dense(512, activation = "relu"),
+        tf.keras.layers.Dense(512, activation = "relu"),
+        tf.keras.layers.Dense(512, activation = "relu"),
+        tf.keras.layers.Dense(512, activation = "relu"),
+        tf.keras.layers.Dense(512, activation = "relu"),
         tf.keras.layers.Dense(degree + 1, activation = "softmax")
         ]
 )
 optimizer = tf.keras.optimizers.SGD(learning_rate = 0.1)
-model.compile(optimizer = optimizer, loss = "mse")
+model.compile(optimizer = optimizer)
 
 overall_losses = []
 
@@ -69,14 +74,28 @@ def train_step(epoche_num: int, data: tf.Tensor=None):
                 curve_points.append((cur_x, cur_y))
             vis.visualize_curve(curve_points, cont_points, True)
 
-            # calculating range
-            range_func_vals = tf.constant(float(curve_points[-1][0] - curve_points[0][0]), dtype=tf.float32)
+            # range loss
+            distance_border_points = tf.constant(((curve_points[0][0] - cont_points[0][0]) + (cont_points[-1][0] - curve_points[-1][0]))/2, dtype=tf.float32)
+            curve_length = tf.constant(float(curve_points[-1][0] - curve_points[0][0]), dtype=tf.float32)
+
+            point_offsets = []
+            for i in range(len(curve_points)-1):
+                point_offsets.append(abs(float(curve_points[i+1][0] - curve_points[i][0])-(float(curve_points[-1][0] - curve_points[0][0])/len(curve_points))))
+            average_point_offset = tf.maximum(tf.constant(np.sum(np.array(point_offsets))/len(point_offsets), dtype=tf.float32), tf.constant(10e-9))
+            # maximum to ensure non-zeroness
+            # maybe multiply with 100
+
+            range_loss = tf.divide(tf.multiply(distance_border_points, average_point_offset), curve_length)
             #print(f"range: {range_func_vals}")
 
-            # drag calculation
-            drag_evaluation = DragEvaluator(curve_points, specification=f"v3_test1_ep{epoch}").execute()
+            # drag loss calculation
+            drag_evaluation = DragEvaluator(curve_points, specification=f"v6/test1/ep{epoch}").execute()
+
             # loss calculation
-            loss = tf.divide(tf.pow(tf.constant(loss_bez, dtype=tf.float32), tf.cast(drag_evaluation, dtype=tf.float32)), range_func_vals)
+            #loss = tf.multiply(tf.pow(tf.constant(loss_bez, dtype=tf.float32), tf.cast(2*drag_evaluation, dtype=tf.float32)), tf.pow(range_loss, tf.constant(2, dtype=tf.float32)))
+            loss = tf.multiply(
+                tf.cast(drag_evaluation, dtype=tf.float32),
+                tf.pow(range_loss, tf.constant(2, dtype=tf.float32)))
 
             curve_points = tf.constant(curve_points, dtype=tf.float32)
             curve_diff = curve_points[1:] - curve_points[:-1]
@@ -125,7 +144,7 @@ for epoch in range(epochs):
             ind += 1
 
             # output progress
-            print(f"\rEpoche: {(epoch + 1)}/{epochs} | Run-through: {ind}/{bez_curve_iterations} | Loss: {loss}", end="")
+            print(f"\rEpoch: {(epoch + 1)}/{epochs} | Run-through: {ind}/{bez_curve_iterations} | Loss: {loss}", end="")
             if ind == bez_curve_iterations:
                 print(f"\rEpoch: {(epoch + 1)}/{epochs} | Run-through: {ind}/{bez_curve_iterations} | Loss: {loss} | epoche completed")
             sys.stdout.flush()
@@ -139,7 +158,7 @@ curve_points = []
 for t in range(1000):
     cur_x = 0
     cur_y = 0
-    pol_vals = model(inputs=tf.constant([[t / 1000]], dtype=tf.float64)).numpy()
+    pol_vals = model(inputs=tf.constant([[t / 1000]], dtype=tf.float32)).numpy()
     for i in range(degree + 1):
         bernstein_polynomial_value = pol_vals[0][i]
         cur_x += bernstein_polynomial_value * control_points[i][0]
