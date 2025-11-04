@@ -94,7 +94,7 @@ def create_bez_curves_drag_coef_dataset(
         # drag evaluation
         print(f"\rEvaluating curve {total_curves} | valid datapoints collected: {len(valid_curves)}", end="")
         sys.stdout.flush()
-        alpha = random.randint(0, 45)
+        alpha = random.randint(0, 3)
         cd = DragEvaluator(points, save_airfoil=False, range=30, start_angle=0,
                                   specification=f"dataset_creation_{file_name}").get_cd(alpha=alpha)[0]
         if cd is not None:
