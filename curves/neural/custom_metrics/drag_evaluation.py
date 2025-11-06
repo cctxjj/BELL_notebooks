@@ -74,6 +74,7 @@ class DragEvaluator:
             Re=re,
             alpha=alphas,
         ).get("CD")
+        print(cds)
         # TODO: Include prediction certainty?
         #print(f"\revaluation for {self.name} done\n", end="")
         ##print(cds)
@@ -101,6 +102,11 @@ class DragEvaluator:
         #print("starting evaluation for ", self.name, "")
         if self.airfoil is None:
             return None
+        print(nf.get_aero_from_airfoil(
+            airfoil=self.airfoil,
+            Re=re,
+            alpha=alpha,
+        ))
         return nf.get_aero_from_airfoil(
             airfoil=self.airfoil,
             Re=re,
