@@ -66,7 +66,7 @@ def create_random_curve_points(
     return [(x_min, 0), *control_points, (x_max, 0)]
 
 
-
+from sklearn.preprocessing import StandardScaler
 
 def create_bez_curves_drag_coef_dataset(
         degree: int = 5,
@@ -94,19 +94,25 @@ def create_bez_curves_drag_coef_dataset(
         # drag evaluation
         print(f"\rEvaluating curve {total_curves} | valid datapoints collected: {len(valid_curves)}", end="")
         sys.stdout.flush()
-        alpha = random.randint(0, 3)
-        cd = DragEvaluator(points, save_airfoil=False, range=30, start_angle=0,
-                                  specification=f"dataset_creation_{file_name}").get_cd(alpha=alpha)[0]
-        if cd is not None:
-            values.append((alpha, cd))
-            valid_curves.append(points)
+        alpha = 0
+        de = DragEvaluator(points, save_airfoil=False, range=30, start_angle=0,
+                                  specification=f"dataset_creation_{file_name}")
+        cd = de.get_cd(alpha=alpha)
+        if cd is not None and 0 < cd < 1:
+            values.append(cd)
+            valid_curves.append(de.airfoil.coordinates)
 
     # saving dataset
+    values = np.clip(values, -1e3, 1e3)
+
+    #values = np.array(values, dtype=np.float32)
+    #scaler = StandardScaler()
+    #values = scaler.fit_transform(values)
     print("\nCalculations done, saving dataset.")
     os.makedirs(os.path.dirname(f"{general_path}/data/datasets/{file_name}.npz"),
                 exist_ok=True)
     np.savez(f"{general_path}/data/datasets/{file_name}.npz",
-                     points=np.array(valid_curves), values=values)
+                     points=np.array(valid_curves), values=np.array(values))
     if len(valid_curves) != len(values):
         raise Exception("Mismatch between curves and values in dataset creation.")
     print("\nDataset created and saved under given file name.")

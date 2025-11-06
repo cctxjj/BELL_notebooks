@@ -102,16 +102,16 @@ class DragEvaluator:
         #print("starting evaluation for ", self.name, "")
         if self.airfoil is None:
             return None
-        print(nf.get_aero_from_airfoil(
+        res = nf.get_aero_from_airfoil(
             airfoil=self.airfoil,
             Re=re,
             alpha=alpha,
-        ))
-        return nf.get_aero_from_airfoil(
-            airfoil=self.airfoil,
-            Re=re,
-            alpha=alpha,
-        ).get("CD")
+        )
+        # TODO: make sure keys[0] is confidence in prediction
+        # TODO: clean up for differentiating between dataset-creation and usage
+        if res[[*res.keys()][0]] > 0.5:
+            return res["CD"], res[[*res.keys()][0]]
+        return None
 
     # LEGACY METHOD, to be ignored --> datasetcreator won't be needed
     def find_valid_alpha_cd(
@@ -131,7 +131,23 @@ class DragEvaluator:
                     return alpha, res[0]
         return None, None
 
-
+    def get_nf_eval(
+            self,
+            re: float = 1e6,
+            alpha: float = 0):
+        """
+        executes the evaluation, returns all vals
+        :param re: reynolds number, default 1e6; expresses flow around airfoil as laminar or turbulent --> assumed to be turbulent, further info under https://www.numberanalytics.com/blog/reynolds-number-aerospace-guide (28.09.25)
+        :return:
+        """
+        # print("starting evaluation for ", self.name, "")
+        if self.airfoil is None:
+            return None
+        return nf.get_aero_from_airfoil(
+            airfoil=self.airfoil,
+            Re=re,
+            alpha=alpha,
+        )
 
 #cont_points = [(0, 0), (0.5, 1.5), (3, 2), (10, 0.5), (11, 0)]
 #curve_points = bezier_curve(cont_points, 250)
