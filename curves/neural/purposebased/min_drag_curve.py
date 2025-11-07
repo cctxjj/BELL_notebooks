@@ -4,13 +4,14 @@ import sys
 
 import tensorflow as tf
 import numpy as np
+from aerosandbox import Airfoil
 
 import util.graphics.visualisations as vis
 from curves.funtions import bernstein_polynomial
 from curves.neural.custom_metrics.drag_evaluation import DragEvaluator
 from util.datasets.dataset_creator import create_random_curve_points
 from curves.neural.custom_metrics.drag_evaluation import reset_eval_count
-
+from util.shape_modifier import converge_shape_to_mirrored_airfoil
 
 """
 NN Structure: 
@@ -35,12 +36,6 @@ model = tf.keras.Sequential(
         tf.keras.layers.Dense(512, activation = "relu"),
         tf.keras.layers.Dense(512, activation = "relu"),
         tf.keras.layers.Dense(512, activation = "relu"),
-        tf.keras.layers.Dense(512, activation = "relu"),
-        tf.keras.layers.Dense(512, activation = "relu"),
-        tf.keras.layers.Dense(512, activation = "relu"),
-        tf.keras.layers.Dense(512, activation = "relu"),
-        tf.keras.layers.Dense(512, activation = "relu"),
-        tf.keras.layers.Dense(512, activation = "relu"),
         tf.keras.layers.Dense(degree + 1, activation = "softmax")
         ]
 )
@@ -51,7 +46,7 @@ overall_losses = []
 
 # https://www.tensorflow.org/guide/keras/writing_a_training_loop_from_scratch
 # custom training loop --> unsupervised
-def train_step(epoche_num: int, data: tf.Tensor=None):
+def train_step(epoche_num: int, drag_pred, data: tf.Tensor=None):
     with tf.GradientTape() as tape:
         # Forward pass
         y_pred = model(inputs=tf.constant([[t / 200] for t in range(200)], dtype=tf.float32), training=True)
@@ -67,7 +62,7 @@ def train_step(epoche_num: int, data: tf.Tensor=None):
                 cur_x = 0
                 cur_y = 0
                 for i in range(degree + 1):
-                    func_val = func_vals[t][i]
+                    func_val = y_pred[t][i]
                     cur_x += func_val * cont_points[i][0]
                     cur_y += func_val * cont_points[i][1]
                 curve_points.append((cur_x, cur_y))
@@ -88,14 +83,22 @@ def train_step(epoche_num: int, data: tf.Tensor=None):
             #print(f"range: {range_func_vals}")
 
             # drag loss calculation
-            drag_evaluation = DragEvaluator(curve_points, specification=f"v7/test1/ep{epoch}").execute()
+            #drag_evaluation = DragEvaluator(curve_points, specification=f"v7/test1/ep{epoch}").execute()
 
             # loss calculation
             #loss = tf.multiply(tf.pow(tf.constant(loss_bez, dtype=tf.float32), tf.cast(2*drag_evaluation, dtype=tf.float32)), tf.pow(range_loss, tf.constant(2, dtype=tf.float32)))
-            loss = tf.multiply(
-                tf.cast(drag_evaluation, dtype=tf.float32),
-                tf.pow(range_loss, tf.constant(2, dtype=tf.float32)))
+            #loss = tf.multiply(
+                #tf.cast(drag_evaluation, dtype=tf.float32),
+                #tf.pow(range_loss, tf.constant(2, dtype=tf.float32)))
+            points_formated = np.array(converge_shape_to_mirrored_airfoil(curve_points))
+            points_formated = Airfoil(coordinates=points_formated).repanel(n_points_per_side=200).coordinates
 
+            # 1) Batch-Dimension vorne hinzufügen -> (1, N, 2)
+            points_formated = tf.expand_dims(points_formated, axis=0)
+
+            loss = drag_pred.predict(points_formated)[0][0]
+            """
+            
             curve_points = tf.constant(curve_points, dtype=tf.float32)
             curve_diff = curve_points[1:] - curve_points[:-1]
             curve_length = tf.reduce_sum(tf.sqrt(tf.reduce_sum(curve_diff ** 2, axis=1)))
@@ -103,6 +106,7 @@ def train_step(epoche_num: int, data: tf.Tensor=None):
 
             # TODO: zentrales Problem mit Loss: belohnt gegen Punkt konvergierende Kurven
             # --> Stability berücksichtigen, bez_curves irgendwie besser einfließen lassen --> exponentieller Zusammenhang
+            """
         else:
             loss = loss_bez
         # Loss calculation
@@ -120,7 +124,7 @@ curve_points = [create_random_curve_points(6, random.randint(0, 3), random.randi
 curve_points_ds = tf.data.Dataset.from_tensor_slices(curve_points)
 
 
-
+drag_pred = tf.keras.models.load_model("C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/models/cd_prediction_model_1.keras")
 for epoch in range(epochs):
     loss = -1
     ind = 0
@@ -128,7 +132,7 @@ for epoch in range(epochs):
     # iteration over dataset, training (not using batches)
     if epoch >= 1:
         for data in curve_points_ds:
-            loss = train_step(epoch, data)
+            loss = train_step(epoch, drag_pred, data)
             ind += 1
 
             # output progress
@@ -139,7 +143,7 @@ for epoch in range(epochs):
         reset_eval_count()
     else:
         for x in range(bez_curve_iterations):
-            loss = train_step(epoch)
+            loss = train_step(epoch, drag_pred)
             ind += 1
 
             # output progress
