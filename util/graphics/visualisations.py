@@ -200,7 +200,7 @@ def visualize_curve(
 
 def visualize_tf_curve(
         points: list,
-        control_points: list = [],
+        control_points: list = None,
         show_hull: bool = True,
         save_path: str = None,
         file_name: str = None,
@@ -237,10 +237,9 @@ def visualize_tf_curve(
     #fig.figure(figsize=design.get("figsize", (6, 6)))
 
     points = np.array(tf.convert_to_tensor(points, dtype=tf.float32))
-    control_points = np.array(tf.convert_to_tensor(control_points, dtype=tf.float32))
-
     # Konvexe Hülle
     if control_points is not None:
+        control_points = np.array(tf.convert_to_tensor(control_points, dtype=tf.float32))
         if show_hull and len(control_points) >= 3:
             conv_hull = ConvexHull(control_points)
             hull_points = np.array(control_points)[conv_hull.vertices]
@@ -379,6 +378,76 @@ def plot_runtime_difference(data1, data2, label1, label2, color1, color2, save_p
         plt.close()
     else:
         plt.show()
+
+
+def visualize_tf_points(points: tf.Tensor,
+                        title: str | None = None,
+                        ax=None,
+                        detach: bool = True,
+                        marker: str = "-",
+                        show_points: bool = False,
+                        figsize=(6, 4),
+                        equal_aspect: bool = True):
+    """
+    Visualisiert 2D-Punkte aus einem TF-Tensor mit matplotlib.
+
+    Parameter:
+      points: tf.Tensor der Form (N, 2) oder (1, N, 2)
+      title: Plot-Titel (optional)
+      ax: vorhandene Matplotlib-Achse nutzen (optional)
+      detach: True -> Gradientenpfad abkoppeln (tf.stop_gradient), empfohlen für reines Plotten
+      marker: Linienstil (z. B. '-', '--', oder '' für nur Scatter)
+      show_points: True -> zusätzlich Scatter-Punkte
+      figsize: Größe der Figure, wenn ax nicht übergeben wird
+      equal_aspect: True -> Achsenverhältnis 1:1
+
+    Rückgabe:
+      ax: verwendete Matplotlib-Achse
+    """
+    if not isinstance(points, tf.Tensor):
+        points = tf.convert_to_tensor(points)
+
+    # Optionale Abkopplung vom Gradientenpfad (empfohlen fürs Plotten)
+    pts = tf.stop_gradient(points) if detach else tf.identity(points)
+
+    # Batch-Dimension (1, N, 2) -> (N, 2)
+    if pts.shape.rank == 3 and pts.shape[0] == 1:
+        pts = tf.squeeze(pts, axis=0)
+
+    if pts.shape.rank != 2 or pts.shape[-1] != 2:
+        raise ValueError("Erwartet Punkte der Form (N, 2) oder (1, N, 2).")
+
+    # In NumPy kopieren, damit Matplotlib keine TF-Abhängigkeit hält
+    np_pts = pts.numpy().copy()
+    x = np_pts[:, 0]
+    y = np_pts[:, 1]
+
+    created_fig = False
+    if ax is None:
+        fig, ax = plt.subplots(figsize=figsize)
+        created_fig = True
+
+    # Linie und optional Punkte
+    if marker:
+        ax.plot(x, y, marker, label="Kontur")
+    if show_points:
+        ax.scatter(x, y, s=10, c="tab:blue", alpha=0.8, label="Stützpunkte")
+
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+    if title:
+        ax.set_title(title)
+    if equal_aspect:
+        ax.set_aspect("equal", adjustable="box")
+    if show_points or marker:
+        ax.legend()
+
+    if created_fig:
+        plt.tight_layout()
+        plt.show()
+
+    return ax
+
 
 
 

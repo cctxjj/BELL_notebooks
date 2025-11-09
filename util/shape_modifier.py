@@ -112,10 +112,8 @@ def _tf_resample_polyline(points: tf.Tensor, num_points: int) -> tf.Tensor:
 
 def converge_tf_shape_to_mirrored_airfoil(
     points,
-    round_digits: int | None = None,
+    resample_req: int = 400,
     return_as: str = "tensor",
-    remove_duplicates: bool = False,
-    use_ste_round: bool = True,
 ):
     """
     TF- und GradientTape-kompatible Airfoil-Erzeugung:
@@ -169,7 +167,8 @@ def converge_tf_shape_to_mirrored_airfoil(
     upper = tf.reverse(norm_pts, axis=[0])                       # (N,2)
     lower = tf.stack([norm_pts[1:, 0], -norm_pts[1:, 1]], 1)     # (N-1,2)
 
-    airfoil = tf.concat([upper, lower], axis=0)                  # (2N-1,2)
+    airfoil = _tf_resample_polyline(tf.concat([upper, lower], axis=0), resample_req)                  # (2N-1,2)
+
 
     """
     def _ste_round(x: tf.Tensor, digits: int) -> tf.Tensor:
@@ -193,24 +192,6 @@ def converge_tf_shape_to_mirrored_airfoil(
             scale = tf.cast(10 ** round_digits, dtype=airfoil.dtype)
             airfoil = tf.round(airfoil * scale) / scale
     """
-
-
-    # Optionale Duplikatentfernung (diskret; Gradienten durch Auswahl nicht definiert)
-    if remove_duplicates:
-        # Achtung: Diskret. Für Training besser deaktivieren.
-        # Hier werden Zeilen anhand gerundeter Schlüssel entfernt.
-        scale_int = 10 ** (round_digits if round_digits is not None and round_digits >= 0 else 6)
-        scaled = tf.cast(tf.round(airfoil * tf.cast(scale_int, airfoil.dtype)), tf.int64)
-        keys = tf.strings.reduce_join(tf.as_string(scaled), axis=1, separator=",")
-        _, idx = tf.unique(keys)
-        # erstes Auftreten je Key behalten
-        row_ids = tf.range(tf.shape(keys)[0], dtype=tf.int64)
-        first_idx = tf.math.unsorted_segment_min(
-            data=row_ids, segment_ids=tf.cast(idx, tf.int32), num_segments=tf.reduce_max(tf.cast(idx, tf.int32)) + 1
-        )
-        order = tf.argsort(first_idx, stable=True)
-        keep = tf.gather(first_idx, order)
-        airfoil = tf.gather(airfoil, keep)
 
     return tf.unstack(airfoil, axis=0) if return_as == "list" else airfoil
 

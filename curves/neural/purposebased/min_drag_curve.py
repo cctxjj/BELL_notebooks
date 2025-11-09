@@ -62,11 +62,11 @@ def train_step(epoche_num: int, drag_pred, data: tf.Tensor=None):
             curve_points = tf.matmul(y_pred, data)
             with tape.stop_recording():
                 vis.visualize_tf_curve(curve_points, data, True)
-            curve_points = converge_tf_shape_to_mirrored_airfoil(curve_points)
+            curve_points = converge_tf_shape_to_mirrored_airfoil(curve_points, resample_req=399)
 
             points_formated = tf.expand_dims(curve_points, axis=0)
             drag_loss = tf.pow(drag_pred(points_formated, training=False), tf.constant(5, dtype=tf.float32))
-            loss = tf.multiply(loss_bez, drag_loss)
+            loss = tf.square(tf.subtract(loss_bez, drag_loss))
             # calculating curve points
 
             # range loss

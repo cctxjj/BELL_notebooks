@@ -102,10 +102,10 @@ def create_bez_curves_drag_coef_dataset(
         if cd is not None:
             if 0 < cd[0] < 2:
                 values.append(tf.constant(cd, dtype=tf.float32))
-
                 # daten in tf-Format
                 points = converge_tf_shape_to_mirrored_airfoil(tf.convert_to_tensor(points, dtype=tf.float32))
                 valid_curves.append(points)
+
 
     # saving dataset
     values = np.clip(values, -1e3, 1e3)
