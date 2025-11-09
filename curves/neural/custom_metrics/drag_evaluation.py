@@ -109,7 +109,7 @@ class DragEvaluator:
         )
         # TODO: make sure keys[0] is confidence in prediction
         # TODO: clean up for differentiating between dataset-creation and usage
-        if res[[*res.keys()][0]] > 0.5:
+        if res[[*res.keys()][0]] > 0.9:
             return res["CD"], res[[*res.keys()][0]]
         return None
 

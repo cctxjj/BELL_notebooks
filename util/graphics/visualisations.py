@@ -2,8 +2,10 @@ import numpy as np
 from ipycanvas import Canvas
 from IPython.display import display
 import matplotlib.pyplot as plt
+from keras.src.ops import dtype
 from matplotlib.patches import Polygon
 from scipy.spatial import ConvexHull
+import tensorflow as tf
 
 #TODO: Visuals etwas improven
 
@@ -165,6 +167,77 @@ def visualize_curve(
     }
     fig, ax = plt.subplots()
     #fig.figure(figsize=design.get("figsize", (6, 6)))
+
+    # Konvexe Hülle
+    if control_points is not None:
+        if show_hull and len(control_points) >= 3:
+            conv_hull = ConvexHull(control_points)
+            hull_points = np.array(control_points)[conv_hull.vertices]
+            polygon = Polygon(hull_points, closed=True, fill=True, color=colors["hull"], alpha=0.3, label="convex hull")
+            ax.add_patch(polygon)
+
+    # Kontrollpunkte
+    if len(control_points) != 0:
+        cx, cy = zip(*control_points)
+        ax.plot(cx, cy, "o--", c=colors["control"], label="control points")
+
+    # Punkte
+    px, py = zip(*points)
+    ax.scatter(px, py, c=colors["points"], label="points")
+
+    plt.axis("auto")
+    plt.legend()
+
+    if save_path is not None:
+        assert file_name is not None
+        os.makedirs(save_path, exist_ok=True)
+        plt.savefig(save_path + "/" + file_name, dpi=300)
+        plt.close()
+    else:
+        plt.show()
+
+
+
+def visualize_tf_curve(
+        points: list,
+        control_points: list = [],
+        show_hull: bool = True,
+        save_path: str = None,
+        file_name: str = None,
+        design = None):
+    """
+    Visualisiert:
+    - Punkte
+    - optional: konvexe Hülle
+    - optional: Kontrollpunkte + B-Spline-Kurve
+    speichert bei Bedarf den Plot
+
+    Args:
+        points: Liste von (x,y)
+        control_points: optionale Kontrollpunkte (Liste von (x,y))
+        curve: optionale Kurvenpunkte (Liste von (x,y))
+        show_hull: True -> konvexe Hülle der Punkte zeichnen
+        design: dict mit optionalen Farben/Styles
+        :param design:
+        :param instant_close:
+        :param save_path:
+        :param points:
+        :param control_points:
+        :param show_hull:
+        :param save_fig:
+    """
+    if design is None: design = {}
+    colors = {
+        "points": design.get("points", "black"),
+        "hull": design.get("hull", "tab:gray"),
+        "control": design.get("control", "red"),
+        "curve": design.get("curve", "tab:blue"),
+    }
+    fig, ax = plt.subplots()
+    #fig.figure(figsize=design.get("figsize", (6, 6)))
+
+    points = np.array(tf.convert_to_tensor(points, dtype=tf.float32))
+    control_points = np.array(tf.convert_to_tensor(control_points, dtype=tf.float32))
 
     # Konvexe Hülle
     if control_points is not None:

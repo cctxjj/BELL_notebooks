@@ -9,6 +9,7 @@ from curves.func_based.bézier_curve import bezier_curve
 from curves.funtions import bernstein_polynomial
 import util.graphics.visualisations as vis
 from curves.neural.custom_metrics.drag_evaluation import DragEvaluator
+from util.shape_modifier import converge_tf_shape_to_mirrored_airfoil
 
 general_path = "C:\\Users\\Sebastian\\PycharmProjects\\BELL_notebooks\\"
 
@@ -98,9 +99,13 @@ def create_bez_curves_drag_coef_dataset(
         de = DragEvaluator(points, save_airfoil=False, range=30, start_angle=0,
                                   specification=f"dataset_creation_{file_name}")
         cd = de.get_cd(alpha=alpha)
-        if cd is not None and 0 < cd < 1:
-            values.append(cd)
-            valid_curves.append(de.airfoil.coordinates)
+        if cd is not None:
+            if 0 < cd[0] < 2:
+                values.append(tf.constant(cd, dtype=tf.float32))
+
+                # daten in tf-Format
+                points = converge_tf_shape_to_mirrored_airfoil(tf.convert_to_tensor(points, dtype=tf.float32))
+                valid_curves.append(points)
 
     # saving dataset
     values = np.clip(values, -1e3, 1e3)
