@@ -17,8 +17,8 @@ using custom training loop to establish basis for unsupervised learning later on
 model_num = int(input("Test iteration num the model should be saved as: "))
 
 # setting up variables
-epochs = 5
-batchsize = 32
+epochs = 10
+batchsize = 64
 
 
 # data setup
@@ -50,24 +50,25 @@ ds_test = tf.data.Dataset.from_tensor_slices((X_test, Y_test)) \
 
 # model setup
 
-norm = tf.keras.layers.Normalization(axis=-1)
-norm.adapt(np.stack(X).astype(np.float32))
+#norm = tf.keras.layers.Normalization(axis=-1)
+#norm.adapt(np.stack(X).astype(np.float32))
 
 
 model = tf.keras.Sequential(
     layers = [
         tf.keras.layers.InputLayer(shape=(400, 2)),
-        norm,
         tf.keras.layers.Flatten(),
-        tf.keras.layers.Dense(1024, activation="sigmoid"),
-        tf.keras.layers.Dense(1024, activation="sigmoid"),
-        tf.keras.layers.Dense(512, activation="sigmoid"),
-        tf.keras.layers.Dense(1, activation="linear"),
+        tf.keras.layers.Dense(512, activation=tf.keras.activations.swish),
+        tf.keras.layers.Dense(512, activation=tf.keras.activations.swish),
+        tf.keras.layers.Dense(512, activation=tf.keras.activations.swish),
+        tf.keras.layers.Dense(512, activation=tf.keras.activations.swish),
+        tf.keras.layers.Dense(512, activation=tf.keras.activations.swish),
+        tf.keras.layers.Dense(1, activation=tf.keras.activations.swish),
     ]
 )
 
-optimizer = tf.keras.optimizers.Adam(learning_rate = 1e-4)
-model.compile(optimizer = optimizer, loss = tf.keras.losses.MeanSquaredError())
+optimizer = tf.keras.optimizers.Adam(learning_rate = 1e-5)
+model.compile(optimizer = optimizer, loss = tf.keras.losses.Huber())
 
 print(model.summary())
 
