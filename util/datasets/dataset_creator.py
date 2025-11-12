@@ -66,9 +66,6 @@ def create_random_curve_points(
         last_y = new_y
     return [(x_min, 0), *control_points, (x_max, 0)]
 
-
-from sklearn.preprocessing import StandardScaler
-
 def create_bez_curves_drag_coef_dataset(
         degree: int = 5,
         points_num: int = 100,
