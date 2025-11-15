@@ -11,7 +11,7 @@ import util.graphics.visualisations as vis
 from curves.neural.custom_metrics.drag_evaluation import DragEvaluator
 from util.shape_modifier import converge_tf_shape_to_mirrored_airfoil
 
-general_path = "/home/bell/"
+general_path = "C:\\Users\\Sebastian\\PycharmProjects\\BELL_notebooks"
 
 def make_bernstein_dataset(
         num_samples: int = 1000,
