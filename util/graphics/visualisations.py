@@ -449,5 +449,77 @@ def visualize_tf_points(points: tf.Tensor,
     return ax
 
 
+def plot_cd_comparison(points_nf, points_tf, show=True, save_path=None, filename_prefix="cd_compare"):
+    """
+    Visualisiert zwei c_d-Arrays (points_nf und points_tf) gegen ihren Index (x=Index, y=c_d),
+    plottet beide jeweils separat und am Ende die prozentuale Abweichung je Index
+    (Basiswert: points_tf; Abweichung kann negativ sein).
 
+    Parameter:
+      points_nf: Sequenz oder np.ndarray mit c_d-Werten (z. B. Referenz/NF)
+      points_tf:  Sequenz oder np.ndarray mit c_d-Werten (z. B. Surrogat/TF)
+      show:       True -> Plots anzeigen
+      save_path:  Pfad, unter dem PNG-Dateien gespeichert werden (optional)
+      filename_prefix: Dateinamenspräfix für gespeicherte Plots (optional)
 
+    Rückgabe:
+      deviation_pct: np.ndarray der prozentualen Abweichungen je Index
+                     (100 * (points_nf - points_tf) / points_tf), ggf. mit NaN bei points_tf==0
+    """
+    points_nf = np.asarray(points_nf, dtype=float)
+    points_tf  = np.asarray(points_tf, dtype=float)
+
+    if points_nf.shape != points_tf.shape:
+        raise ValueError(f"Längen müssen übereinstimmen: got {points_nf.shape} vs {points_tf.shape}")
+
+    n = len(points_tf)
+    x = np.arange(n)
+
+    # Farben (Lila-Design)
+    c_nf = "#6a0dad"          # dunkles Lila
+    c_tf = "#b19cd9"          # helleres Lila
+    c_dev = "#8a2be2"         # blau-lila
+    c_zero = "#aa3377"        # Marker für TF==0
+
+    #plt.rcParams.update({"axes.grid": True, "grid.alpha": 0.25})
+
+    # 1) points_nf separat
+    fig1, ax1 = plt.subplots(figsize=(7, 4))
+    ax1.plot(x, points_nf, color=c_nf, marker="o", linewidth=1.6, label="points_nf")
+    ax1.plot(x, points_tf, color=c_tf, marker="s", linewidth=1.6, label="points_tf")
+    ax1.set_title("c_d tensorflow & neuralfoil Vergleich")
+    ax1.set_xlabel("Curve Nr.")
+    ax1.set_ylabel("c_d")
+    ax1.legend()
+    fig1.tight_layout()
+    if save_path:
+        fig1.savefig(f"{save_path}/{filename_prefix}_points_nf.png", dpi=200, bbox_inches="tight")
+
+    # 3) Abweichung in %
+    #    Definition: 100 * (points_nf - points_tf) / points_tf
+    deviation_pct = np.full_like(points_nf, np.nan, dtype=float)
+    nonzero_mask = points_tf != 0
+    deviation_pct[nonzero_mask] = 100.0 * (points_tf[nonzero_mask] - points_nf[nonzero_mask]) / points_nf[nonzero_mask]
+
+    fig3, ax3 = plt.subplots(figsize=(8, 4.5))
+    ax3.axhline(0.0, color="#444444", linewidth=1.0, linestyle="--", alpha=0.6)
+    ax3.plot(x, deviation_pct, color=c_dev, marker="d", linewidth=1.6, label="Abweichung [%] von tf zur nf Evaluationen")
+
+    # Optional: markiere Stellen, an denen points_tf==0 war
+    if np.any(~nonzero_mask):
+        ax3.scatter(x[~nonzero_mask], np.zeros(np.sum(~nonzero_mask)), color=c_zero, marker="x", label="TF-Basis = 0")
+
+    ax3.set_title("Prozentuale Abweichung")
+    ax3.set_xlabel("Curve Nr.")
+    ax3.set_ylabel("Abweichung [%]")
+    ax3.legend()
+    fig3.tight_layout()
+    if save_path:
+        fig3.savefig(f"{save_path}/{filename_prefix}_deviation_pct.png", dpi=200, bbox_inches="tight")
+
+    if show:
+        plt.show()
+    else:
+        plt.close(fig1); plt.close(fig3)
+
+    return deviation_pct

@@ -4,12 +4,14 @@ import sys
 
 import numpy as np
 import tensorflow as tf
+from aerosandbox import Airfoil
 
 from curves.func_based.bézier_curve import bezier_curve
 from curves.funtions import bernstein_polynomial
 import util.graphics.visualisations as vis
 from curves.neural.custom_metrics.drag_evaluation import DragEvaluator
 from util.shape_modifier import converge_tf_shape_to_mirrored_airfoil
+import neuralfoil as nf
 
 general_path = "C:\\Users\\Sebastian\\PycharmProjects\\BELL_notebooks"
 
@@ -98,9 +100,9 @@ def create_bez_curves_drag_coef_dataset(
         cd = de.get_cd(alpha=alpha)
         if cd is not None:
             if 0 < cd[0] < 2:
-                values.append(tf.constant(cd, dtype=tf.float32))
+                values.append(tf.constant(cd[0], dtype=tf.float32))
                 # daten in tf-Format
-                points = converge_tf_shape_to_mirrored_airfoil(tf.convert_to_tensor(points, dtype=tf.float32))
+                points = converge_tf_shape_to_mirrored_airfoil(tf.convert_to_tensor(points, dtype=tf.float32), resample_req=399)
                 valid_curves.append(points)
 
 
@@ -134,3 +136,27 @@ def __plot_n_example_random_bez_curves__(
         vis.visualize_curve(points, cont_points, True, file_name=f"bez_curve_{i + 1}",
                             save_path=f"{general_path}/data/neural_curves/random_bez_curves")
         DragEvaluator(points, save_airfoil=True, range=30, start_angle=0, specification=f"random_bez_curve")
+
+# NACA dataset creator
+
+def create_naca_dataset(file_name: str = "naca_dataset"):
+    airfoils = []
+    values = []
+    print("Creating dataset...\n")
+    for i in range(10000):
+        print(f"\rComputing airfoil {i}", end="")
+        sys.stdout.flush()
+
+        airfoil = Airfoil(name=get_naca_str(i)).repanel(n_points_per_side=200)
+        airfoils.append(tf.convert_to_tensor(airfoil.coordinates, dtype=tf.float32))
+        values.append(nf.get_aero_from_airfoil(airfoil, 0, 1e6, model_size="xxxlarge").get("CD"))
+
+    print("\nCalculations done, saving dataset.")
+    os.makedirs(os.path.dirname(f"{general_path}/data/datasets/{file_name}.npz"),
+                exist_ok=True)
+    np.savez(f"{general_path}/data/datasets/{file_name}.npz",
+             points=np.array(airfoils), values=np.array(values))
+
+def get_naca_str(i):
+    return f"naca{i:04d}"
+
