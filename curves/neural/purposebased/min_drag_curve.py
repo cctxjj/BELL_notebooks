@@ -4,30 +4,25 @@ import sys
 
 import tensorflow as tf
 import numpy as np
-from aerosandbox import Airfoil
 
 import util.graphics.visualisations as vis
 from curves.funtions import bernstein_polynomial
-from curves.neural.custom_metrics.drag_evaluation import DragEvaluator
 from util.datasets.dataset_creator import create_random_curve_points
 from curves.neural.custom_metrics.drag_evaluation import reset_eval_count
-from util.shape_modifier import converge_shape_to_mirrored_airfoil, converge_tf_shape_to_mirrored_airfoil
+from util.shape_modifier import converge_tf_shape_to_mirrored_airfoil
 
 """
-NN Structure: 
-    input: parameter t (on interval [0, 1])
-    hidden: 32, 32
-    output: degree + 1 values corresponding to the bernstein polynomials values at t
---> Sequential is bound to predetermined degree 
-
-using custom training loop to establish basis for unsupervised learning later on
+add nn structure + comments
 """
 
 # setting up variables
 degree = 5
-epochs = 40
-bez_curve_iterations = 5000
-cont_points_ds_length = 50
+bez_curve_iterations = 10000
+cont_points_ds_length = 100
+
+# boundaries
+upper_boundary = 3000
+lower_boundary = 0.6
 
 # model setup
 model = tf.keras.Sequential(
@@ -47,16 +42,17 @@ overall_losses = []
 
 # https://www.tensorflow.org/guide/keras/writing_a_training_loop_from_scratch
 # custom training loop --> unsupervised
-def train_step(epoche_num: int, drag_pred, data: tf.Tensor=None):
+def train_step(epoche_num: int, drag_pred, data: tf.Tensor=None, only_calc_loss = False):
     loss = None
     drag_loss = None
-    loss_bez = None
+    bez_loss = None
+    range_loss = None
     with tf.GradientTape() as tape:
         y_pred = model(inputs=tf.constant([[t / 200] for t in range(200)], dtype=tf.float32), training=True)
 
         target_bez_vals = tf.constant(
             np.array([[bernstein_polynomial(i, degree, t / 200) for i in range(degree + 1)] for t in range(200)]), dtype=tf.float32)
-        loss_bez = tf.reduce_mean(tf.square(tf.subtract(y_pred, target_bez_vals))) # MSE für Bézierkurve
+        bez_loss = tf.reduce_mean(tf.square(tf.subtract(y_pred, target_bez_vals))) # MSE für Bézierkurve
 
         if epoche_num >= 1:
             curve_points = tf.matmul(y_pred, data)
@@ -64,60 +60,29 @@ def train_step(epoche_num: int, drag_pred, data: tf.Tensor=None):
                 vis.visualize_tf_curve(curve_points, data, True)
             curve_points = converge_tf_shape_to_mirrored_airfoil(curve_points, resample_req=399)
 
+            #drag loss
             points_formated = tf.expand_dims(curve_points, axis=0)
-            drag_loss = drag_pred(points_formated, training=False)
+            drag_loss = drag_pred(points_formated, training=False)[0][0]
 
+            #range loss
             cont_range = tf.subtract(tf.reduce_max(data[:, 0]), tf.reduce_min(data[:, 0]))
             curve_range = tf.subtract(tf.reduce_max(curve_points[:, 0]), tf.reduce_min(curve_points[:, 0]))
             range_loss = tf.divide(cont_range, curve_range)
 
-            loss = tf.add(range_loss, tf.multiply(loss_bez, tf.constant(2, dtype=tf.float32)), drag_loss)
-            # calculating curve points
+            #total loss
+            loss = tf.add(tf.multiply(bez_loss, tf.constant(1, dtype=tf.float32)),
+                          tf.add(tf.multiply(drag_loss, tf.constant(0.0025, dtype=tf.float32)),
+                          tf.multiply(range_loss, tf.constant(1, dtype=tf.float32))))
 
-            # range loss
-            #distance_border_points = tf.constant(((curve_points[0][0] - data[0][0]) + (data[-1][0] - curve_points[-1][0]))/2, dtype=tf.float32)
-            #curve_length = tf.constant(float(curve_points[-1][0] - curve_points[0][0]), dtype=tf.float32)
-
-            #point_offsets = []
-            #for i in range(len(curve_points)-1):
-            #    point_offsets.append(abs(float(curve_points[i+1][0] - curve_points[i][0])-(float(curve_points[-1][0] - curve_points[0][0])/len(curve_points))))
-            #average_point_offset = tf.maximum(tf.constant(np.sum(np.array(point_offsets))/len(point_offsets), dtype=tf.float32), tf.constant(10e-9))
-            # maximum to ensure non-zeroness
-            # maybe multiply with 100
-
-            #range_loss = tf.divide(tf.multiply(distance_border_points, average_point_offset), curve_length)
-            #print(f"range: {range_func_vals}")
-
-            # drag loss calculation
-            #drag_evaluation = DragEvaluator(curve_points, specification=f"v7/test1/ep{epoch}").execute()
-
-            # loss calculation
-            #loss = tf.multiply(tf.pow(tf.constant(loss_bez, dtype=tf.float32), tf.cast(2*drag_evaluation, dtype=tf.float32)), tf.pow(range_loss, tf.constant(2, dtype=tf.float32)))
-            #loss = tf.multiply(
-                #tf.cast(drag_evaluation, dtype=tf.float32),
-                #tf.pow(range_loss, tf.constant(2, dtype=tf.float32)))
-
-            # 1) Batch-Dimension vorne hinzufügen -> (1, N, 2)
-            """
-            
-            curve_points = tf.constant(curve_points, dtype=tf.float32)
-            curve_diff = curve_points[1:] - curve_points[:-1]
-            curve_length = tf.reduce_sum(tf.sqrt(tf.reduce_sum(curve_diff ** 2, axis=1)))
-            loss += 0.001 * (1.0 / curve_length)
-
-            # TODO: zentrales Problem mit Loss: belohnt gegen Punkt konvergierende Kurven
-            # --> Stability berücksichtigen, bez_curves irgendwie besser einfließen lassen --> exponentieller Zusammenhang
-            """
         else:
-            loss = loss_bez
-        # Loss calculation
-
-        #loss = drag_curve_squared_loss(model, degree)
+            loss = bez_loss
 
     # Backprop
+    if only_calc_loss:
+        return loss, bez_loss, drag_loss, range_loss
     grads = tape.gradient(loss, model.trainable_variables)
     optimizer.apply_gradients(zip(grads, model.trainable_variables))
-    return loss, drag_loss, loss_bez
+    return loss, bez_loss, drag_loss, range_loss
 
 # dataset creation and training
 curve_points = [create_random_curve_points(6, random.randint(0, 3), random.randint(6, 13), 0,
@@ -127,32 +92,100 @@ curve_points_ds = tf.data.Dataset.from_tensor_slices(curve_points)
 
 
 drag_pred = tf.keras.models.load_model("C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/models/cd_prediction_model_17.keras")
-for epoch in range(epochs):
+
+crit_met = False
+epoch = 0
+
+# crit check vars
+drag_0 = None
+bez_0 = None
+
+while not crit_met:
     loss = -1
     ind = 0
     average_drag_loss = 0
-    # iteration over dataset, training (not using batches)
-    if epoch >= 1:
+    if epoch == 1:
+        # iteration over dataset, training (not using batches)
+        loss_total = []
+        loss_bez_total = []
+        loss_drag_total = []
+        loss_range_total = []
+        for data in curve_points_ds:
+            loss = train_step(epoch, drag_pred, data, True)
+            ind += 1
+
+            # output progress
+            loss_total.append(loss[0])
+            loss_bez_total.append(loss[1])
+            loss_drag_total.append(loss[2])
+            loss_range_total.append(loss[3])
+
+            print(
+                f"\rEpoch: initial loss evaluation | sample {ind}/{cont_points_ds_length} | Mean loss: {np.mean(loss_total)} with bez: {np.mean(loss_bez_total)},  drag: {np.mean(loss_drag_total)}, range: {np.mean(loss_range_total)}",
+                end="")
+            if ind == cont_points_ds_length:
+                print(f"\rEpoch: initial loss evaluation | sample {ind}/{cont_points_ds_length} | Mean loss: {np.mean(loss_total)} with bez: {np.mean(loss_bez_total)},  drag: {np.mean(loss_drag_total)}, range: {np.mean(loss_range_total)} | epoche completed")
+                drag_0 = np.mean(loss_drag_total)
+                bez_0 = np.mean(loss_bez_total)
+                sys.stdout.flush()
+        reset_eval_count()
+
+    elif epoch > 1:
+        # iteration over dataset, training (not using batches)
+        loss_total = []
+        loss_bez_total = []
+        loss_drag_total = []
+        loss_range_total = []
         for data in curve_points_ds:
             loss = train_step(epoch, drag_pred, data)
             ind += 1
 
             # output progress
-            print(f"\rEpoch: {(epoch+1)}/{epochs} | sample {ind}/{cont_points_ds_length} | Loss: {loss[0]} of which bez: {loss[1]} and drag: {loss[2]}", end="")
+            loss_total.append(loss[0])
+            loss_bez_total.append(loss[1])
+            loss_drag_total.append(loss[2])
+            loss_range_total.append(loss[3])
+
+            print(f"\rEpoch: {epoch} | sample {ind}/{cont_points_ds_length} | Mean loss: {np.mean(loss_total)} with bez: {np.mean(loss_bez_total)},  drag: {np.mean(loss_drag_total)}, range: {np.mean(loss_range_total)}", end="")
             if ind == cont_points_ds_length:
-                print(f"\rEpoch: {(epoch+1)}/{epochs} | sample {ind}/{cont_points_ds_length} | Loss: {loss[0]} of which bez: {loss[1]} and drag: {loss[2]} | epoche completed")
+                print(f"\rEpoch: {epoch} | sample {ind}/{cont_points_ds_length} | Mean loss: {np.mean(loss_total)} with bez: {np.mean(loss_bez_total)},  drag: {np.mean(loss_drag_total)}, range: {np.mean(loss_range_total)} | epoche completed")
+
+                # check if criteria are met#
+
+                # lower
+                drag_cur = np.mean(loss_drag_total)
+                lower_crit = (drag_0 - drag_cur) / drag_0
+
+                # upper
+                bez_cur = np.mean(loss_bez_total)
+                upper_crit = (bez_cur - bez_0) / bez_0
+                # TODO: Wichtig --> Formel --> da nach oben Grenze bei mehreren tausend %
+
+                if lower_crit >= lower_boundary:
+                    crit_met = True
+                    print(f"Lower criteria met: {lower_crit} >= {lower_boundary} with upper at {upper_crit} | finishing process")
+                    continue
+
+                if upper_crit >= upper_boundary:
+                    crit_met = True
+                    print(f"Upper criteria met: {upper_crit} >= {upper_boundary} with lower at {lower_crit} | finishing process")
+                    continue
+
+                print(f"Lower boundary: {lower_crit} | Upper boundary: {upper_crit} | continuing training")
+
             sys.stdout.flush()
         reset_eval_count()
     else:
         for x in range(bez_curve_iterations):
             loss = train_step(epoch, drag_pred)
             ind += 1
-
             # output progress
-            print(f"\rEpoch: {(epoch + 1)}/{epochs} | Run-through: {ind}/{bez_curve_iterations} | Loss: {loss[0]}", end="")
+            print(f"\rEpoch: {(epoch + 1)} | Run-through: {ind}/{bez_curve_iterations} | Loss: {loss[0]} (MSE)", end="")
             if ind == bez_curve_iterations:
-                print(f"\rEpoch: {(epoch + 1)}/{epochs} | Run-through: {ind}/{bez_curve_iterations} | Loss: {loss[0]} | epoche completed")
+                print(f"\rEpoch: {(epoch + 1)} | Run-through: {ind}/{bez_curve_iterations} | Loss: {loss[0]} (MSE) | epoche completed")
             sys.stdout.flush()
+            # TODO: ggf. oben spacial loss ffür gleichmäßige POunktverteilung hinzufügen
+    epoch += 1
 
 
 # Test: creating an example curve
