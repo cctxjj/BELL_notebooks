@@ -17,7 +17,7 @@ using custom training loop to establish basis for unsupervised learning later on
 model_num = int(input("Test iteration num the model should be saved as: "))
 
 # setting up variables
-epochs = 100
+epochs = 200
 batchsize = 16
 
 

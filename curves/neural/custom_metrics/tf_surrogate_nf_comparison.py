@@ -1,8 +1,6 @@
 import random
 
 import numpy as np
-from aerosandbox import Airfoil
-from scipy.sparse.linalg import tfqmr
 
 from curves.func_based.bézier_curve import bezier_curve
 from curves.neural.custom_metrics.drag_evaluation import DragEvaluator
@@ -20,7 +18,7 @@ def predict_drag(model, points):
     return model.predict(points_formated)[0][0]
 
 def compare_predictions(n):
-    model = tf.keras.models.load_model("C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/models/cd_prediction_model_17.keras")
+    model = tf.keras.models.load_model("C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/models/cd_prediction_model_18.keras")
     print(model.summary())
     points_nf = []
     points_tf = []
@@ -35,5 +33,8 @@ def compare_predictions(n):
         points_tf.append(cd_tf)
         points_nf.append(cd_nf[0][0])
         print(f"nf: {cd_nf[0][0]} with conf: {cd_nf[1][0]}, tf: {cd_tf} | Diff: {abs(cd_nf[0][0]-cd_tf)/cd_nf[0][0]}")
-    vis.plot_cd_comparison(points_nf=points_nf, points_tf=points_tf)
+    dev = [abs(x) for x in vis.plot_cd_comparison(points_nf=points_nf, points_tf=points_tf)]
+    print(f"Maximale Abweichung von {np.max(dev)} mit durchschnittlicher Abweichung von {np.mean(dev)} und Median von {np.median(dev)}")
 compare_predictions(50)
+compare_predictions(50)
+compare_predictions(1000)

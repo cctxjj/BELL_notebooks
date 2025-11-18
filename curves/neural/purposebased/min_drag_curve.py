@@ -26,7 +26,7 @@ using custom training loop to establish basis for unsupervised learning later on
 # setting up variables
 degree = 5
 epochs = 40
-bez_curve_iterations = 7500
+bez_curve_iterations = 5000
 cont_points_ds_length = 50
 
 # model setup
@@ -65,8 +65,13 @@ def train_step(epoche_num: int, drag_pred, data: tf.Tensor=None):
             curve_points = converge_tf_shape_to_mirrored_airfoil(curve_points, resample_req=399)
 
             points_formated = tf.expand_dims(curve_points, axis=0)
-            drag_loss = tf.pow(drag_pred(points_formated, training=False), tf.constant(5, dtype=tf.float32))
-            loss = tf.square(tf.subtract(loss_bez, drag_loss))
+            drag_loss = drag_pred(points_formated, training=False)
+
+            cont_range = tf.subtract(tf.reduce_max(data[:, 0]), tf.reduce_min(data[:, 0]))
+            curve_range = tf.subtract(tf.reduce_max(curve_points[:, 0]), tf.reduce_min(curve_points[:, 0]))
+            range_loss = tf.divide(cont_range, curve_range)
+
+            loss = tf.add(range_loss, tf.multiply(loss_bez, tf.constant(2, dtype=tf.float32)), drag_loss)
             # calculating curve points
 
             # range loss
@@ -106,6 +111,7 @@ def train_step(epoche_num: int, drag_pred, data: tf.Tensor=None):
         else:
             loss = loss_bez
         # Loss calculation
+
         #loss = drag_curve_squared_loss(model, degree)
 
     # Backprop
@@ -120,7 +126,7 @@ curve_points = [create_random_curve_points(6, random.randint(0, 3), random.randi
 curve_points_ds = tf.data.Dataset.from_tensor_slices(curve_points)
 
 
-drag_pred = tf.keras.models.load_model("C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/models/cd_prediction_model_3.keras")
+drag_pred = tf.keras.models.load_model("C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/models/cd_prediction_model_17.keras")
 for epoch in range(epochs):
     loss = -1
     ind = 0
