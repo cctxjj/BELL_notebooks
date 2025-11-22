@@ -1,9 +1,11 @@
 import math
+import os
 import random
 import sys
 
 import tensorflow as tf
 import numpy as np
+import pandas as pd
 
 import util.graphics.visualisations as vis
 from curves.funtions import bernstein_polynomial
@@ -15,14 +17,24 @@ from util.shape_modifier import converge_tf_shape_to_mirrored_airfoil
 add nn structure + comments
 """
 
-# setting up variables
+model_id = str(input("Model id: "))
+eq_f_abs = 0.0025
+# todo: equilibrium factor as multiple of bez mse?
+
+# Hyperparameter
 degree = 5
 bez_curve_iterations = 10000
 cont_points_ds_length = 100
+n_looks_backwards_for_criteria = 10
+# TODO: standartabweichung nutzen?
 
-# boundaries
-upper_boundary = 3000
-lower_boundary = 0.6
+# data arrays
+loss_dev = []
+loss_bez_dev = []
+loss_drag_dev = []
+loss_range_dev = []
+drag_improvement_dev = []
+bez_shift_dev = []
 
 # model setup
 model = tf.keras.Sequential(
@@ -38,11 +50,9 @@ model = tf.keras.Sequential(
 optimizer = tf.keras.optimizers.SGD(learning_rate = 0.1)
 model.compile(optimizer = optimizer)
 
-overall_losses = []
-
 # https://www.tensorflow.org/guide/keras/writing_a_training_loop_from_scratch
 # custom training loop --> unsupervised
-def train_step(epoche_num: int, drag_pred, data: tf.Tensor=None, only_calc_loss = False):
+def train_step(epoche_num: int, drag_pred, data: tf.Tensor=None, only_calc_loss = False, display = False):
     loss = None
     drag_loss = None
     bez_loss = None
@@ -56,8 +66,9 @@ def train_step(epoche_num: int, drag_pred, data: tf.Tensor=None, only_calc_loss 
 
         if epoche_num >= 1:
             curve_points = tf.matmul(y_pred, data)
-            with tape.stop_recording():
-                vis.visualize_tf_curve(curve_points, data, True)
+            if display:
+                with tape.stop_recording():
+                    vis.visualize_tf_curve(curve_points, data, True)
             curve_points = converge_tf_shape_to_mirrored_airfoil(curve_points, resample_req=399)
 
             #drag loss
@@ -71,8 +82,8 @@ def train_step(epoche_num: int, drag_pred, data: tf.Tensor=None, only_calc_loss 
 
             #total loss
             loss = tf.add(tf.multiply(bez_loss, tf.constant(1, dtype=tf.float32)),
-                          tf.add(tf.multiply(drag_loss, tf.constant(0.0025, dtype=tf.float32)),
-                          tf.multiply(range_loss, tf.constant(1, dtype=tf.float32))))
+                          tf.add(tf.multiply(drag_loss, tf.constant(eq_f_abs, dtype=tf.float32)),
+                                 tf.multiply(range_loss, tf.constant(1, dtype=tf.float32))))
 
         else:
             loss = bez_loss
@@ -110,8 +121,8 @@ while not crit_met:
         loss_bez_total = []
         loss_drag_total = []
         loss_range_total = []
-        for data in curve_points_ds:
-            loss = train_step(epoch, drag_pred, data, True)
+        for index, data in enumerate(curve_points_ds):
+            loss = train_step(epoch, drag_pred, data, True, True if index == 0 else False)
             ind += 1
 
             # output progress
@@ -127,6 +138,14 @@ while not crit_met:
                 print(f"\rEpoch: initial loss evaluation | sample {ind}/{cont_points_ds_length} | Mean loss: {np.mean(loss_total)} with bez: {np.mean(loss_bez_total)},  drag: {np.mean(loss_drag_total)}, range: {np.mean(loss_range_total)} | epoche completed")
                 drag_0 = np.mean(loss_drag_total)
                 bez_0 = np.mean(loss_bez_total)
+
+                drag_improvement_dev.append(0)
+                bez_shift_dev.append(0)
+
+                loss_dev.append(np.mean(loss_total))
+                loss_bez_dev.append(np.mean(loss_bez_total))
+                loss_drag_dev.append(np.mean(loss_drag_total))
+                loss_range_dev.append(np.mean(loss_range_total))
                 sys.stdout.flush()
         reset_eval_count()
 
@@ -136,8 +155,8 @@ while not crit_met:
         loss_bez_total = []
         loss_drag_total = []
         loss_range_total = []
-        for data in curve_points_ds:
-            loss = train_step(epoch, drag_pred, data)
+        for index, data in enumerate(curve_points_ds):
+            loss = train_step(epoch, drag_pred, data, False, True if index == 0 else False)
             ind += 1
 
             # output progress
@@ -146,32 +165,38 @@ while not crit_met:
             loss_drag_total.append(loss[2])
             loss_range_total.append(loss[3])
 
-            print(f"\rEpoch: {epoch} | sample {ind}/{cont_points_ds_length} | Mean loss: {np.mean(loss_total)} with bez: {np.mean(loss_bez_total)},  drag: {np.mean(loss_drag_total)}, range: {np.mean(loss_range_total)}", end="")
+            print(
+                f"\rEpoch: {epoch} | sample {ind}/{cont_points_ds_length} | Mean loss: {np.mean(loss_total)} with bez: {np.mean(loss_bez_total)},  drag: {np.mean(loss_drag_total)}, range: {np.mean(loss_range_total)}",
+                end="")
             if ind == cont_points_ds_length:
                 print(f"\rEpoch: {epoch} | sample {ind}/{cont_points_ds_length} | Mean loss: {np.mean(loss_total)} with bez: {np.mean(loss_bez_total)},  drag: {np.mean(loss_drag_total)}, range: {np.mean(loss_range_total)} | epoche completed")
+                loss_dev.append(np.mean(loss_total))
+                loss_bez_dev.append(np.mean(loss_bez_total))
+                loss_drag_dev.append(np.mean(loss_drag_total))
+                loss_range_dev.append(np.mean(loss_range_total))
 
-                # check if criteria are met#
+                # check if criteria are met
 
                 # lower
                 drag_cur = np.mean(loss_drag_total)
-                lower_crit = (drag_0 - drag_cur) / drag_0
+                drag_improvement = (drag_0 - drag_cur) / drag_0
 
                 # upper
                 bez_cur = np.mean(loss_bez_total)
-                upper_crit = (bez_cur - bez_0) / bez_0
+                bezier_shift = (bez_cur - bez_0) / bez_0
                 # TODO: Wichtig --> Formel --> da nach oben Grenze bei mehreren tausend %
 
-                if lower_crit >= lower_boundary:
+
+                if abs((drag_improvement-np.mean(drag_improvement_dev[(-1*n_looks_backwards_for_criteria):]))/np.mean(drag_improvement_dev[(-1*n_looks_backwards_for_criteria):])) <= 0.001:
                     crit_met = True
-                    print(f"Lower criteria met: {lower_crit} >= {lower_boundary} with upper at {upper_crit} | finishing process")
+                    print(f"Drag improvement at {drag_improvement} | Bezier shift at: {bezier_shift} | finishing process as is criteria met")
+                    drag_improvement_dev.append(drag_improvement)
+                    bez_shift_dev.append(bezier_shift)
                     continue
 
-                if upper_crit >= upper_boundary:
-                    crit_met = True
-                    print(f"Upper criteria met: {upper_crit} >= {upper_boundary} with lower at {lower_crit} | finishing process")
-                    continue
-
-                print(f"Lower boundary: {lower_crit} | Upper boundary: {upper_crit} | continuing training")
+                print(f"Drag improvement at {drag_improvement} | Bezier shift at: {bezier_shift} | continuing training")
+                drag_improvement_dev.append(drag_improvement)
+                bez_shift_dev.append(bezier_shift)
 
             sys.stdout.flush()
         reset_eval_count()
@@ -184,10 +209,33 @@ while not crit_met:
             if ind == bez_curve_iterations:
                 print(f"\rEpoch: {(epoch + 1)} | Run-through: {ind}/{bez_curve_iterations} | Loss: {loss[0]} (MSE) | epoche completed")
             sys.stdout.flush()
-            # TODO: ggf. oben spacial loss ffür gleichmäßige POunktverteilung hinzufügen
+            # TODO: ggf. oben spacial loss für gleichmäßige Punktverteilung hinzufügen
     epoch += 1
 
+# saving data
 
+data = {
+    "epoch": range(0, len(loss_dev)),
+    "loss": loss_dev,
+    "loss_bez": loss_bez_dev,
+    "loss_drag": loss_drag_dev,
+    "loss_range": loss_range_dev,
+    "drag_improvement": drag_improvement_dev,
+    "bezier_shift": bez_shift_dev,
+}
+
+path_1 = "C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/model_analysis_1/"
+path_2 = "C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/models/min_drag_curve/"
+os.makedirs(path_1, exist_ok=True)
+os.makedirs(path_2, exist_ok=True)
+
+pd.DataFrame(data).to_csv(f"{path_1}equilibrium_data_model_{model_id}.csv", index=False)
+
+model.save(f"{path_2}model_{model_id}.keras")
+
+
+"""
+# Todo: automatischer Check für korrekte GGW-Verschiebung finden --> formel, auf deren Basis optimaler Gewichtszustand identifiziert wird --> automatische Beendung Traingingsprozess
 # Test: creating an example curve
 control_points = [(1, 2), (2, 4), (3, 2), (5, 1), (6, -2), (7, 1)]
 
@@ -210,7 +258,7 @@ vis.visualize_curve(curve_points, control_points, True)
 # TODO: Frage: Unsupervised learning korrekt verwendet?
 # TODO: DragEvaluator af-Anzeige optimieren
 
-
+"""
 
 
 
