@@ -7,7 +7,6 @@ import tensorflow as tf
 import numpy as np
 import pandas as pd
 
-import util.graphics.visualisations as vis
 from curves.funtions import bernstein_polynomial
 from util.datasets.dataset_creator import create_random_curve_points
 from curves.neural.custom_metrics.drag_evaluation import reset_eval_count
@@ -139,7 +138,6 @@ while not crit_met:
                 print(f"\rEpoch: initial loss evaluation | sample {ind}/{cont_points_ds_length} | Mean loss: {np.mean(loss_total)} with bez: {np.mean(loss_bez_total)},  drag: {np.mean(loss_drag_total)}, range: {np.mean(loss_range_total)} | epoche completed")
                 drag_0 = np.mean(loss_drag_total)
                 bez_0 = np.mean(loss_bez_total)
-                abs_drag_factor = float(bez_0)*drag_factor
 
                 drag_improvement_dev.append(0)
                 bez_shift_dev.append(0)
@@ -197,9 +195,9 @@ while not crit_met:
                     continue
 
                 std = np.std(drag_improvement_dev[(-1*n_looks_backwards_for_criteria):])
-                if std/np.mean(drag_improvement_dev[(-1*n_looks_backwards_for_criteria):]) < 0.01:
+                if abs(std/np.mean(drag_improvement_dev[(-1*n_looks_backwards_for_criteria):])) < 0.01 or epoch >= 100:
                     crit_met = True
-                    print(f" | finishing process, criteria is met")
+                    print(f" | finishing process, crit is met")
                     sys.stdout.flush()
                     continue
                 else:
@@ -215,6 +213,7 @@ while not crit_met:
             print(f"\rEpoch: {(epoch + 1)} | Run-through: {ind}/{bez_curve_iterations} | Loss: {loss[0]} (MSE)", end="")
             if ind == bez_curve_iterations:
                 print(f"\rEpoch: {(epoch + 1)} | Run-through: {ind}/{bez_curve_iterations} | Loss: {loss[0]} (MSE) | epoche completed")
+                abs_drag_factor = float(loss[0]) * drag_factor
             sys.stdout.flush()
             # TODO: ggf. oben spacial loss für gleichmäßige Punktverteilung hinzufügen
     epoch += 1

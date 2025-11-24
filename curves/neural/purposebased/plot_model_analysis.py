@@ -24,9 +24,13 @@ loss_drag = df["loss_drag"].to_numpy()
 loss_range = df["loss_range"].to_numpy()
 drag_improvement = df["drag_improvement"].to_numpy()
 bezier_shift = df["bezier_shift"].to_numpy()
+ratio = np.divide(loss_drag, loss_bez, out=np.full_like(loss_drag, np.nan, dtype=float), where=loss_bez!=0)
 
 print("Model achieved max drag improvement of " + str(np.max(drag_improvement)) + " at epoch " + str(np.argmax(drag_improvement)))
 print("Model achieved max bez shift of " + str(np.max(bezier_shift)) + " at epoch " + str(np.argmax(bezier_shift)))
+print("Model achieved end drag improvement of " + str(drag_improvement.tolist()[-1]))
+print("Model achieved end bez shift of " + str(bezier_shift.tolist()[-1]))
+print("drag/mse at " + str(loss_drag.tolist()[-1]/loss_bez.tolist()[-1]))
 
 drag_improvement = norm(drag_improvement)
 bezier_shift = norm(bezier_shift)
@@ -61,7 +65,6 @@ plt.legend()
 plt.tight_layout()
 
 # 3) Verhältnis loss_drag / loss_bez
-ratio = np.divide(loss_drag, loss_bez, out=np.full_like(loss_drag, np.nan, dtype=float), where=loss_bez!=0)
 
 plt.figure(figsize=(8, 4))
 plt.plot(epoch, ratio, "o-", label="loss_drag / loss_bez")
