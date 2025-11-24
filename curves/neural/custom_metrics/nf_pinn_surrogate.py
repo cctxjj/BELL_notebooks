@@ -1,1 +1,0 @@
-# Todo: create PINN surrogate or neuralfoil taking into account all parameter<s + navier strokes equation --> more complex model

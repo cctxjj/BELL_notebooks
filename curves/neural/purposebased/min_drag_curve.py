@@ -18,12 +18,12 @@ add nn structure + comments
 """
 
 model_id = str(input("Model id: "))
-eq_f_abs = 0.0025
+drag_factor = float(input("Drag factor: "))
 # todo: equilibrium factor as multiple of bez mse?
 
 # Hyperparameter
 degree = 5
-bez_curve_iterations = 10000
+bez_curve_iterations = 20000
 cont_points_ds_length = 100
 n_looks_backwards_for_criteria = 10
 # TODO: standartabweichung nutzen?
@@ -66,9 +66,9 @@ def train_step(epoche_num: int, drag_pred, data: tf.Tensor=None, only_calc_loss 
 
         if epoche_num >= 1:
             curve_points = tf.matmul(y_pred, data)
-            if display:
-                with tape.stop_recording():
-                    vis.visualize_tf_curve(curve_points, data, True)
+            #if display:
+            #    with tape.stop_recording():
+            #        vis.visualize_tf_curve(curve_points, data, True)
             curve_points = converge_tf_shape_to_mirrored_airfoil(curve_points, resample_req=399)
 
             #drag loss
@@ -82,7 +82,7 @@ def train_step(epoche_num: int, drag_pred, data: tf.Tensor=None, only_calc_loss 
 
             #total loss
             loss = tf.add(tf.multiply(bez_loss, tf.constant(1, dtype=tf.float32)),
-                          tf.add(tf.multiply(drag_loss, tf.constant(eq_f_abs, dtype=tf.float32)),
+                          tf.add(tf.multiply(drag_loss, tf.constant(abs_drag_factor, dtype=tf.float32)),
                                  tf.multiply(range_loss, tf.constant(1, dtype=tf.float32))))
 
         else:
@@ -110,6 +110,7 @@ epoch = 0
 # crit check vars
 drag_0 = None
 bez_0 = None
+abs_drag_factor = None
 
 while not crit_met:
     loss = -1
@@ -138,6 +139,7 @@ while not crit_met:
                 print(f"\rEpoch: initial loss evaluation | sample {ind}/{cont_points_ds_length} | Mean loss: {np.mean(loss_total)} with bez: {np.mean(loss_bez_total)},  drag: {np.mean(loss_drag_total)}, range: {np.mean(loss_range_total)} | epoche completed")
                 drag_0 = np.mean(loss_drag_total)
                 bez_0 = np.mean(loss_bez_total)
+                abs_drag_factor = float(bez_0)*drag_factor
 
                 drag_improvement_dev.append(0)
                 bez_shift_dev.append(0)
@@ -184,19 +186,24 @@ while not crit_met:
                 # upper
                 bez_cur = np.mean(loss_bez_total)
                 bezier_shift = (bez_cur - bez_0) / bez_0
-                # TODO: Wichtig --> Formel --> da nach oben Grenze bei mehreren tausend %
 
-
-                if abs((drag_improvement-np.mean(drag_improvement_dev[(-1*n_looks_backwards_for_criteria):]))/np.mean(drag_improvement_dev[(-1*n_looks_backwards_for_criteria):])) <= 0.001:
-                    crit_met = True
-                    print(f"Drag improvement at {drag_improvement} | Bezier shift at: {bezier_shift} | finishing process as is criteria met")
-                    drag_improvement_dev.append(drag_improvement)
-                    bez_shift_dev.append(bezier_shift)
-                    continue
-
-                print(f"Drag improvement at {drag_improvement} | Bezier shift at: {bezier_shift} | continuing training")
                 drag_improvement_dev.append(drag_improvement)
                 bez_shift_dev.append(bezier_shift)
+
+                print(f"Drag improvement at {drag_improvement} | Bezier shift at: {bezier_shift}", end = "")
+
+                if len(drag_improvement_dev) < n_looks_backwards_for_criteria:
+                    print(" | continuing training")
+                    continue
+
+                std = np.std(drag_improvement_dev[(-1*n_looks_backwards_for_criteria):])
+                if std/np.mean(drag_improvement_dev[(-1*n_looks_backwards_for_criteria):]) < 0.01:
+                    crit_met = True
+                    print(f" | finishing process, criteria is met")
+                    sys.stdout.flush()
+                    continue
+                else:
+                    print(" | continuing training")
 
             sys.stdout.flush()
         reset_eval_count()
