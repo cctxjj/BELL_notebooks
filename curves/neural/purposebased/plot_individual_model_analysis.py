@@ -40,7 +40,7 @@ loss_bez = norm(loss_bez)
 loss_drag = norm(loss_drag)
 loss_range = norm(loss_range)
 
-# 1) Entwicklung aller Losses in einem Plot (scatter + Linien)
+# plot normed losses
 plt.figure(figsize=(8, 4))
 plt.plot(epoch, loss, "o-", label="loss")
 plt.plot(epoch, loss_drag, "o-", label="drag loss")
@@ -53,7 +53,7 @@ plt.grid(True, alpha=0.3)
 plt.legend()
 plt.tight_layout()
 
-# 2) drag_improvement und bezier_shift zusammen
+# 2) drag_improvement and bezier_shift
 plt.figure(figsize=(8, 4))
 plt.plot(epoch, drag_improvement, "o-", label="drag improvement")
 plt.plot(epoch, bezier_shift, "o-", label="bezier shift")
@@ -64,8 +64,7 @@ plt.grid(True, alpha=0.3)
 plt.legend()
 plt.tight_layout()
 
-# 3) Verhältnis loss_drag / loss_bez
-
+# 3) ratio loss_drag / loss_bez
 plt.figure(figsize=(8, 4))
 plt.plot(epoch, ratio, "o-", label="loss_drag / loss_bez")
 plt.xlabel("Epoche")
