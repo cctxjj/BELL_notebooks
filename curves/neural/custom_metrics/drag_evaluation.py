@@ -13,8 +13,8 @@ from curves.func_based.bézier_curve import bezier_curve
 from util.shape_modifier import normalize_points, converge_shape_to_mirrored_airfoil
 
 eval_count = 0
-default_path = "C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/neural_curves/nf_evaluation"
-#default_path = "/root/bell/data/neural_curves/airfoil_on_server"
+default_path = "/data/airfoils/nf_evaluation"
+#default_path = "/root/bell/data/airfoils/airfoil_on_server"
 
 def reset_eval_count():
     global eval_count
