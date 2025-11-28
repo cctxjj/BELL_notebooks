@@ -19,12 +19,13 @@ add nn structure + comments
 model_id = str(input("Model id: "))
 drag_factor = float(input("Drag factor: "))
 
+# TODO: checkout model m1_20k_1.223
+
 # Hyperparameter
 degree = 5
 bez_curve_iterations = 20000
 cont_points_ds_length = 100
 n_looks_backwards_for_criteria = 10
-# TODO: Standartabweichung nutzen?
 
 # data arrays
 loss_dev = []

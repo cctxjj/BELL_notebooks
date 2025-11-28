@@ -28,6 +28,8 @@ def grab_model_result_data(name):
         "ratio": ratio
     }
 
+# TODO: add more diagramms (unnormed)
+
 def create_csv(specification: str, model_ids: dict):
     x_vals, loss, loss_bez, loss_drag, drag_improvement, bezier_shift, ratio = [], [], [], [], [], [], []
     for id, x_val in zip(model_ids.keys(), model_ids.values()):
@@ -85,53 +87,32 @@ def plot_csv(csv_path: str):
     plt.show()
 
 # models arranged as (model, drag_factor) pairs in a dictionary for interpretation by def create_csv()
-models = {
-    "m1_20k_1": 1.0,
-    "m1_20k_1.5": 1.5,
-    "m1_20k_1.866": 1.866,
-    "m1_20k_2": 2.0,
-    "m1_20k_2.25": 2.25,
-    "m1_20k_2.5": 2.5,
-    "m1_20k_2.75": 2.75,
-    "m1_20k_3": 3.0,
-    "m1_20k_3.25": 3.25,
-    "m1_20k_3.5": 3.5,
-    "m1_20k_3.75": 3.75,
-    "m1_20k_4": 4.0,
-    "m1_20k_4.25": 4.25,
-    "m1_20k_4.5": 4.5,
-    "m1_20k_4.75": 4.75,
-    "m1_20k_4.765": 4.765,
-    "m1_20k_5": 5.0,
-    "m1_20k_5.25": 5.25,
-    "m1_20k_5.5": 5.5,
-    "m1_20k_5.75": 5.75,
-    "m1_20k_6": 6.0,
-    "m1_20k_6.25": 6.25,
-    "m1_20k_6.5": 6.5,
-    "m1_20k_6.75": 6.75,
-    "m1_20k_7": 7.0,
-    "m1_20k_7.25": 7.25,
-    "m1_20k_7.5": 7.5,
-    "m1_20k_7.75": 7.75,
-    "m1_20k_8_higher_crit": 8.0,
-    "m1_20k_8.25": 8.25,
-    "m1_20k_8.5": 8.5,
-    "m1_20k_8.75": 8.75,
-    "m1_20k_9": 9.0,
-    "m1_20k_9.25": 9.25,
-    "m1_20k_9.5": 9.5,
-    "m1_20k_9.75": 9.75,
-    "m1_20k_10": 10.0,
-    "m1_20k_11": 11.0,
-    "m1_20k_12": 12.0,
-    "m1_20k_15": 15.0,
-    "m1_20k_18": 18.0,
-    "m1_20k_21": 21.0,
-    "m1_20k_24": 24.0,
-    "m1_20k_27": 27.0,
-    "m1_20k_30": 30.0,
-}
+
+def _discover_models(prefix: str = "m1_20k_") -> dict[str, float]:
+
+    data_dir = "C:\\Users\\Sebastian\\PycharmProjects\\BELL_notebooks\\data\\model_analysis_1"
+    if not os.path.isdir(data_dir):
+        return {}
+
+    result = {}
+    for file in os.listdir(data_dir):
+        if not (file.startswith("equilibrium_data_model_") and file.endswith(".csv")):
+            continue
+        model_id = file[len("equilibrium_data_model_"):-len(".csv")]
+        if not model_id.startswith(prefix):
+            continue
+        try:
+            factor = float(file[(len("equilibrium_data_model_") + len(prefix)):-len(".csv")])
+            result[model_id] = factor
+        except ValueError:
+            continue
+
+    # nach Drag-Faktor sortieren
+    return dict(sorted(result.items(), key=lambda kv: kv[1]))
+
+# models: automatisch aus Dateien ermitteln (statt statischer Liste)
+models = _discover_models(prefix="m1_20k_")
+
 specification = input("spec: ")
 create_csv(specification, models)
 path= "C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/model_analysis_1/"
