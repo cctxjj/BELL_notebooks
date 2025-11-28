@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 
 import pandas as pd
 
-# creation of random forest to predict drag factor according to bez shift and drag improvement
+# creation of random forest to predict bez shift and drag improvement according to drag factor
 
 spec = input("csv specification: ")
 df = pd.read_csv(f"C:\\Users\\Sebastian\\PycharmProjects\\BELL_notebooks\\data\\model_analysis_1\\crossmodel_analysis_{spec}.csv")
