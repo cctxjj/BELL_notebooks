@@ -18,14 +18,13 @@ add nn structure + comments
 
 model_id = str(input("Model id: "))
 drag_factor = float(input("Drag factor: "))
-# todo: equilibrium factor as multiple of bez mse?
 
 # Hyperparameter
 degree = 5
 bez_curve_iterations = 20000
 cont_points_ds_length = 100
 n_looks_backwards_for_criteria = 10
-# TODO: standartabweichung nutzen?
+# TODO: Standartabweichung nutzen?
 
 # data arrays
 loss_dev = []
