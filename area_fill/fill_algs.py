@@ -494,7 +494,7 @@ def scanline_stackbased_flood_fill_4con(
                 elif img[y - 1, right_b] == start_col:
                     run_below = True
                     stack.append((right_b ,y - 1))
-                    img[y - 1, left_b] = new_color
+                    img[y - 1, right_b] = new_color
 
             right_b += 1
 
@@ -782,7 +782,7 @@ def scanline_queuebased_flood_fill_8con(
             if y + 1 < height:
                 if img[y + 1, left_b] == start_col:
                     queue.append((left_b, y + 1))
-                    img[y - 1, left_b] = new_color
+                    img[y + 1, left_b] = new_color
 
         # looking for the right boundary, scanning for new runs above/below
         run_above = run_above_detected_on_start
@@ -939,8 +939,7 @@ def scanline_stackbased_flood_fill_4con_optimized(
 
         run_data = (y, left_b+1, right_b-1)
         for new_seed in temp_stack:
-            stack.append(run_data)
-            stack.append(new_seed)
+            stack.append(new_seed + run_data)
 
     while stack:
         cur = stack.pop()

@@ -350,7 +350,7 @@ def plot_runtime_difference(data1, data2, label1, label2, color1, color2, save_p
     for i in range(len(data1)):
         if data1[i][1] > data2[i][1]:
             data1_diff.append((data1[i][0], (data1[i][1] - data2[i][1])*100/data2[i][1]))
-        elif data2[i][1] < data1[i][1]:
+        elif data2[i][1] > data1[i][1]:
             data2_diff.append((data2[i][0], (data2[i][1] - data1[i][1])*100/data1[i][1]))
 
     data1_diff = np.array(data1_diff)
@@ -374,7 +374,7 @@ def plot_runtime_difference(data1, data2, label1, label2, color1, color2, save_p
     if save_path is not None:
         assert file_name is not None
         os.makedirs(save_path, exist_ok=True)
-        plt.savefig(save_path + "/" + file_name, dpi=300, bbox_inches="tight")
+        plt.savefig(save_path + "/" + file_name)
         plt.close()
     else:
         plt.show()

@@ -3,6 +3,7 @@ import time
 
 import numpy as np
 from PIL import Image
+from matplotlib import pyplot as plt
 
 from fill_algs import *
 from util.graphics import image_handler as imgutil
@@ -30,7 +31,7 @@ def resize(img, factor):
 
 data_save_path = "C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/algs_comparison/fill/"
 run = input("run number: ")
-stepsize = 5
+stepsize = 3
 upper_boundary = 40
 
 # TODO: Auch Platzkomplexität?
@@ -107,26 +108,12 @@ while i < upper_boundary:
 print("\ncompleted stack-based scanline flood fill (optimized)")
 vis.plot_runtime(data=stack_scanline_opt_datapoints, alg_title="stack-based scanline flood fill optimized", color="#E1BEE7", save_path=data_save_path+"run_" + run + "/", file_name="graph_stack_based_scanline_flood_fill_opt.png")
 
-# time measure for queue-based scanline flood fill optimized:
-i = 1
-queue_scanline_opt_datapoints = []
-while i < upper_boundary:
-    print(f"\rrunning queue-based scanline flood fill (optimized) for n={i}*n0 (n_max={upper_boundary}*n0)", end="")
-    sys.stdout.flush()
-    img_to_use = resize(img.copy(), i)
-    t = measure_time(scanline_queuebased_flood_fill_8con)(img_to_use, (30, 30), 155)
-    queue_scanline_opt_datapoints.append((i, t))
-    i += stepsize
-print("\ncompleted queue-based scanline flood fill (optimized)")
-vis.plot_runtime(data=queue_scanline_opt_datapoints, alg_title="queue-based scanline flood fill optimized", color="#F8BBD0", save_path=data_save_path+"run_" + run + "/", file_name="graph_queue_based_scanline_flood_fill_opt.png")
-
-vis.plot_runtime_comparison(["stack-based recursive flood fill", "queue-based recursive flood fill", "stack-based scanline flood fill", "queue-based scanline flood fill", "stack-based scanline flood fill (optimized)", "queue-based scanline flood fill (optimized)"], [stack_recursive_datapoints, queue_recursive_datapoints, stack_scanline_datapoints, queue_scanline_datapoints, stack_scanline_opt_datapoints, queue_scanline_opt_datapoints], ["#4A0072", "#E91E63", "#9C27B0", "#F06292", "#E1BEE7", "#F8BBD0"], title="Vergleich Zeitkomplexität aller Flood Fill Varianten", save_path=data_save_path+"run_" + run + "/", file_name="graph_comparison_overall.png")
+vis.plot_runtime_comparison(["stack-based recursive flood fill", "queue-based recursive flood fill", "stack-based scanline flood fill", "queue-based scanline flood fill", "stack-based scanline flood fill (optimized)"], [stack_recursive_datapoints, queue_recursive_datapoints, stack_scanline_datapoints, queue_scanline_datapoints, stack_scanline_opt_datapoints], ["#4A0072", "#E91E63", "#9C27B0", "#F06292", "#E1BEE7"], title="Vergleich Zeitkomplexität aller Flood Fill Varianten", save_path=data_save_path+"run_" + run + "/", file_name="graph_comparison_overall.png")
 vis.plot_runtime_comparison(["stack-based recursive flood fill", "stack-based scanline flood fill", "stack-based scanline flood fill (optimized)"], [stack_recursive_datapoints, stack_scanline_datapoints, stack_scanline_opt_datapoints], ["#4A0072", "#9C27B0", "#E1BEE7"], title="Vergleich Zeitkomplexität für alle stack-based Varianten", save_path=data_save_path+"run_" + run + "/", file_name="graph_comparison_stack_based.png")
-vis.plot_runtime_comparison(["queue-based recursive flood fill", "queue-based scanline flood fill", "queue-based scanline flood fill (optimized)"], [queue_recursive_datapoints, queue_scanline_datapoints, queue_scanline_opt_datapoints], ["#E91E63", "#F06292", "#F8BBD0"], title="Vergleich Zeitkomplexität für alle queue-based Varianten", save_path=data_save_path+"run_" + run + "/", file_name="graph_comparison_queue_based.png")
+vis.plot_runtime_comparison(["queue-based recursive flood fill", "queue-based scanline flood fill"], [queue_recursive_datapoints, queue_scanline_datapoints], ["#E91E63", "#F06292"], title="Vergleich Zeitkomplexität für alle queue-based Varianten", save_path=data_save_path+"run_" + run + "/", file_name="graph_comparison_queue_based.png")
 vis.plot_runtime_difference(data1=stack_scanline_datapoints, data2=stack_recursive_datapoints, label1="stack-based scanline flood fill", label2="stack-based recursive flood fill", color1="#9C27B0", color2="#4A0072", save_path=data_save_path+"run_" + run + "/", file_name="graph_scanline_recursive_stack_difference.png")
 vis.plot_runtime_difference(data1=queue_scanline_datapoints, data2=queue_recursive_datapoints, label1="queue-based scanline flood fill", label2="queue-based recursive flood fill", color1="#F06292", color2="#E91E63", save_path=data_save_path+"run_" + run + "/", file_name="graph_scanline_recursive_queue_difference.png")
 vis.plot_runtime_difference(data1=stack_scanline_opt_datapoints, data2=stack_scanline_datapoints, label1="stack-based scanline flood fill (optimized)", label2="stack-based scanline flood fill", color1="#E1BEE7", color2="#9C27B0", save_path=data_save_path+"run_" + run + "/", file_name="graph_scanline_opt_stack_difference.png")
-vis.plot_runtime_difference(data1=queue_scanline_opt_datapoints, data2=queue_scanline_datapoints, label1="queue-based scanline flood fill (optimized)", label2="queue-based scanline flood fill", color1="#F8BBD0", color2="#F06292", save_path=data_save_path+"run_" + run + "/", file_name="graph_scanline_opt_queue_difference.png")
 vis.plot_runtime_difference(data1=stack_recursive_datapoints, data2=queue_recursive_datapoints, label1="stack-based recursive flood fill", label2="queue-based recursive flood fill", color1="#4A0072", color2="#E91E63", save_path=data_save_path+"run_" + run + "/", file_name="graph_recursive_difference.png")
 print("completed time measurements for all algorithms")
 
