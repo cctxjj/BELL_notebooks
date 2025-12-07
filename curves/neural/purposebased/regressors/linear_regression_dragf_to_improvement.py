@@ -12,7 +12,7 @@ import pandas as pd
 spec = input("csv specification: ")
 df = pd.read_csv(f"C:\\Users\\Sebastian\\PycharmProjects\\BELL_notebooks\\data\\model_analysis_1\\crossmodel_analysis_{spec}.csv")
 
-to_predict = float(input("drag factor: "))
+to_predict = float(input("g for prediction: "))
 
 n = df["n"].tolist()
 drag_improvement = df["drag_improvement"].tolist()
@@ -20,19 +20,18 @@ bez_shift = df["bezier_shift"].tolist()
 
 ratio = df["ratio"].tolist()
 
-x_train, x_test, y_train, y_test = train_test_split(np.reshape(n, (-1, 1)), drag_improvement, test_size=0.2)
+x, y = np.reshape(n, (-1, 1)), drag_improvement
 
 regressor = LinearRegression()
-regressor.fit(x_train, y_train)
-print("Score: " + str(regressor.score(x_test, y_test)))
+regressor.fit(x, y)
 concrete_prediction = regressor.predict(np.reshape([to_predict], (-1, 1)))[0]
-print(f"Predicted drag improvement for drag factor={to_predict}: {concrete_prediction}")
+print(f"Predicted cwv for g={to_predict}: {concrete_prediction}")
 
-general_prediction = regressor.predict(np.reshape([0, 30], (-1, 1)))
+general_prediction = regressor.predict(np.reshape([0, 15], (-1, 1)))
 
 # plot prediction for drag factor
-plt.figure(figsize=(8, 4))
-plt.plot([0, 30], general_prediction, color="purple",
+plt.figure(figsize=(6, 4))
+plt.plot([0, 15], general_prediction, color="purple",
     linewidth=2.0,
     alpha=0.8,
     solid_joinstyle="round",
@@ -41,9 +40,9 @@ plt.plot([0, 30], general_prediction, color="purple",
     zorder=2,
   label="vorhergesagte Modelperformance")
 plt.scatter(n, drag_improvement, color="red", label="reale Modelperformance")
-plt.ylabel("Drag Improvement")
-plt.xlabel("Drag Faktor")
-plt.title("Drag Improvement nach Drag Faktor")
+plt.ylabel("cwv")
+plt.xlabel("g")
+plt.title("cwv nach Gleichgewichtsfaktor")
 plt.grid(True, alpha=0.3)
 plt.legend()
 plt.tight_layout()

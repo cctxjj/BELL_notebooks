@@ -20,7 +20,7 @@ using custom training loop to establish basis for unsupervised learning later on
 
 # setting up variables
 degree = 4
-epochs = 10
+epochs = 30
 samples = 1000
 
 # model setup

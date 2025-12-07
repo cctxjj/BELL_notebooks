@@ -194,7 +194,7 @@ while not crit_met:
                     print(" | continuing training")
                     continue
 
-                std = np.std(drag_improvement_dev[(-1*n_looks_backwards_for_criteria):])
+                std = np.std(drag_improvement_dev[(-1*n_looks_backwards_for_criteria):] )
                 if abs(std/np.mean(drag_improvement_dev[(-1*n_looks_backwards_for_criteria):])) < 0.01 or epoch >= 100:
                     crit_met = True
                     print(f" | finishing process, crit is met")
