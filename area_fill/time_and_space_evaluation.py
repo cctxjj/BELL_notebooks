@@ -1,0 +1,153 @@
+import sys
+import time
+import tracemalloc
+import copy
+
+import numpy as np
+from PIL import Image
+from matplotlib import pyplot as plt
+
+from fill_algs import *
+from util.graphics import image_handler as imgutil
+from util.graphics import visualisations as vis
+
+def measure_time_and_memory(func):
+    def wrapper(*args, **kwargs):
+        # time measurement
+        start = time.perf_counter()
+        func(*copy.deepcopy(args), *copy.deepcopy(kwargs))
+        duration = time.perf_counter() - start
+
+        # space measurement
+        tracemalloc.start()
+        try:
+            func(*copy.deepcopy(args), *copy.deepcopy(kwargs))
+            current, peak = tracemalloc.get_traced_memory()
+        finally:
+            tracemalloc.stop()
+        return duration, round(peak / 1000, 2)
+    return wrapper
+
+
+def show(a):
+    plt.imshow(a, cmap="gray", vmin=0, vmax=255)
+    plt.axis("off")
+    plt.show()
+
+def resize(img, factor):
+    return np.repeat(img.copy(), factor, axis=1)
+
+
+data_save_path = "C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/algs_comparison/fill/"
+run = input("run number: ")
+stepsize = 4
+upper_boundary = 200
+
+# TODO: Auch Platzkomplexität?
+# TODO: Queuebased anpassen
+
+# ----------------------------
+# time measurements for 8con on img_1
+# ----------------------------
+
+img = img_1 = imgutil.grab_image("imgs//img_1.png")
+
+# time measure for stack-based recursive flood fill:
+i = 1
+time_stack_recursive_datapoints = []
+space_stack_recursive_datapoints = []
+while i < upper_boundary:
+    print(f"\rrunning stack-based recursive flood fill for n={i}*n0 (n_max={upper_boundary}*n0)", end="")
+    sys.stdout.flush()
+    img_to_use = resize(img.copy(), i)
+    t, s = measure_time_and_memory(recursive_stackbased_flood_fill_8con)(img_to_use, (30, 30), 155)
+    time_stack_recursive_datapoints.append((i, t))
+    space_stack_recursive_datapoints.append((i, s))
+    i += stepsize
+print("\ncompleted stack-based recursive flood fill")
+vis.plot_runtime(data=time_stack_recursive_datapoints, alg_title="stack-based recursive flood fill", color="#4A0072", save_path=data_save_path+"run_" + run + "/", file_name="time/graph_stack_based_recursive_flood_fill.png")
+vis.plot_space_complexity(data=space_stack_recursive_datapoints, alg_title="stack-based recursive flood fill", color="#4A0072", save_path=data_save_path+"run_" + run + "/", file_name="space/graph_stack_based_recursive_flood_fill.png")
+
+# time measure for queue-based recursive flood fill:
+i = 1
+time_queue_recursive_datapoints = []
+space_queue_recursive_datapoints = []
+while i < upper_boundary:
+    print(f"\rrunning queue-based recursive flood fill for n={i}*n0 (n_max={upper_boundary}*n0)", end="")
+    sys.stdout.flush()
+    img_to_use = resize(img.copy(), i)
+    t, s = measure_time_and_memory(recursive_queuebased_flood_fill_8con)(img_to_use, (30, 30), 155)
+    time_queue_recursive_datapoints.append((i, t))
+    space_queue_recursive_datapoints.append((i, s))
+    i += stepsize
+print("\ncompleted queue-based recursive flood fill")
+vis.plot_runtime(data=time_queue_recursive_datapoints, alg_title="queue-based recursive flood fill", color="#E91E63", save_path=data_save_path+"run_" + run + "/", file_name="time/graph_queue_based_recursive_flood_fill.png")
+vis.plot_space_complexity(data=space_queue_recursive_datapoints, alg_title="queue-based recursive flood fill", color="#E91E63", save_path=data_save_path+"run_" + run + "/", file_name="space/graph_queue_based_recursive_flood_fill.png")
+
+# time measure for stack-based scanline flood fill:
+i = 1
+time_stack_scanline_datapoints = []
+space_stack_scanline_datapoints = []
+while i < upper_boundary:
+    print(f"\rrunning stack-based scanline flood fill for n={i}*n0 (n_max={upper_boundary}*n0)", end="")
+    sys.stdout.flush()
+    img_to_use = resize(img.copy(), i)
+    t, s = measure_time_and_memory(scanline_stackbased_flood_fill_8con)(img_to_use, (30, 30), 155)
+    time_stack_scanline_datapoints.append((i, t))
+    space_stack_scanline_datapoints.append((i, s))
+    i += stepsize
+print("\ncompleted stack-based scanline flood fill")
+vis.plot_runtime(data=time_stack_scanline_datapoints, alg_title="stack-based scanline flood fill", color="#9C27B0", save_path=data_save_path + "run_" + run + "/", file_name="time/graph_stack_based_scanline_flood_fill.png")
+vis.plot_space_complexity(data=space_stack_scanline_datapoints, alg_title="stack-based scanline flood fill", color="#9C27B0", save_path=data_save_path + "run_" + run + "/", file_name="space/graph_stack_based_scanline_flood_fill.png")
+
+# time measure for queue-based scanline flood fill:
+i = 1
+time_queue_scanline_datapoints = []
+space_queue_scanline_datapoints = []
+while i < upper_boundary:
+    print(f"\rrunning queue-based scanline flood fill for n={i}*n0 (n_max={upper_boundary}*n0)", end="")
+    sys.stdout.flush()
+    img_to_use = resize(img.copy(), i)
+    t, s = measure_time_and_memory(scanline_queuebased_flood_fill_8con)(img_to_use, (30, 30), 155)
+    time_queue_scanline_datapoints.append((i, t))
+    space_queue_scanline_datapoints.append((i, s))
+    i += stepsize
+print("\ncompleted queue-based scanline flood fill")
+vis.plot_runtime(data=time_queue_scanline_datapoints, alg_title="queue-based scanline flood fill", color="#F06292", save_path=data_save_path+"run_" + run + "/", file_name="time/graph_queue_based_scanline_flood_fill.png")
+vis.plot_space_complexity(data=space_queue_scanline_datapoints, alg_title="queue-based scanline flood fill", color="#F06292", save_path=data_save_path+"run_" + run + "/", file_name="space/graph_queue_based_scanline_flood_fill.png")
+
+# time measure for stack-based scanline flood fill optimized:
+i = 1
+time_stack_scanline_opt_datapoints = []
+space_stack_scanline_opt_datapoints = []
+while i < upper_boundary:
+    print(f"\rrunning stack-based scanline flood fill (optimized) for n={i}*n0 (n_max={upper_boundary}*n0)", end="")
+    sys.stdout.flush()
+    img_to_use = resize(img.copy(), i)
+    t, s = measure_time_and_memory(scanline_stackbased_flood_fill_8con_optimized)(img_to_use, (30, 30), 155)
+    time_stack_scanline_opt_datapoints.append((i, t))
+    space_stack_scanline_opt_datapoints.append((i, s))
+    i += stepsize
+print("\ncompleted stack-based scanline flood fill (optimized)")
+vis.plot_runtime(data=time_stack_scanline_opt_datapoints, alg_title="stack-based scanline flood fill optimized", color="#E1BEE7", save_path=data_save_path+"run_" + run + "/", file_name="time/graph_stack_based_scanline_flood_fill_opt.png")
+vis.plot_space_complexity(data=space_stack_scanline_datapoints, alg_title="stack-based scanline flood fill optimized", color="#E1BEE7", save_path=data_save_path+"run_" + run + "/", file_name="space/graph_stack_based_scanline_flood_fill_opt.png")
+
+# overall time comparison
+vis.plot_runtime_comparison(["stack-based recursive flood fill", "queue-based recursive flood fill", "stack-based scanline flood fill", "queue-based scanline flood fill", "stack-based scanline flood fill (optimized)"], [time_stack_recursive_datapoints, time_queue_recursive_datapoints, time_stack_scanline_datapoints, time_queue_scanline_datapoints, time_stack_scanline_opt_datapoints], ["#4A0072", "#E91E63", "#9C27B0", "#F06292", "#E1BEE7"], title="Vergleich Zeitkomplexität aller Flood Fill Varianten", save_path=data_save_path + "run_" + run + "/", file_name="time/graph_comparison_overall.png")
+vis.plot_runtime_comparison(["stack-based recursive flood fill", "stack-based scanline flood fill", "stack-based scanline flood fill (optimized)"], [time_stack_recursive_datapoints, time_stack_scanline_datapoints, time_stack_scanline_opt_datapoints], ["#4A0072", "#9C27B0", "#E1BEE7"], title="Vergleich Zeitkomplexität für alle stack-based Varianten", save_path=data_save_path + "run_" + run + "/", file_name="time/graph_comparison_stack_based.png")
+vis.plot_runtime_comparison(["queue-based recursive flood fill", "queue-based scanline flood fill"], [time_queue_recursive_datapoints, time_queue_scanline_datapoints], ["#E91E63", "#F06292"], title="Vergleich Zeitkomplexität für alle queue-based Varianten", save_path=data_save_path+"run_" + run + "/", file_name="time/graph_comparison_queue_based.png")
+vis.plot_runtime_difference(data1=time_stack_scanline_datapoints, data2=time_stack_recursive_datapoints, label1="stack-based scanline flood fill", label2="stack-based recursive flood fill", color1="#9C27B0", color2="#4A0072", save_path=data_save_path + "run_" + run + "/", file_name="time/graph_scanline_recursive_stack_difference.png")
+vis.plot_runtime_difference(data1=time_queue_scanline_datapoints, data2=time_queue_recursive_datapoints, label1="queue-based scanline flood fill", label2="queue-based recursive flood fill", color1="#F06292", color2="#E91E63", save_path=data_save_path+"run_" + run + "/", file_name="time/graph_scanline_recursive_queue_difference.png")
+vis.plot_runtime_difference(data1=time_stack_scanline_opt_datapoints, data2=time_stack_scanline_datapoints, label1="stack-based scanline flood fill (optimized)", label2="stack-based scanline flood fill", color1="#E1BEE7", color2="#9C27B0", save_path=data_save_path + "run_" + run + "/", file_name="time/graph_scanline_opt_stack_difference.png")
+vis.plot_runtime_difference(data1=time_stack_recursive_datapoints, data2=time_queue_recursive_datapoints, label1="stack-based recursive flood fill", label2="queue-based recursive flood fill", color1="#4A0072", color2="#E91E63", save_path=data_save_path+"run_" + run + "/", file_name="time/graph_recursive_difference.png")
+
+# space comparison
+vis.plot_space_complexity_comparison(["stack-based recursive flood fill", "queue-based recursive flood fill", "stack-based scanline flood fill", "queue-based scanline flood fill", "stack-based scanline flood fill (optimized)"], [space_stack_recursive_datapoints, space_queue_recursive_datapoints, space_stack_scanline_datapoints, space_queue_scanline_datapoints, space_stack_scanline_opt_datapoints], ["#4A0072", "#E91E63", "#9C27B0", "#F06292", "#E1BEE7"], title="Vergleich Zeitkomplexität aller Flood Fill Varianten", save_path=data_save_path + "run_" + run + "/", file_name="space/graph_comparison_overall.png")
+vis.plot_space_complexity_comparison(["stack-based recursive flood fill", "stack-based scanline flood fill", "stack-based scanline flood fill (optimized)"], [space_stack_recursive_datapoints, space_stack_scanline_datapoints, space_stack_scanline_opt_datapoints], ["#4A0072", "#9C27B0", "#E1BEE7"], title="Vergleich Zeitkomplexität für alle stack-based Varianten", save_path=data_save_path + "run_" + run + "/", file_name="space/graph_comparison_stack_based.png")
+vis.plot_space_complexity_comparison(["queue-based recursive flood fill", "queue-based scanline flood fill"], [space_queue_recursive_datapoints, space_queue_scanline_datapoints], ["#E91E63", "#F06292"], title="Vergleich Zeitkomplexität für alle queue-based Varianten", save_path=data_save_path+"run_" + run + "/", file_name="space/graph_comparison_queue_based.png")
+vis.plot_space_complexity_difference(data1=space_stack_scanline_datapoints, data2=space_stack_recursive_datapoints, label1="stack-based scanline flood fill", label2="stack-based recursive flood fill", color1="#9C27B0", color2="#4A0072", save_path=data_save_path + "run_" + run + "/", file_name="space/graph_scanline_recursive_stack_difference.png")
+vis.plot_space_complexity_difference(data1=space_queue_scanline_datapoints, data2=space_queue_recursive_datapoints, label1="queue-based scanline flood fill", label2="queue-based recursive flood fill", color1="#F06292", color2="#E91E63", save_path=data_save_path+"run_" + run + "/", file_name="space/graph_scanline_recursive_queue_difference.png")
+vis.plot_space_complexity_difference(data1=space_stack_scanline_opt_datapoints, data2=space_stack_scanline_datapoints, label1="stack-based scanline flood fill (optimized)", label2="stack-based scanline flood fill", color1="#E1BEE7", color2="#9C27B0", save_path=data_save_path + "run_" + run + "/", file_name="space/graph_scanline_opt_stack_difference.png")
+vis.plot_space_complexity_difference(data1=space_stack_recursive_datapoints, data2=space_queue_recursive_datapoints, label1="stack-based recursive flood fill", label2="queue-based recursive flood fill", color1="#4A0072", color2="#E91E63", save_path=data_save_path+"run_" + run + "/", file_name="space/graph_recursive_difference.png")
+
+print("completed time + space measurements for all algorithms")

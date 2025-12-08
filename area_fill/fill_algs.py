@@ -1,4 +1,5 @@
 import math
+from collections import deque
 
 import numpy as np
 
@@ -215,11 +216,11 @@ def recursive_queuebased_flood_fill_4con(
     if start_col == new_color:
         raise ValueError("start_col must be different from new_color")
 
-    queue = [start]
+    queue = deque([start])
     img[start[1], start[0]] = new_color
 
     while queue:
-        cur = queue.pop(0)
+        cur = queue.popleft()
 
         if cur[1]+1 < height:
             if img[cur[1] + 1, cur[0]] == start_col:
@@ -258,10 +259,10 @@ def recursive_queuebased_flood_fill_8con(
     if start_col == new_color:
         raise ValueError("start_col must be different from new_color")
 
-    queue = [start]
+    queue = deque([start])
     img[start[1], start[0]] = new_color
     while queue:
-        cur = queue.pop(0)
+        cur = queue.popleft()
 
         if cur[1] + 1 < height:
             if img[cur[1] + 1, cur[0]] == start_col:
@@ -319,11 +320,11 @@ def recursive_queuebased_boundary_fill_4con(
     '''
     height, width = np.shape(img)
 
-    queue = [start]
+    queue = deque([start])
     img[start[1], start[0]] = new_color
 
     while queue:
-        cur = queue.pop(0)
+        cur = queue.popleft()
 
         if cur[1]+1 < height:
             if img[cur[1] + 1, cur[0]] != boundary_color and img[cur[1] + 1, cur[0]] != new_color:
@@ -361,11 +362,11 @@ def recursive_queuebased_boundary_fill_8con(
     '''
     height, width = np.shape(img)
 
-    queue = [start]
+    queue = deque([start])
     img[start[1], start[0]] = new_color
 
     while queue:
-        cur = queue.pop(0)
+        cur = queue.popleft()
 
         if cur[1] + 1 < height:
             if img[cur[1] + 1, cur[0]] != boundary_color and img[cur[1] + 1, cur[0]] != new_color:
@@ -635,7 +636,7 @@ def scanline_queuebased_flood_fill_4con(
     if start_col == new_color:
         raise ValueError("start_col must be different from new_color")
 
-    queue = [start]
+    queue = deque([start])
     img[start[1], start[0]] = new_color
 
     def identify_and_fill_run(seed):
@@ -707,7 +708,7 @@ def scanline_queuebased_flood_fill_4con(
             right_b += 1
 
     while queue:
-        cur = queue.pop(0)
+        cur = queue.popleft()
         identify_and_fill_run(cur)
 
     return img
@@ -728,7 +729,7 @@ def scanline_queuebased_flood_fill_8con(
     if start_col == new_color:
         raise ValueError("start_col must be different from new_color")
 
-    queue = [start]
+    queue = deque([start])
     img[start[1], start[0]] = new_color
 
     def identify_and_fill_run(seed):
@@ -822,7 +823,7 @@ def scanline_queuebased_flood_fill_8con(
                     img[y + 1, right_b] = new_color
 
     while queue:
-        cur = queue.pop(0)
+        cur = queue.popleft()
         identify_and_fill_run(cur)
 
     return img
