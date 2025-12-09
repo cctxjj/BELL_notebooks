@@ -37,7 +37,7 @@ class DragEvaluator:
 
         # format points
         #translation = insert converge_shape_to_mirrored_airfoil in case rotation is needed rotate wieder # returns list of points (and angle of rotation if rotation is applied manually)
-        #self.rotation = translation[1] # TODO: use rotation data to adjust angle of incoming airstream
+        #self.rotation = translation[1]
         af_points = np.array(converge_shape_to_mirrored_airfoil(points))
 
 
@@ -92,12 +92,14 @@ class DragEvaluator:
     def get_cd(
             self,
             re: float = 1e6,
-            alpha: float = 0):
+            alpha: float = 0,
+            boundary: float = 0.8):
         """
         executes the evaluation
+        :param boundary: lower boundary for prediction confidence in order to return a value
+        :param alpha: angle of attack for airstream, assumed to be 0
         :param re: reynolds number, default 1e6; expresses flow around airfoil as laminar or turbulent --> assumed to be turbulent, further info under https://www.numberanalytics.com/blog/reynolds-number-aerospace-guide (28.09.25)
         :return:
-        # TODO: Idee: auf logischer Basis mathematische Formel für Evaluation formulieren --> desto steiler Winkel desto weniger relevant --> *1/a oder so?
         """
         #print("starting evaluation for ", self.name, "")
         if self.airfoil is None:
@@ -109,7 +111,7 @@ class DragEvaluator:
         )
         # TODO: make sure keys[0] is confidence in prediction
         # TODO: clean up for differentiating between dataset-creation and usage
-        if res[[*res.keys()][0]] > 0.8:
+        if res[[*res.keys()][0]] >= boundary:
             return res["CD"], res[[*res.keys()][0]]
         return None
 

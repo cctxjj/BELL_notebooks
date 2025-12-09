@@ -609,3 +609,43 @@ def plot_cd_comparison(points_nf, points_tf, show=True, save_path=None, filename
         plt.close(fig1); plt.close(fig3)
 
     return deviation_pct
+
+def plot_differences(differences,
+                     title: str = "Unterschied (Bez vs PB)",
+                     show: bool = True,
+                     save_path: str = None,
+                     file_name: str = None):
+    """
+    Plottet die Differenzliste gegen ihren Index.
+
+    Args:
+        differences: Sequenz von float-Werten.
+        title: Plot-Titel.
+        show: True -> anzeigen; False -> nur speichern (falls save_path gesetzt ist).
+        save_path: Ordner zum Speichern (optional).
+        file_name: Dateiname (optional, erforderlich wenn save_path gesetzt ist).
+    """
+    diffs = np.asarray(differences, dtype=float)
+    x = np.arange(len(diffs))
+
+    plt.figure(figsize=(7, 4))
+    plt.axhline(0.0, color="#666666", linestyle="--", linewidth=1, alpha=0.7)
+    plt.plot(x, diffs, color="tab:blue", marker="o", linewidth=1.6, label="Abweichung")
+    plt.grid(True, alpha=0.3)
+    plt.xlabel("Index")
+    plt.ylabel("Differenz")
+    plt.title(title)
+    plt.legend()
+    plt.tight_layout()
+
+    if save_path is not None:
+        assert file_name is not None
+        import os
+        os.makedirs(save_path, exist_ok=True)
+        plt.savefig(f"{save_path}/{file_name}", dpi=300, bbox_inches="tight")
+        plt.close()
+    elif show:
+        plt.show()
+    else:
+        plt.close()
+
