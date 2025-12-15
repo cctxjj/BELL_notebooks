@@ -1,4 +1,3 @@
-import math
 import os
 import random
 import sys
@@ -23,9 +22,9 @@ drag_factor = float(input("Drag factor: "))
 
 # Hyperparameter
 degree = 5
-bez_curve_iterations = 20000
-cont_points_ds_length = 100
-n_looks_backwards_for_criteria = 10
+bez_curve_iterations = 50000
+cont_points_ds_length = 500
+n_looks_backwards_for_criteria = 5
 
 # data arrays
 loss_dev = []

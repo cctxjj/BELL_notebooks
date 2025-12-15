@@ -98,7 +98,7 @@ class DragEvaluator:
         executes the evaluation
         :param boundary: lower boundary for prediction confidence in order to return a value
         :param alpha: angle of attack for airstream, assumed to be 0
-        :param re: reynolds number, default 1e6; expresses flow around airfoil as laminar or turbulent --> assumed to be turbulent, further info under https://www.numberanalytics.com/blog/reynolds-number-aerospace-guide (28.09.25)
+        :param re: r eynolds number, default 1e6; expresses flow around airfoil as laminar or turbulent --> assumed to be turbulent, further info under https://www.numberanalytics.com/blog/reynolds-number-aerospace-guide (28.09.25)
         :return:
         """
         #print("starting evaluation for ", self.name, "")
@@ -109,8 +109,6 @@ class DragEvaluator:
             Re=re,
             alpha=alpha,
         )
-        # TODO: make sure keys[0] is confidence in prediction
-        # TODO: clean up for differentiating between dataset-creation and usage
         if res[[*res.keys()][0]] >= boundary:
             return res["CD"], res[[*res.keys()][0]]
         return None

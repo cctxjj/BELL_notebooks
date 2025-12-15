@@ -1,2 +1,0 @@
-scanline_stackbased_flood_fill_4con and recursive_stackbased_floodfill_4con on 10000 iterations of same picture (test_img_5) got average runtimes of 0.02088832940990105 and
-0.06904251105668954 respectively --> scanline outperforms
