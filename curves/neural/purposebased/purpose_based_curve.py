@@ -2,8 +2,12 @@ import tensorflow as tf
 import numpy as np
 import util.graphics.visualisations as vis
 
+"""
+Aufruf der zweckorientierten Kurve unter Nutzung der im Training als NN erstellten Wichtungsfunktion
+"""
 
 def run_curve(control_points: list, model_name, num_points: int = 500):
+    # Funktion zum Aufruf der Kurve
     model = tf.keras.models.load_model("C:\\Users\\Sebastian\\PycharmProjects\\BELL_notebooks\\data\\models\\min_drag_curve\\model_" + model_name + ".keras")
     curve_points = []
     func_vals = model.predict(np.array([x / num_points for x in range(num_points)])).tolist()
@@ -16,6 +20,7 @@ def run_curve(control_points: list, model_name, num_points: int = 500):
         curve_points.append((curve_point_x, curve_point_y))
     return curve_points
 
+#diverse Beispielkurven
 cont_points = [(0, 0), (4, 10), (5, 3), (11, 14), (15, 7), (20, 1)]
 points_1 = run_curve(cont_points, "m1_20k_4")
 points_2 = run_curve(cont_points, "m1_20k_6")
@@ -23,6 +28,7 @@ points_3 = run_curve(cont_points, "m1_20k_10")
 points_4 = run_curve(cont_points, "m1_50k_9")
 points_5 = run_curve(cont_points, "m1_20k_30")
 
+# Beispielplots
 vis.visualize_curve(points_1, cont_points, True)
 vis.visualize_curve(points_2, cont_points, True)
 vis.visualize_curve(points_3, cont_points, True)

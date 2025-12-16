@@ -7,16 +7,14 @@ from matplotlib.patches import Polygon
 from scipy.spatial import ConvexHull
 import tensorflow as tf
 
-#TODO: Visuals etwas improven
+"""
+Diverse Funktionen zur Visualisierung 
+"""
 
-# Credit: ChatGPT 4.0
 def zeichne_pixel(punkte, pixelgröße=10, rand=20):
     """
-    Zeichnet ein Koordinatensystem mit eingezeichneten Achsen und stellt gegebene Punkte als 10x10 Pixel große schwarze Quadrate dar.
-
-    :param punkte: Liste von (x, y)-Tupeln
-    :param pixelgröße: Größe jedes Punkts in Pixeln (Standard: 10)
-    :param rand: Rand in Pixeln um das Koordinatensystem (Standard: 20)
+    Credit: ChatGPT-4
+    plots given points as black squares in a dynamically adjusted coordinate system; using IPyCanvas, implemented in the JupyterNotebook
     """
     if not punkte:
         print("Die Punkteliste ist leer.")
@@ -44,14 +42,10 @@ def zeichne_pixel(punkte, pixelgröße=10, rand=20):
 
     display(canvas)
 
-# Credit: ChatGPT 4.0
-# TODO: Replace with new method
 def plot_points(points):
     """
-    Zeichnet eine Liste von (x, y)-Tupeln als schwarze Quadrate in einem dynamisch angepassten Koordinatensystem.
-
-    Parameters:
-    points (list of tuples): Liste der zu zeichnenden Punkte, z. B. [(x1, y1), (x2, y2), ...]
+    Credit: ChatGPT-4
+    plots given points as black squares in a dynamically adjusted coordinate system.
     """
     if not points:
         print("Die Punkteliste ist leer.")
@@ -89,10 +83,8 @@ def plot_points(points):
 
 def plot_circular_points(points):
     """
-    Zeichnet eine Liste von (x, y)-Tupeln als schwarze Quadrate in einem dynamisch angepassten Koordinatensystem.
-
-    Parameters:
-    points (list of tuples): Liste der zu zeichnenden Punkte, z. B. [(x1, y1), (x2, y2), ...]
+    Credit: ChatGPT-5
+    plots given points as black squares in a dynamically adjusted coordinate system.
     """
     if not points:
         print("Die Punkteliste ist leer.")
@@ -129,7 +121,6 @@ def plot_circular_points(points):
     plt.show()
 
 
-# TODO: reformat comments
 def visualize_curve(
         points: list,
         control_points: list = [],
@@ -138,25 +129,8 @@ def visualize_curve(
         file_name: str = None,
         design = None):
     """
-    Visualisiert:
-    - Punkte
-    - optional: konvexe Hülle
-    - optional: Kontrollpunkte + B-Spline-Kurve
-    speichert bei Bedarf den Plot
-
-    Args:
-        points: Liste von (x,y)
-        control_points: optionale Kontrollpunkte (Liste von (x,y))
-        curve: optionale Kurvenpunkte (Liste von (x,y))
-        show_hull: True -> konvexe Hülle der Punkte zeichnen
-        design: dict mit optionalen Farben/Styles
-        :param design:
-        :param instant_close:
-        :param save_path:
-        :param points:
-        :param control_points:
-        :param show_hull:
-        :param save_fig:
+    Credit: ChatGPT-5
+    visualized a given curve with optional hull and control points
     """
     if design is None: design = {}
     colors = {
@@ -166,7 +140,6 @@ def visualize_curve(
         "curve": design.get("curve", "tab:blue"),
     }
     fig, ax = plt.subplots()
-    #fig.figure(figsize=design.get("figsize", (6, 6)))
 
     # Konvexe Hülle
     if control_points is not None:
@@ -196,8 +169,6 @@ def visualize_curve(
     else:
         plt.show()
 
-
-
 def visualize_tf_curve(
         points: list,
         control_points: list = None,
@@ -206,25 +177,7 @@ def visualize_tf_curve(
         file_name: str = None,
         design = None):
     """
-    Visualisiert:
-    - Punkte
-    - optional: konvexe Hülle
-    - optional: Kontrollpunkte + B-Spline-Kurve
-    speichert bei Bedarf den Plot
-
-    Args:
-        points: Liste von (x,y)
-        control_points: optionale Kontrollpunkte (Liste von (x,y))
-        curve: optionale Kurvenpunkte (Liste von (x,y))
-        show_hull: True -> konvexe Hülle der Punkte zeichnen
-        design: dict mit optionalen Farben/Styles
-        :param design:
-        :param instant_close:
-        :param save_path:
-        :param points:
-        :param control_points:
-        :param show_hull:
-        :param save_fig:
+    visualization of tf-formated curve with optional hull and control points, adapted from visualize_curve
     """
     if design is None: design = {}
     colors = {
@@ -268,34 +221,9 @@ def visualize_tf_curve(
 
 import os
 
-
-def plot_alpha_cd_correlation(alphas:list,
-                              cds: list,
-                              save_path: str = None,
-                              file_name: str = None):
-    """
-# TODO: comment (credit: ChatGPT)
-    """
-
-    plt.figure(figsize=(6, 4))
-    plt.scatter(alphas, cds, marker="o", linestyle="-", color="tab:purple", label="$c_w$")
-    plt.xlabel("α [°]")
-    plt.ylabel("$c_d$")
-    plt.title("alpha - c_d relation")
-    plt.grid(True, linestyle="--", alpha=0.7)
-    plt.legend()
-
-    if save_path is not None:
-        assert file_name is not None
-        os.makedirs(os.path.dirname(save_path + "/" + file_name), exist_ok=True)
-        plt.savefig(save_path + "/" + file_name, dpi=300, bbox_inches="tight")
-        plt.close()
-    else:
-        plt.show()
-
 def plot_runtime(data, alg_title, color="purple", save_path=None, file_name=None):
     """
-    # TODO: comment (credit: ChatGPT)
+    plots the given data to display space complexity of algorithms with respect to their input sizes
     """
     data = np.array(data)
     x = data[:, 0]
@@ -319,7 +247,7 @@ def plot_runtime(data, alg_title, color="purple", save_path=None, file_name=None
 
 def plot_runtime_comparison(alg_titles, data, colors=None, title_seperator=" & ", title = None, title_appendix="", save_path=None, file_name=None):
     """
-    # TODO: comment (credit: ChatGPT)
+    plots the given data to display space complexity of multiple algorithms with respect to their input sizes
     """
     if colors is None:
         colors = ["black", "red"]
@@ -345,6 +273,9 @@ def plot_runtime_comparison(alg_titles, data, colors=None, title_seperator=" & "
         plt.show()
 
 def plot_runtime_difference(data1, data2, label1, label2, color1, color2, save_path=None, file_name=None):
+    """
+    plots the given data to display runtime difference of algorithms with respect to their input sizes
+    """
     data1_diff = []
     data2_diff = []
     for i in range(len(data1)):
@@ -381,7 +312,7 @@ def plot_runtime_difference(data1, data2, label1, label2, color1, color2, save_p
 
 def plot_space_complexity(data, alg_title, color="purple", save_path=None, file_name=None):
     """
-    # TODO: comment (credit: ChatGPT)
+    plots the given data to display space complexity of algorithms with respect to their input sizes
     """
     data = np.array(data)
     x = data[:, 0]
@@ -405,7 +336,7 @@ def plot_space_complexity(data, alg_title, color="purple", save_path=None, file_
 
 def plot_space_complexity_comparison(alg_titles, data, colors=None, title_seperator=" & ", title = None, title_appendix="", save_path=None, file_name=None):
     """
-    # TODO: comment (credit: ChatGPT)
+    plots the given data to display space complexity of multiple algorithms with respect to their input sizes
     """
     if colors is None:
         colors = ["black", "red"]
@@ -431,6 +362,12 @@ def plot_space_complexity_comparison(alg_titles, data, colors=None, title_sepera
         plt.show()
 
 def plot_space_complexity_difference(data1, data2, label1, label2, color1, color2, save_path=None, file_name=None):
+    """
+    Plots the percentage differences in space complexity requirements between two datasets.
+    The datasets should contain pairs of input sizes and corresponding space requirements.
+    The function calculates the percentage differences and visualizes them using a scatter plot,
+    with points and lines indicating which dataset has higher space requirements at each input size.
+    """
     data1_diff = []
     data2_diff = []
     for i in range(len(data1)):
@@ -475,25 +412,10 @@ def visualize_tf_points(points: tf.Tensor,
                         figsize=(6, 4),
                         equal_aspect: bool = True):
     """
-    Visualisiert 2D-Punkte aus einem TF-Tensor mit matplotlib.
-
-    Parameter:
-      points: tf.Tensor der Form (N, 2) oder (1, N, 2)
-      title: Plot-Titel (optional)
-      ax: vorhandene Matplotlib-Achse nutzen (optional)
-      detach: True -> Gradientenpfad abkoppeln (tf.stop_gradient), empfohlen für reines Plotten
-      marker: Linienstil (z. B. '-', '--', oder '' für nur Scatter)
-      show_points: True -> zusätzlich Scatter-Punkte
-      figsize: Größe der Figure, wenn ax nicht übergeben wird
-      equal_aspect: True -> Achsenverhältnis 1:1
-
-    Rückgabe:
-      ax: verwendete Matplotlib-Achse
+    Credit: ChatGPT-5
+    Visualisation of points in the form of a 2D-Tensor
     """
-    if not isinstance(points, tf.Tensor):
-        points = tf.convert_to_tensor(points)
 
-    # Optionale Abkopplung vom Gradientenpfad (empfohlen fürs Plotten)
     pts = tf.stop_gradient(points) if detach else tf.identity(points)
 
     # Batch-Dimension (1, N, 2) -> (N, 2)
@@ -503,7 +425,6 @@ def visualize_tf_points(points: tf.Tensor,
     if pts.shape.rank != 2 or pts.shape[-1] != 2:
         raise ValueError("Erwartet Punkte der Form (N, 2) oder (1, N, 2).")
 
-    # In NumPy kopieren, damit Matplotlib keine TF-Abhängigkeit hält
     np_pts = pts.numpy().copy()
     x = np_pts[:, 0]
     y = np_pts[:, 1]
@@ -513,7 +434,6 @@ def visualize_tf_points(points: tf.Tensor,
         fig, ax = plt.subplots(figsize=figsize)
         created_fig = True
 
-    # Linie und optional Punkte
     if marker:
         ax.plot(x, y, marker, label="Kontur")
     if show_points:
@@ -537,20 +457,10 @@ def visualize_tf_points(points: tf.Tensor,
 
 def plot_cd_comparison(points_nf, points_tf, show=True, save_path=None, filename_prefix="cd_compare"):
     """
-    Visualisiert zwei c_d-Arrays (points_nf und points_tf) gegen ihren Index (x=Index, y=c_d),
-    plottet beide jeweils separat und am Ende die prozentuale Abweichung je Index
-    (Basiswert: points_tf; Abweichung kann negativ sein).
-
-    Parameter:
-      points_nf: Sequenz oder np.ndarray mit c_d-Werten (z. B. Referenz/NF)
-      points_tf:  Sequenz oder np.ndarray mit c_d-Werten (z. B. Surrogat/TF)
-      show:       True -> Plots anzeigen
-      save_path:  Pfad, unter dem PNG-Dateien gespeichert werden (optional)
-      filename_prefix: Dateinamenspräfix für gespeicherte Plots (optional)
-
-    Rückgabe:
-      deviation_pct: np.ndarray der prozentualen Abweichungen je Index
-                     (100 * (points_nf - points_tf) / points_tf), ggf. mit NaN bei points_tf==0
+    Credit: ChatGPT-5
+    Generates plots comparing points calculated by neuralfoil and tensorflow methods, computes
+    the percentage deviation between the two methods; optionally
+    saves the results to the provided directory.
     """
     points_nf = np.asarray(points_nf, dtype=float)
     points_tf  = np.asarray(points_tf, dtype=float)
@@ -562,14 +472,11 @@ def plot_cd_comparison(points_nf, points_tf, show=True, save_path=None, filename
     x = np.arange(n)
 
     # Farben (Lila-Design)
-    c_nf = "#6a0dad"          # dunkles Lila
-    c_tf = "#b19cd9"          # helleres Lila
-    c_dev = "#8a2be2"         # blau-lila
-    c_zero = "#aa3377"        # Marker für TF==0
+    c_nf = "#6a0dad"
+    c_tf = "#b19cd9"
+    c_dev = "#8a2be2"
+    c_zero = "#aa3377"
 
-    #plt.rcParams.update({"axes.grid": True, "grid.alpha": 0.25})
-
-    # 1) points_nf separat
     fig1, ax1 = plt.subplots(figsize=(7, 4))
     ax1.plot(x, points_nf, color=c_nf, marker="o", linewidth=1.6, label="points_nf")
     ax1.plot(x, points_tf, color=c_tf, marker="s", linewidth=1.6, label="points_tf")
@@ -581,8 +488,6 @@ def plot_cd_comparison(points_nf, points_tf, show=True, save_path=None, filename
     if save_path:
         fig1.savefig(f"{save_path}/{filename_prefix}_points_nf.png", dpi=200, bbox_inches="tight")
 
-    # 3) Abweichung in %
-    #    Definition: 100 * (points_nf - points_tf) / points_tf
     deviation_pct = np.full_like(points_nf, np.nan, dtype=float)
     nonzero_mask = points_tf != 0
     deviation_pct[nonzero_mask] = 100.0 * (points_tf[nonzero_mask] - points_nf[nonzero_mask]) / points_nf[nonzero_mask]
@@ -591,7 +496,6 @@ def plot_cd_comparison(points_nf, points_tf, show=True, save_path=None, filename
     ax3.axhline(0.0, color="#444444", linewidth=1.0, linestyle="--", alpha=0.6)
     ax3.plot(x, deviation_pct, color=c_dev, marker="d", linewidth=1.6, label="Abweichung [%] von tf zur nf Evaluationen")
 
-    # Optional: markiere Stellen, an denen points_tf==0 war
     if np.any(~nonzero_mask):
         ax3.scatter(x[~nonzero_mask], np.zeros(np.sum(~nonzero_mask)), color=c_zero, marker="x", label="TF-Basis = 0")
 
@@ -616,14 +520,7 @@ def plot_differences(differences,
                      save_path: str = None,
                      file_name: str = None):
     """
-    Plottet die Differenzliste gegen ihren Index.
-
-    Args:
-        differences: Sequenz von float-Werten.
-        title: Plot-Titel.
-        show: True -> anzeigen; False -> nur speichern (falls save_path gesetzt ist).
-        save_path: Ordner zum Speichern (optional).
-        file_name: Dateiname (optional, erforderlich wenn save_path gesetzt ist).
+    Credit: ChatGPT-5
     """
     diffs = np.asarray(differences, dtype=float)
     x = np.arange(len(diffs))

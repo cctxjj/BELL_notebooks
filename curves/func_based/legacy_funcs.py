@@ -1,7 +1,9 @@
 import math
 import util.graphics.visualisations as vis
 
-# TODO: extract useful parts, delete rest in final cleanup
+"""
+Funktionen zur Erzeugung von B-Splines und Bernsteinpolynomen; getrennt und strukturierter aufgeschrieben in bézier_curve.py und basis_spline.py
+"""
 
 def bernstein_polynomial(i: int,
                          n: int,

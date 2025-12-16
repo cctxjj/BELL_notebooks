@@ -9,13 +9,7 @@ from util.datasets.dataset_creator import create_n_parameter_values
 
 
 """
-NN Structure: 
-    input: parameter t (on interval [0, 1])
-    hidden: 32, 32
-    output: degree + 1 values corresponding to the bernstein polynomials values at t
---> Sequential is bound to predetermined degree 
-
-using custom training loop to establish basis for unsupervised learning later on
+Approximierung eines B-Splines mittels NN, Integration eines custom training loops
 """
 
 # setting up variables
@@ -28,11 +22,6 @@ samples = 1000
 # b-spline-specific vars
 border_bottom = knot_vector[k - 1]
 border_top = knot_vector[n_control_points]
-
-# Idee: dynamic b-spline --> n Epochen auf b-spline, anschließend auf diverse Parameter parallel in eigenen Epochen
-# --> Netz lernt erst Grundform und anschließend Verfeinerung entsprechend definierten Anforderungen
-# abwechselnde Belohnung entsprechend Metriken, damit sich verschiedene Parameter nicht in Quere kommen?
-# Bézierkurve als einfachere Option für unsupervised learning?
 
 # model setup
 model = tf.keras.Sequential(
@@ -104,10 +93,6 @@ for num in range(1000):
     curve_points.append((cur_x, cur_y))
 
 vis.visualize_curve(curve_points, control_points, True)
-
-# TODO: Frage: Wo liegt Effizienz im Ansatz der Wichtung mit KNNs im Vgl zu Einstellung Gewichte von NURBS mit KNNs
-# TODO: Frage: Batchsize variieren?
-# TODO: Frage: Unsupervised learning korrekt verwendet?
 
 
 

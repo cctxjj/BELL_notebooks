@@ -5,7 +5,6 @@ def b_spline(k: int,
              control_points: list,
              knot_vector: list,
              points_num: int = 1000):
-    # Todo: comment
     n = len(control_points)
 
     if len(knot_vector) != n + k:

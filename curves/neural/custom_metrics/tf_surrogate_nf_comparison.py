@@ -9,10 +9,12 @@ from util.shape_modifier import converge_tf_shape_to_mirrored_airfoil
 import tensorflow as tf
 import util.graphics.visualisations as vis
 
+"""
+Vergleich zwischen dem NeuralFoil-Modell und dem Surrogate TF-Modell, Z. 23 anpassen um TF-Modell auszuwählen (NeuralFoil nutzt standardmäßig "large")
+"""
 
 def predict_drag(model, points):
     points_formated = converge_tf_shape_to_mirrored_airfoil(tf.convert_to_tensor(points), resample_req=399)
-    # 1) Batch-Dimension vorne hinzufügen -> (1, N, 2)
     points_formated = tf.expand_dims(points_formated, axis=0)
 
     return model.predict(points_formated)[0][0]
@@ -35,6 +37,7 @@ def compare_predictions(n):
         print(f"nf: {cd_nf[0][0]} with conf: {cd_nf[1][0]}, tf: {cd_tf} | Diff: {abs(cd_nf[0][0]-cd_tf)/cd_nf[0][0]}")
     dev = [abs(x) for x in vis.plot_cd_comparison(points_nf=points_nf, points_tf=points_tf)]
     print(f"Maximale Abweichung von {np.max(dev)} mit durchschnittlicher Abweichung von {np.mean(dev)} und Median von {np.median(dev)}")
+
+
 compare_predictions(50)
-compare_predictions(50)
-compare_predictions(1000)
+

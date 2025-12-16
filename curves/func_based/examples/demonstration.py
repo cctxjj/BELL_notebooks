@@ -2,7 +2,6 @@ import util.graphics.visualisations as vis
 from curves.func_based import basis_spline
 from curves.func_based import bézier_curve
 
-# TODO: fill in examples
 control_points = [(2, 2), (3, 5), (6, 0), (10, 1), (10, 10)]
 
 k = 3

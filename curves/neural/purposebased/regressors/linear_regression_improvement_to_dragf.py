@@ -1,13 +1,13 @@
 
 import numpy as np
 from matplotlib import pyplot as plt
-from sklearn import linear_model
 from sklearn.linear_model import LinearRegression
-from sklearn.model_selection import train_test_split
 
 import pandas as pd
 
-# creation of two random forest to predict bez shift and drag improvement according to drag factor --> using ratio
+"""
+Lineare Regression für g nach cwv, plottet Resultat
+"""
 
 spec = input("csv specification: ")
 df = pd.read_csv(f"C:\\Users\\Sebastian\\PycharmProjects\\BELL_notebooks\\data\\model_analysis_1\\crossmodel_analysis_{spec}.csv")

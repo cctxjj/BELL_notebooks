@@ -12,15 +12,13 @@ from curves.neural.custom_metrics.drag_evaluation import reset_eval_count
 from util.shape_modifier import converge_tf_shape_to_mirrored_airfoil
 
 """
-add nn structure + comments
+Trainingsprozess für das NN der zweckorientierten Kurve; speichert Modell und Trainingsdaten unter data/model_analysis_1
 """
 
 model_id = str(input("Model id: "))
 drag_factor = float(input("Drag factor: "))
 
-# TODO: checkout model m1_20k_1.223
-
-# Hyperparameter
+# Hyperparameters
 degree = 5
 bez_curve_iterations = 50000
 cont_points_ds_length = 500
@@ -34,7 +32,7 @@ loss_range_dev = []
 drag_improvement_dev = []
 bez_shift_dev = []
 
-# model setup
+# model setup --> generic NN with 1 input layer, 4 hidden layers, 1 output layer, Gradient Descent optimizer
 model = tf.keras.Sequential(
     layers = [
         tf.keras.layers.InputLayer(shape = (1,)),
@@ -49,7 +47,7 @@ optimizer = tf.keras.optimizers.SGD(learning_rate = 0.1)
 model.compile(optimizer = optimizer)
 
 # https://www.tensorflow.org/guide/keras/writing_a_training_loop_from_scratch
-# custom training loop --> unsupervised
+# custom training loop
 def train_step(epoche_num: int, drag_pred, data: tf.Tensor=None, only_calc_loss = False, display = False):
     loss = None
     drag_loss = None
@@ -60,7 +58,7 @@ def train_step(epoche_num: int, drag_pred, data: tf.Tensor=None, only_calc_loss 
 
         target_bez_vals = tf.constant(
             np.array([[bernstein_polynomial(i, degree, t / 200) for i in range(degree + 1)] for t in range(200)]), dtype=tf.float32)
-        bez_loss = tf.reduce_mean(tf.square(tf.subtract(y_pred, target_bez_vals))) # MSE für Bézierkurve
+        bez_loss = tf.reduce_mean(tf.square(tf.subtract(y_pred, target_bez_vals))) # MSE
 
         if epoche_num >= 1:
             curve_points = tf.matmul(y_pred, data)
@@ -71,7 +69,7 @@ def train_step(epoche_num: int, drag_pred, data: tf.Tensor=None, only_calc_loss 
 
             #drag loss
             points_formated = tf.expand_dims(curve_points, axis=0)
-            drag_loss = drag_pred(points_formated, training=False)[0][0]
+            drag_loss = drag_pred(points_formated, training=False)[0][0] # cw
 
             #range loss
             cont_range = tf.subtract(tf.reduce_max(data[:, 0]), tf.reduce_min(data[:, 0]))
@@ -99,7 +97,7 @@ curve_points = [create_random_curve_points(6, random.randint(0, 3), random.randi
                                                                 15)) for i in range(cont_points_ds_length)]
 curve_points_ds = tf.data.Dataset.from_tensor_slices(curve_points)
 
-
+# loading model to predict drag
 drag_pred = tf.keras.models.load_model("C:\\Users\\Sebastian\\PycharmProjects\BELL_notebooks/data/models/cd_prediction_model_17.keras")
 
 crit_met = False
@@ -115,6 +113,7 @@ while not crit_met:
     ind = 0
     average_drag_loss = 0
     if epoch == 1:
+        # evaluation epoch to determine MSE0 and cw0 --> allow later calc of bez_shift (= MSEz) and drag_improvement (= cwv)
         # iteration over dataset, training (not using batches)
         loss_total = []
         loss_bez_total = []
@@ -149,6 +148,7 @@ while not crit_met:
         reset_eval_count()
 
     elif epoch > 1:
+        # second training step: unsupvervised optimization of drag
         # iteration over dataset, training (not using batches)
         loss_total = []
         loss_bez_total = []
@@ -174,7 +174,7 @@ while not crit_met:
                 loss_drag_dev.append(np.mean(loss_drag_total))
                 loss_range_dev.append(np.mean(loss_range_total))
 
-                # check if criteria are met
+                # check if criteria (= stagnation) is met
 
                 # lower
                 drag_cur = np.mean(loss_drag_total)
@@ -193,6 +193,7 @@ while not crit_met:
                     print(" | continuing training")
                     continue
 
+                # check for stagnation
                 std = np.std(drag_improvement_dev[(-1*n_looks_backwards_for_criteria):] )
                 if abs(std/np.mean(drag_improvement_dev[(-1*n_looks_backwards_for_criteria):])) < 0.01 or epoch >= 100:
                     crit_met = True
@@ -205,6 +206,7 @@ while not crit_met:
             sys.stdout.flush()
         reset_eval_count()
     else:
+        # first training step: basis function (bézier curve)
         for x in range(bez_curve_iterations):
             loss = train_step(epoch, drag_pred)
             ind += 1
@@ -214,11 +216,9 @@ while not crit_met:
                 print(f"\rEpoch: {(epoch + 1)} | Run-through: {ind}/{bez_curve_iterations} | Loss: {loss[0]} (MSE) | epoche completed")
                 abs_drag_factor = float(loss[0]) * drag_factor
             sys.stdout.flush()
-            # TODO: ggf. oben spacial loss für gleichmäßige Punktverteilung hinzufügen
     epoch += 1
 
 # saving data
-
 data = {
     "epoch": range(0, len(loss_dev)),
     "loss": loss_dev,
@@ -237,33 +237,6 @@ os.makedirs(path_2, exist_ok=True)
 pd.DataFrame(data).to_csv(f"{path_1}equilibrium_data_model_{model_id}.csv", index=False)
 
 model.save(f"{path_2}model_{model_id}.keras")
-
-
-"""
-# Todo: automatischer Check für korrekte GGW-Verschiebung finden --> formel, auf deren Basis optimaler Gewichtszustand identifiziert wird --> automatische Beendung Traingingsprozess
-# Test: creating an example curve
-control_points = [(1, 2), (2, 4), (3, 2), (5, 1), (6, -2), (7, 1)]
-
-curve_points = []
-
-for t in range(1000):
-    cur_x = 0
-    cur_y = 0
-    pol_vals = model(inputs=tf.constant([[t / 1000]], dtype=tf.float32)).numpy()
-    for i in range(degree + 1):
-        bernstein_polynomial_value = pol_vals[0][i]
-        cur_x += bernstein_polynomial_value * control_points[i][0]
-        cur_y += bernstein_polynomial_value * control_points[i][1]
-    curve_points.append((cur_x, cur_y))
-
-vis.visualize_curve(curve_points, control_points, True)
-
-# TODO: Frage: Wo liegt Effizienz im Ansatz der Wichtung mit KNNs im Vgl zu Einstellung Gewichte von NURBS mit KNNs
-# TODO: Frage: Batchsize variieren?
-# TODO: Frage: Unsupervised learning korrekt verwendet?
-# TODO: DragEvaluator af-Anzeige optimieren
-
-"""
 
 
 

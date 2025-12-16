@@ -5,6 +5,10 @@ from sklearn.model_selection import train_test_split
 
 import pandas as pd
 
+"""
+Erstellt zwei RFRs: Vorhersage von MSEz und cwv gem ratio (= MSE/cw) sowie ratio gem g, plottet Ergebnisse
+"""
+
 # creation of two random forest to predict MSEz and cwv according to g --> using cw/mse
 # document adapted for comp_5.csv (g e [1, 15])
 
@@ -20,9 +24,7 @@ bez_shift = df["bezier_shift"].tolist()
 ratio = df["ratio"].tolist()
 
 # np.column_stack((drag_improvement, bez_shift))
-# ratio regression
-# TODO: Maybe ein Diagramm ratio - cwv machen?
-# --> zu große Abweichung bei drag_factor direkt auf cwv
+
 x_ratio, y_ratio = np.reshape(n, (-1, 1)), ratio
 x_train_ratio, x_test_ratio, y_train_ratio, y_test_ratio = train_test_split(x_ratio, y_ratio, test_size=0.2)
 

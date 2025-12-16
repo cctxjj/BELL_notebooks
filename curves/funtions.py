@@ -1,5 +1,8 @@
 import math
 
+"""
+Mathematische Funktionen, auf denen B-Splines sowie Bézierkurven basieren.
+"""
 
 def bernstein_polynomial(i: int,
                          n: int,
@@ -17,7 +20,6 @@ def basis_function(i: int,
                    k: int,
                    t: float,
                    knot_vector: list):
-    # Todo: comment
     if k <= 1:
         if knot_vector[i] <= t < knot_vector[i + 1] or (t == knot_vector[-1] and t == knot_vector[i + 1]):
             return 1

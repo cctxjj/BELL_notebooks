@@ -31,7 +31,6 @@ def compare(imgs, titles, cols=2):
     fig.savefig("demonstration/effect_comparison.png")
 
 def plot_alg_results():
-    # todo: add comments
     img_1 = imgutil.grab_image("imgs//img_1.png")
     four_con_flood_fill_applied = recursive_stackbased_flood_fill_4con(img_1.copy(), (30, 30), 150)
     eight_con_flood_fill_applied = recursive_stackbased_flood_fill_8con(img_1.copy(), (30, 30), 150)

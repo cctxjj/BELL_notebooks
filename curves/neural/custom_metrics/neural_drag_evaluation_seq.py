@@ -6,13 +6,7 @@ import numpy as np
 
 
 """
-NN Structure: 
-    input: parameter t (on interval [0, 1])
-    hidden: 32, 32
-    output: degree + 1 values corresponding to the bernstein polynomials values at t
---> Sequential is bound to predetermined degree 
-
-using custom training loop to establish basis for unsupervised learning later on
+Training des Modells zur Nachahmung von NeuralFoil auf Basis von 
 """
 model_num = int(input("Test iteration num the model should be saved as: "))
 

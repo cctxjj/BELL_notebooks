@@ -8,6 +8,10 @@ import curves.neural.purposebased.purpose_based_curve as pb_c
 import util.datasets.dataset_creator as dc
 from curves.neural.custom_metrics.drag_evaluation import DragEvaluator
 
+"""
+Erstellt Vergleich der Metrik (cw-Wert) zwischen zweckbasierter Kurve und Basiskurve (Bézierkurve) 
+"""
+
 points_num_for_curve = 200
 purpose_based_model_name = "m1_20k_4"
 len_comparison = 100

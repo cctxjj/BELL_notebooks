@@ -13,6 +13,10 @@ from curves.neural.custom_metrics.drag_evaluation import DragEvaluator
 from util.shape_modifier import converge_tf_shape_to_mirrored_airfoil
 import neuralfoil as nf
 
+"""
+File zur erstellung diverser Datensaetze, primär relevant sind 
+"""
+
 general_path = "C:\\Users\\Sebastian\\PycharmProjects\\BELL_notebooks"
 
 def make_bernstein_dataset(
@@ -128,7 +132,9 @@ def create_bez_curves_drag_coef_dataset(
 def __plot_n_example_random_bez_curves__(
         amount: int,
         points_num: int = 300):
-    # TODO: comment
+    """
+    plots n example randrom bez curves
+    """
     for i in range(amount):
         cont_points = create_random_curve_points(random.randint(4, 8), random.randint(0, 3), random.randint(6, 13), 0,
                                                  random.randint(1, 15))
@@ -137,9 +143,12 @@ def __plot_n_example_random_bez_curves__(
                             save_path=f"{general_path}/data/neural_curves/random_bez_curves")
         DragEvaluator(points, save_airfoil=True, range=30, start_angle=0, specification=f"random_bez_curve")
 
-# NACA dataset creator
+
 
 def create_naca_dataset(file_name: str = "naca_dataset"):
+    """
+    Creates a dataset of NACA airfoils along with cd-value; 10000 airfoils, part of the mixed dataset used for trainging the surrogate tf model for nf large
+    """
     airfoils = []
     values = []
     print("Creating dataset...\n")

@@ -2,11 +2,13 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Eingabe: nur der Mittelteil, Rest wird automatisch ergänzt
+"""
+Erstellt (plottet) Analysedaten der zweckorientiertes Kurvennetz auf Basis von dessen Trainingsdaten
+"""
+
 base_name = input("Model name: ")
 filename = f"C:\\Users\\Sebastian\\PycharmProjects\\BELL_notebooks\\data\\model_analysis_1\\equilibrium_data_model_{base_name}.csv"
 
-# CSV laden
 df = pd.read_csv(filename)
 
 def norm(arr):
@@ -16,7 +18,6 @@ def norm(arr):
         res.append((el - arr.min()) / d)
     return res
 
-# Arrays extrahieren (so schlicht wie möglich)
 epoch = df["epoch"].to_numpy()
 loss = df["loss"].to_numpy()
 loss_bez = df["loss_bez"].to_numpy()
@@ -40,7 +41,7 @@ loss_bez = norm(loss_bez)
 loss_drag = norm(loss_drag)
 loss_range = norm(loss_range)
 
-# plot normed losses
+# 1) plot normed losses
 plt.figure(figsize=(8, 4))
 plt.plot(epoch, loss, "o-", label="K")
 plt.plot(epoch, loss_drag, "o-", label="cw")

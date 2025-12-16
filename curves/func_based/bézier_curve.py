@@ -21,5 +21,3 @@ def bezier_curve(control_points: list,
             cur_y += bernstein_polynomial_value * control_points[i][1]
         curve_points.append((cur_x, cur_y))
     return curve_points
-
-# TODO: Check for correct interpolation of last control point

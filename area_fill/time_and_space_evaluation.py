@@ -3,8 +3,6 @@ import time
 import tracemalloc
 import copy
 
-import numpy as np
-from PIL import Image
 from matplotlib import pyplot as plt
 
 from fill_algs import *

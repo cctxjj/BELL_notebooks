@@ -4,6 +4,9 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+"""
+Erstellt (plottet) vergleichende Analysedaten der zweckorientierten Kurvennetze auf Basis derer Trainingsdaten
+"""
 
 def grab_model_result_data(name):
     filename = f"C:\\Users\\Sebastian\\PycharmProjects\\BELL_notebooks\\data\\model_analysis_1\\equilibrium_data_model_{name}.csv"
