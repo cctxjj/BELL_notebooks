@@ -6,6 +6,8 @@ Dem allgemeinen Sprachgebrauch der anwendungsbezogenen Informatik folgend ist ei
 der Code ist konsequent englisch. 
 Den wichtigsten Dokumenten sind kurze deutsche Erklärungen hinzugefügt.
 
+Ein besonderer Dank gilt A. Roschlau sowie Dr. L. Müller für die Betreuung des Arbeitsprozesses.
+
 ## Zielsetzung
 Angestrebt wird 
     1. die Umsetzung ausgewählter Algorithmen 
@@ -46,8 +48,7 @@ zusätzlich finden sich:
   - weitere Airfoil-Daten (/data/airfoils/) aus vorangegangenen Tests + Entwicklungsprozess
 
 ## Lizenz
-Copyright (c) 2025 Sebastian Dietrich
-Alle Rechte vorbehalten.
+Copyright (c) 2025 Sebastian Dietrich, alle Rechte vorbehalten;
 siehe LICENSE
 
 ## Transparenzhinweis 
