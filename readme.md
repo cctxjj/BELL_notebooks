@@ -57,17 +57,18 @@ relevante Vorgänge wie bspw. Visualisierungsprozesse; alle Implementationen des
 und als solche kenntlich gemacht.
 
 ## Abkürzungen/Synonyme
-.. zur erleichterten Verständlichkeit des Bezuges zwischen Textgrundlage und Code
-NN --> Neuronale Netze 
-TF --> Tensorflow
-NF --> NeuralFoil
-drag --> cw-Wert
-drag_improvement --> cwv
-loss_bez --> MSE
-bez_shift --> MSEz
-cd --> cw
-RFR --> Random Forest Regressor
-ratio --> MSE/cw
+... zur erleichterten Verständlichkeit des Bezuges zwischen Textgrundlage und Code
+- **NN** → Neuronale Netze  
+- **TF** → Tensorflow  
+- **NF** → NeuralFoil  
+- **drag** → cw-Wert  
+- **drag_improvement** → cwv  
+- **loss_bez** → MSE  
+- **bez_shift** → MSEz  
+- **cd** → cw  
+- **RFR** → Random Forest Regressor  
+- **ratio** → MSE/cw  
+
 
 ## Sonstiges
 z. T. sind Speicherpfade absolut angegeben und müssen für die Anwendung auf einem anderen System angepasst werden.
